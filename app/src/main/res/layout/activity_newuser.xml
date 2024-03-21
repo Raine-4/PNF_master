@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/toolbarNewUser"
+        android:background="@color/teal_200"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_register"
+        android:textSize="25sp"
+        android:typeface="serif"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/poem"
+        android:textSize="15sp"
+        android:typeface="monospace"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"/>
+
+    <EditText
+        android:id="@+id/register_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/半透明"
+        android:hint="用户名"
+        android:inputType="textPersonName"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
+    <EditText
+        android:id="@+id/register_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/半透明"
+        android:hint="密码"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
+    <EditText
+        android:id="@+id/confirm_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/半透明"
+        android:hint="确认密码"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
+    <Button
+        android:id="@+id/register_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="立即注册"
+        android:textSize="18sp"
+        android:padding="10dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
+</LinearLayout>

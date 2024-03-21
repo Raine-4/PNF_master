@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mode">Spinner</string>
+    <string-array name="mode">
+        <item>选择发送内容格式</item>
+        <item>ASCII</item>
+        <item>Unicode</item>
+        <item>UTF-8</item>
+        <item>GB-2312</item>
+    </string-array>
+</resources>

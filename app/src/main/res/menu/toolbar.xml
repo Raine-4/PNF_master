@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="HardcodedText">
+    <item
+        android:id="@+id/bluetooth"
+        android:icon="@drawable/ic_bluetooth"
+        app:showAsAction="ifRoom"
+        android:title="搜索蓝牙设备"
+        />
+    <item
+        android:id="@+id/backup"
+        android:title="上传记录至云端"
+        android:icon="@drawable/ic_backup"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/help"
+        android:title="使用帮助"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/developerMode"
+        android:title="开发者模式"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/settings"
+        android:title="设置"
+        app:showAsAction="never"/>
+</menu>

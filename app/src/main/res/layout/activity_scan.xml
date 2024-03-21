@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/teal_200"
+        app:title="选择蓝牙设备"
+        app:titleTextColor="@color/white">
+        <Button
+            android:id="@+id/backToMainBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="返回主界面"
+            android:layout_gravity="end"/>
+        <TextView
+            android:id="@+id/tv_scan_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:padding="10dp"
+            android:text="开始搜索"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="visible" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <ProgressBar
+        android:id="@+id/pb_scan_loading"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/toolbar"
+        android:layout_marginBottom="-10dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/teal_200"
+        android:visibility="invisible" />
+
+    <!--设备列表-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_device"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="4dp"
+        android:overScrollMode="never" />
+
+    <!--未扫描到设备时显示-->
+    <include
+        android:id="@+id/empty_lay"
+        layout="@layout/lay_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:visibility="visible"/>
+
+</RelativeLayout>

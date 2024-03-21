@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">PNF_Master</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="Introduction">Version: v0.1.1 \nAuthor: NA Yufeng</string>
+    <string name="usage">
+        1. 应用介绍\n
+        “PNF Control Master”是一款安卓应用，它通过蓝牙连接，可以对下肢康复机器人进行远程控制。
+        本应用支持对电机速度、循环次数、运转模式等参数进行调节，以满足不同康复需求。\n\n
+        2. 操作指南\n
+        用户可以通过应用界面右上角的转换按钮轻松切换当前控制的电机；在右上角的更多菜单项中，用户可以将康复数据保存到云端，方便用户进行长期监测和分析；
+        还可以通过本应用删除已保存的数据，并自定义设置应用的一些选项，以获得更好的使用体验。
+        PNF Control Master 提供了简便的康复机器人控制功能，为用户提供了更便捷、高效的康复体验。
+    </string>
+    <string name="userName">testuser</string>
+    <string name="currentDevice">当前设备名称：</string>
+    <string name="start_bluetooth">开启蓝牙</string>
+    <string name="show_devices">查询配对设备</string>
+    <string name="find_devices">搜索设备</string>
+    <string name="connect_devices">连接设备</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="requestForBtPermission">您必须授权开启蓝牙相关功能才可以和康复机器人连接，请问您是否同意？</string>
+    <string name="hint">在此输入要发送的信息</string>
+    <string name="title_activity_bluetooth_connect">BluetoothConnectActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="UUID">00001101-0000-1000-8000-00805f9b34fb</string>
+    <string name="TargetDeviceName">YANK.CAO</string>
+    <string name="welcome_register">欢迎注册PNF Master</string>
+    <string name="poem">科技织梦，康复成诗。</string>
+    <string name="Profile">我的资料</string>
+    <string name="Control">操控页面</string>
+    <string name="Tasks">我的任务</string>
+    <string name="Logout">退出登录</string>
+    <string name="defaultUserName">未登录</string>
+    <string name="unknown_value">未知</string>
+    <string name="new_user_hint">请完善个人信息，这有助于为您定制更好的训练计划。</string>
+    <string name="rehabHint1">医疗专业人士对患者进行的评估和诊断，包括健康状况评估和病史等。</string>
+    <string name="rehabHint2">制定针对患者的康复治疗方案，包括物理治疗、康复训练、药物治疗、康复辅助器具使用等。</string>
+    <string name="rehabHint3">记录患者在康复治疗过程中的各种进展情况和改善情况的记录。</string>
+    <string name="rehabHint4">制定针对患者个体化的康复目标，包括恢复功能、减轻疼痛、提高生活质量等方面。</string>
+</resources>

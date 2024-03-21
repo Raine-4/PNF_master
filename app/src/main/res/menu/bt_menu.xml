@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".ControlActivity">
+    <item
+        android:id="@+id/show_devices"
+        android:title="@string/show_devices"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/start_bluetooth"
+        android:title="@string/start_bluetooth"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/find_devices"
+        android:title="@string/find_devices"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/connect_devices"
+        android:title="@string/connect_devices"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+</menu>
