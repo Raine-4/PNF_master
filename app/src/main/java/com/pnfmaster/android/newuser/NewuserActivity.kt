@@ -13,9 +13,11 @@ import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.R
 import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.databinding.ActivityNewuserBinding
+import com.pnfmaster.android.utils.ActivityCollector
 import com.pnfmaster.android.utils.Toast
 
 class NewuserActivity : BaseActivity() {
+    private val tag = "NewUserActivity"
     private lateinit var binding: ActivityNewuserBinding
     private lateinit var dbHelper: MyDatabaseHelper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +25,7 @@ class NewuserActivity : BaseActivity() {
         binding = ActivityNewuserBinding.inflate(layoutInflater)
         setContentView(binding.root)
         dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
+        ActivityCollector.addActivity(this)
 
         setSupportActionBar(binding.toolbarNewUser)
         supportActionBar?.let {
@@ -39,7 +42,6 @@ class NewuserActivity : BaseActivity() {
                 intent.putExtra("account", username)
                 intent.putExtra("psw", password)
                 startActivity(intent)
-                finish()
             }
         }
     }
@@ -47,8 +49,7 @@ class NewuserActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
+                onBackPressedDispatcher.onBackPressed()
                 finish()
             }
         }
@@ -80,4 +81,25 @@ class NewuserActivity : BaseActivity() {
 
         return true
     }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(tag, "onStart()")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(tag, "onPause()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(tag, "onStop()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(tag, "onDestroy()")
+    }
+
 }

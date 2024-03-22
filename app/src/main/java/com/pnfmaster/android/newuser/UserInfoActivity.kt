@@ -11,6 +11,7 @@ import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.R
 import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.databinding.ActivityUserInfoBinding
+import com.pnfmaster.android.utils.ActivityCollector
 import com.pnfmaster.android.utils.Toast
 
 class UserInfoActivity : BaseActivity() {
@@ -19,6 +20,7 @@ class UserInfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityUserInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ActivityCollector.addActivity(this)
 
         setSupportActionBar(binding.toolbarNewUser)
         supportActionBar?.let {
@@ -57,7 +59,6 @@ class UserInfoActivity : BaseActivity() {
                 nextIntent.putExtra("age", age)
                 nextIntent.putExtra("contact", contact)
                 startActivity(nextIntent)
-                finish()
             }
         }
 
@@ -81,9 +82,7 @@ class UserInfoActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-            }
+            android.R.id.home -> onBackPressedDispatcher.onBackPressed()
         }
         return true
     }

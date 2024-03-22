@@ -2,15 +2,14 @@ package com.pnfmaster.android.newuser
 
 import android.content.ContentValues
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import com.pnfmaster.android.BaseActivity
 import com.pnfmaster.android.LoginActivity
 import com.pnfmaster.android.MyApplication
-import com.pnfmaster.android.R
 import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.databinding.ActivityRehabInfoBinding
+import com.pnfmaster.android.utils.ActivityCollector
 
 class RehabInfoActivity : BaseActivity() {
     private lateinit var binding: ActivityRehabInfoBinding
@@ -19,6 +18,7 @@ class RehabInfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRehabInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ActivityCollector.addActivity(this)
 
         setSupportActionBar(binding.toolbarNewUser)
         supportActionBar?.let {
@@ -51,14 +51,18 @@ class RehabInfoActivity : BaseActivity() {
             nextIntent.putExtra("newPassword", password)
             nextIntent.putExtra("newUserFlag", NEWUSER)
             startActivity(nextIntent)
-            finish()
+
+            // 关闭全部注册activity
+            ActivityCollector.finishAll()
+
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
+                finish()
             }
         }
         return true

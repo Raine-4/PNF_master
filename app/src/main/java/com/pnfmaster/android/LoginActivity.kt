@@ -9,6 +9,7 @@ import android.text.Editable
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.databinding.ActivityLoginBinding
 import com.pnfmaster.android.newuser.NewuserActivity
 import com.pnfmaster.android.utils.Toast
@@ -44,40 +45,50 @@ class LoginActivity : AppCompatActivity() {
 
         binding.appName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in))
 
-        val flag = intent.getIntExtra("newUserFlag", 0)
 
+        /* 先判断是否是从注册界面来的新用户，如果是的话就把他刚注册的用户名和密码给他填上去
+         * 如果不是新用户，就启动记住密码功能。
+         */
+        val flag = intent.getIntExtra("newUserFlag", 0)
         if (flag == 1) {
             val newAccount = intent.getStringExtra("newAccount")
             val newPassword = intent.getStringExtra("newPassword")
             binding.accountEdit.text = Editable.Factory.getInstance().newEditable(newAccount)
             binding.pswEdit.text = Editable.Factory.getInstance().newEditable(newPassword)
-        }
-        // 记住密码功能1
-        val prefs = getPreferences(Context.MODE_PRIVATE)
-        val isRemember = prefs.getBoolean("remember_psw", false)
-        if (isRemember) {
-            val account = prefs.getString("account", "")
-            val psw = prefs.getString("password", "")
-            binding.accountEdit.setText(account)
-            binding.pswEdit.setText(psw)
-            binding.rememberPsw.isChecked = true
+        } else {
+            // 记住密码功能1
+            val prefs = getPreferences(Context.MODE_PRIVATE)
+            val isRemember = prefs.getBoolean("remember_psw", false)
+            if (isRemember) {
+                val account = prefs.getString("account", "")
+                val psw = prefs.getString("password", "")
+                binding.accountEdit.setText(account)
+                binding.pswEdit.setText(psw)
+                binding.rememberPsw.isChecked = true
+            }
         }
 
         // 登录
         binding.loginInBtn.setOnClickListener {
             val account = binding.accountEdit.text.toString()
             val psw = binding.pswEdit.text.toString()
-            if (account == "testuser" && psw == "123456") {
-                // 记住密码
-                val editor = prefs.edit()
-                if (binding.rememberPsw.isChecked) {
-                    editor.putBoolean("remember_psw", true)
-                    editor.putString("account", account)
-                    editor.putString("password", psw)
-                } else {
-                    editor.clear()
+
+            if (isRegistered(account, psw)) {
+
+                if (flag == 0) {
+                    // 记住密码
+                    val prefs = getPreferences(Context.MODE_PRIVATE)
+                    val editor = prefs.edit()
+                    if (binding.rememberPsw.isChecked) {
+                        editor.putBoolean("remember_psw", true)
+                        editor.putString("account", account)
+                        editor.putString("password", psw)
+                    } else {
+                        editor.clear()
+                    }
+                    editor.apply()
                 }
-                editor.apply()
+
                 val intent = Intent(this, ControlActivity::class.java)
                 intent.putExtra("userAccount", account)
                 startActivity(intent)
@@ -91,13 +102,12 @@ class LoginActivity : AppCompatActivity() {
         binding.newUserBtn.setOnClickListener {
             val intent = Intent(this, NewuserActivity::class.java)
             startActivity(intent)
-            finish()
         }
 
         binding.skipLoginEnter.setOnClickListener {
             AlertDialog.Builder(this).apply {
                 setTitle("提示")
-                setMessage("跳过登录直接进入主界面仍然可以使用全部基础功能，但是无法使用个性化服务，建议您登录后使用。")
+                setMessage("跳过登录仍然可以使用全部基础功能，但是无法使用个性化服务，建议您登录后使用。")
                 setPositiveButton("返回登录") { _, _ -> }
                 setNegativeButton("直接使用") { _, _ ->
                     val intent = Intent(this@LoginActivity, ControlActivity::class.java)
@@ -110,4 +120,11 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun isRegistered(account:String, sw: String): Boolean {
+        val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
+
+        return true
+    }
+
 }

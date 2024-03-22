@@ -165,7 +165,6 @@ class ControlActivity : BaseActivity() {
         }
     }
 
-
     // 右上角三个按钮的点击事件
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar, menu)
@@ -202,8 +201,9 @@ class ControlActivity : BaseActivity() {
             }
 
             R.id.backup -> {
-                judgeIfSkipped()
-                "将数据上传至云端功能：正在开发中".Toast() // TODO
+                if (!judgeIfSkipped()) {
+                    "将数据上传至云端功能：正在开发中".Toast() // TODO
+                }
             }
 
             R.id.help -> {
@@ -236,9 +236,10 @@ class ControlActivity : BaseActivity() {
     private fun jumpToActivity(context: Context, targetActivity: String) {
         when (targetActivity) {
             "Profile" -> {
-                judgeIfSkipped()
-                val intent = Intent(this, ProfileActivity::class.java)
-                startActivity(intent)
+                if (!judgeIfSkipped()) {
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    startActivity(intent)
+                }
             }
             "Control" -> {
                 // 如果当前界面不在Control界面中，则跳转至Control界面
@@ -250,7 +251,10 @@ class ControlActivity : BaseActivity() {
                 }
             }
             "Tasks" -> {
-                judgeIfSkipped()
+                if (!judgeIfSkipped()){
+                    "个性化任务：正在开发中".Toast()
+                    // TODO
+                }
             }
             "Logout" -> { // 返回登录菜单
                 val builder = AlertDialog.Builder(this)
@@ -268,7 +272,8 @@ class ControlActivity : BaseActivity() {
         }
     }
 
-    private fun judgeIfSkipped() {
+    // 判断用户是否跳过登录，如果跳过则返回true
+    private fun judgeIfSkipped(): Boolean {
         val isSkipped = intent.getBooleanExtra("skip", false)
         if (isSkipped) {
             val builder = AlertDialog.Builder(this)
@@ -282,6 +287,8 @@ class ControlActivity : BaseActivity() {
                 .setNegativeButton("否") { _, _ -> }
                 .create()
                 .show()
+            return true
         }
+        return false
     }
 }
