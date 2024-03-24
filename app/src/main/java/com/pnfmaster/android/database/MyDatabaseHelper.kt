@@ -3,7 +3,6 @@ package com.pnfmaster.android.database
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 
 // name 是数据库名
 class MyDatabaseHelper(val context: Context, name: String, version: Int) : SQLiteOpenHelper(context, name, null, version) {
@@ -33,24 +32,22 @@ class MyDatabaseHelper(val context: Context, name: String, version: Int) : SQLit
                 "goals TEXT)"
 
     override fun onCreate(db: SQLiteDatabase?) {
-        if (db != null) {
-            db.execSQL(createUser)
-            db.execSQL(createUserInfo)
-            db.execSQL(createRehabInfo)
-        } else {
-            Log.e(tag, "database is null.")
+        db!!.let {
+            it.execSQL(createUser)
+            it.execSQL(createUserInfo)
+            it.execSQL(createRehabInfo)
         }
     }
 
+    // 用不到
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        if (db != null) {
-            db.execSQL("DROP TABLE IF EXISTS User")
-            db.execSQL("DROP TABLE IF EXISTS UserInfo")
-            db.execSQL("DROP TABLE IF EXISTS RehabInfo")
-            onCreate(db)
-        } else {
-            Log.e(tag, "database is null.")
+        if (oldVersion <= 1) {
+            db!!.let {
+                it.execSQL("DROP TABLE IF EXISTS User")
+                it.execSQL("DROP TABLE IF EXISTS UserInfo")
+                it.execSQL("DROP TABLE IF EXISTS RehabInfo")
+                onCreate(it)
+            }
         }
     }
-
 }

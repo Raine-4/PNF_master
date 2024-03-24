@@ -13,9 +13,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.view.GravityCompat
+import com.pnfmaster.android.BtConnection.BluetoothCommunication
 import com.pnfmaster.android.BtConnection.BluetoothScanActivity
 import com.pnfmaster.android.databinding.ActivityControlBinding
-import com.pnfmaster.android.BtConnection.BluetoothCommunication
 import com.pnfmaster.android.utils.Toast
 import java.util.Calendar
 
@@ -190,7 +190,7 @@ class ControlActivity : BaseActivity() {
                     builder.setTitle("当前蓝牙设备")
                         .setMessage("设备名称：${device.name}\n" +
                                 "设备地址：${device.address}")
-                        .setPositiveButton("我知道了") { _, _ -> }
+                        .setPositiveButton("我知道了",null)
                         .setNegativeButton("断开连接") { _, _ ->
                             Log.d(TAG, "Main: onOptionsItemSelected. User cancelled the bluetooth.")
                             MyApplication.bluetoothSocket!!.close()
@@ -222,7 +222,7 @@ class ControlActivity : BaseActivity() {
                     .setPositiveButton("确认") { _, _ ->
                         // TODO: 跳转至 Developer Mode
                     }
-                    .setNegativeButton("取消") { _, _ -> }
+                    .setNegativeButton("取消",null)
                     .create()
                     .show()
             }
@@ -237,8 +237,12 @@ class ControlActivity : BaseActivity() {
         when (targetActivity) {
             "Profile" -> {
                 if (!judgeIfSkipped()) {
-                    val intent = Intent(this, ProfileActivity::class.java)
-                    startActivity(intent)
+                    val account = intent.getStringExtra("userAccount")
+                    val id = intent.getIntExtra("userId", -1)
+                    val profileIntent = Intent(this, ProfileActivity::class.java)
+                    profileIntent.putExtra("userAccount", account)
+                    profileIntent.putExtra("userId", id)
+                    startActivity(profileIntent)
                 }
             }
             "Control" -> {
@@ -252,27 +256,37 @@ class ControlActivity : BaseActivity() {
             }
             "Tasks" -> {
                 if (!judgeIfSkipped()){
-                    "个性化任务：正在开发中".Toast()
-                    // TODO
+                    val account = intent.getStringExtra("userAccount")
+                    val id = intent.getIntExtra("userId", -1)
+                    val tasksIntent = Intent(this, TasksActivity::class.java)
+                    tasksIntent.putExtra("userAccount", account)
+                    tasksIntent.putExtra("userId", id)
+                    startActivity(tasksIntent)
                 }
             }
             "Logout" -> { // 返回登录菜单
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("提示")
-                    .setMessage("确定要退出登录吗？")
-                    .setPositiveButton("退出") { _, _ ->
-                        val logOutIntent = Intent(context, LoginActivity::class.java)
-                        startActivity(logOutIntent)
-                        finish()
-                    }
-                    .setNegativeButton("取消") { _, _ -> }
-                    .create()
-                    .show()
+                if (!judgeIfSkipped()) {
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle("提示")
+                        .setMessage("确定要退出登录吗？")
+                        .setPositiveButton("退出") { _, _ ->
+                            val logOutIntent = Intent(context, LoginActivity::class.java)
+                            startActivity(logOutIntent)
+                            finish()
+                        }
+                        .setNegativeButton("取消",null)
+                        .create()
+                        .show()
+                } else {
+                    val logOutIntent = Intent(context, LoginActivity::class.java)
+                    startActivity(logOutIntent)
+                    finish()
+                }
             }
         }
     }
 
-    // 判断用户是否跳过登录，如果跳过则返回true
+    // 判断用户是否跳过登录，如果跳过则返回 true
     private fun judgeIfSkipped(): Boolean {
         val isSkipped = intent.getBooleanExtra("skip", false)
         if (isSkipped) {
@@ -284,7 +298,7 @@ class ControlActivity : BaseActivity() {
                     startActivity(backIntent)
                     finish()
                 }
-                .setNegativeButton("否") { _, _ -> }
+                .setNegativeButton("否", null)
                 .create()
                 .show()
             return true

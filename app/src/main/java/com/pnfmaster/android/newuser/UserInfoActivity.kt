@@ -1,15 +1,10 @@
 package com.pnfmaster.android.newuser
 
-import android.content.ContentValues
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import com.pnfmaster.android.BaseActivity
-import com.pnfmaster.android.LoginActivity
-import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.R
-import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.databinding.ActivityUserInfoBinding
 import com.pnfmaster.android.utils.ActivityCollector
 import com.pnfmaster.android.utils.Toast
@@ -44,7 +39,7 @@ class UserInfoActivity : BaseActivity() {
         binding.registerButton.setOnClickListener {
             val name = binding.name.text.toString()
             val age = binding.age.text.toString()
-            val contact = binding.contact.toString()
+            val contact = binding.contact.text.toString()
 
             if (isLegal(name, gender, age, contact)) {
                 // 上一个Activity传过来的参数

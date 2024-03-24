@@ -5,47 +5,29 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.animation.Animation
+import android.util.Log
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.databinding.ActivityLoginBinding
 import com.pnfmaster.android.newuser.NewuserActivity
 import com.pnfmaster.android.utils.Toast
+import kotlin.properties.Delegates
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityLoginBinding
-
+    private var id by Delegates.notNull<Int>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Logo的动画
-        val logoImageView = findViewById<ImageView>(R.id.logo)
-        // 加载动画资源
-        val logoAnimation = AnimationUtils.loadAnimation(this, R.anim.logo_animation)
-        // 设置动画监听器
-        logoAnimation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-                // 动画开始时的处理
-            }
-            override fun onAnimationEnd(animation: Animation?) {
-                // 动画结束时的处理，停止动画
-                logoImageView.clearAnimation()
-            }
-            override fun onAnimationRepeat(animation: Animation?) {
-                // 动画重复时的处理
-            }
-        })
-        // 开始Logo旋转动画
-        logoImageView.startAnimation(logoAnimation)
-
+        // 启动动画
         binding.appName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in))
+        binding.logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.logo_animation))
 
-        /* 先判断是否是从注册界面来的新用户，如果是的话就把他刚注册的用户名和密码给他填上去
+        /* 先判断是否是从注册界面来的新用户，如果是的话就把他刚注册的用户名和密码填上去
          * 如果不是新用户，就启动记住密码功能。
          */
         val flag = intent.getIntExtra("newUserFlag", 0)
@@ -73,7 +55,6 @@ class LoginActivity : AppCompatActivity() {
             val psw = binding.pswEdit.text.toString()
 
             if (isRegistered(account, psw)) {
-
                 if (flag == 0) {
                     // 如果勾选了“记住密码”选项
                     val editor = prefs.edit()
@@ -81,19 +62,15 @@ class LoginActivity : AppCompatActivity() {
                         editor.putBoolean("rememberPsw", true)
                         editor.putString("account", account)
                         editor.putString("password", psw)
-                    } else {
-                        editor.clear()
-                    }
+                    } else { editor.clear() }
                     editor.apply()
                 }
-
                 val intent = Intent(this, ControlActivity::class.java)
                 intent.putExtra("userAccount", account)
+                intent.putExtra("userId", id)
                 startActivity(intent)
                 finish()
-            } else {
-                "用户名或密码错误".Toast()
-            }
+            } else { "用户名或密码错误".Toast() }
         }
 
         // 跳转至注册界面
@@ -106,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
             AlertDialog.Builder(this).apply {
                 setTitle("提示")
                 setMessage("跳过登录仍然可以使用全部基础功能，但是无法使用个性化服务，建议您登录后使用。")
-                setPositiveButton("返回登录") { _, _ -> }
+                setPositiveButton("返回登录", null)
                 setNegativeButton("直接使用") { _, _ ->
                     val intent = Intent(this@LoginActivity, ControlActivity::class.java)
                     intent.putExtra("skip", true)
@@ -128,6 +105,8 @@ class LoginActivity : AppCompatActivity() {
             do {
                 val account = cursor.getString(cursor.getColumnIndex("username"))
                 val password = cursor.getString(cursor.getColumnIndex("password"))
+                id = cursor.getInt(cursor.getColumnIndex("id"))
+                Log.d("Login", "id = $id")
                 if (account == inputAccount && password == inputPassword) return true
             } while (cursor.moveToNext())
         }
