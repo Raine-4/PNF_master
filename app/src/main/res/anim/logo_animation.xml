@@ -3,7 +3,7 @@
 
     <!-- 旋转动画 -->
     <rotate
-        android:fromDegrees="30"
+        android:fromDegrees="15"
         android:toDegrees="0"
         android:pivotX="50%"
         android:pivotY="50%"

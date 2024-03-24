@@ -9,7 +9,7 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="Introduction">Version: v0.1.1 \nAuthor: NA Yufeng</string>
+    <string name="Introduction">Author: Na Yufeng. Version: v0.1.1</string>
     <string name="usage">
         1. 应用介绍\n
         “PNF Control Master”是一款安卓应用，它通过蓝牙连接，可以对下肢康复机器人进行远程控制。

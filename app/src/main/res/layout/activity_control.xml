@@ -62,26 +62,28 @@
             android:layout_marginTop="20dp"
             android:popupBackground="@drawable/shape_for_custom_spinner"
             android:background="@drawable/selector_for_custom_spinner"/>
-        <Button
-            android:id="@+id/SendBtn"
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="发送"
-            style="@style/common_button1"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/spinner"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="100dp"/>
-        <Button
-            android:id="@+id/StartBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="启动"
-            style="@style/common_button1"
-            app:layout_constraintRight_toLeftOf="@id/SendBtn"
-            app:layout_constraintBaseline_toBaselineOf="@id/SendBtn"
-            android:layout_marginEnd="30dp"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginTop="20dp">
+            <Button
+                android:id="@+id/SendBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发送"
+                style="@style/common_button1"
+                android:layout_marginEnd="50dp"/>
+            <Button
+                android:id="@+id/StartBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="启动"
+                style="@style/common_button1"/>
+        </LinearLayout>
         <TextView
             android:id="@+id/receiveText"
             android:layout_width="match_parent"

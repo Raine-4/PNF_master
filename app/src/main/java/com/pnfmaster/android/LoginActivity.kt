@@ -1,14 +1,14 @@
 package com.pnfmaster.android
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.databinding.ActivityLoginBinding
 import com.pnfmaster.android.newuser.NewuserActivity
@@ -45,25 +45,24 @@ class LoginActivity : AppCompatActivity() {
 
         binding.appName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in))
 
-
         /* 先判断是否是从注册界面来的新用户，如果是的话就把他刚注册的用户名和密码给他填上去
          * 如果不是新用户，就启动记住密码功能。
          */
         val flag = intent.getIntExtra("newUserFlag", 0)
+        val prefs = getPreferences(Context.MODE_PRIVATE)
+
         if (flag == 1) {
             val newAccount = intent.getStringExtra("newAccount")
             val newPassword = intent.getStringExtra("newPassword")
-            binding.accountEdit.text = Editable.Factory.getInstance().newEditable(newAccount)
-            binding.pswEdit.text = Editable.Factory.getInstance().newEditable(newPassword)
+            binding.accountEdit.setText(newAccount)
+            binding.pswEdit.setText(newPassword)
         } else {
-            // 记住密码功能1
-            val prefs = getPreferences(Context.MODE_PRIVATE)
-            val isRemember = prefs.getBoolean("remember_psw", false)
+            val isRemember = prefs.getBoolean("rememberPsw", false)
             if (isRemember) {
                 val account = prefs.getString("account", "")
-                val psw = prefs.getString("password", "")
+                val password = prefs.getString("password", "")
                 binding.accountEdit.setText(account)
-                binding.pswEdit.setText(psw)
+                binding.pswEdit.setText(password)
                 binding.rememberPsw.isChecked = true
             }
         }
@@ -76,11 +75,10 @@ class LoginActivity : AppCompatActivity() {
             if (isRegistered(account, psw)) {
 
                 if (flag == 0) {
-                    // 记住密码
-                    val prefs = getPreferences(Context.MODE_PRIVATE)
+                    // 如果勾选了“记住密码”选项
                     val editor = prefs.edit()
                     if (binding.rememberPsw.isChecked) {
-                        editor.putBoolean("remember_psw", true)
+                        editor.putBoolean("rememberPsw", true)
                         editor.putString("account", account)
                         editor.putString("password", psw)
                     } else {
@@ -121,10 +119,19 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun isRegistered(account:String, sw: String): Boolean {
+    @SuppressLint("Range")
+    private fun isRegistered(inputAccount:String, inputPassword: String): Boolean {
         val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
-
-        return true
+        val db = dbHelper.writableDatabase
+        val cursor = db.query("User", null, null, null, null, null, null)
+        if (cursor.moveToFirst()) {
+            do {
+                val account = cursor.getString(cursor.getColumnIndex("username"))
+                val password = cursor.getString(cursor.getColumnIndex("password"))
+                if (account == inputAccount && password == inputPassword) return true
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return false
     }
-
 }
