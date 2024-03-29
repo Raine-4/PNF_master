@@ -15,6 +15,7 @@ import android.view.MenuItem
 import androidx.core.view.GravityCompat
 import com.pnfmaster.android.BtConnection.BluetoothCommunication
 import com.pnfmaster.android.BtConnection.BluetoothScanActivity
+import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.databinding.ActivityControlBinding
 import com.pnfmaster.android.utils.Toast
 import java.util.Calendar
@@ -44,8 +45,8 @@ class ControlActivity : BaseActivity() {
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeAsUpIndicator(R.drawable.ic_menu)
-            it.title = "你好, ${intent.getStringExtra("userAccount")}"
-            // todo: 改成 你好，用户名字
+            val name = getRealName(intent.getIntExtra("userId", -1))
+            it.title = "你好，$name"
         }
 
         val navView = binding.navView
@@ -115,11 +116,9 @@ class ControlActivity : BaseActivity() {
         val device = MyApplication.bluetoothDevice
         val socket = MyApplication.bluetoothSocket
 
-        binding.curDevice.text = if (device != null) {
-            "${device.name}(mac地址: ${device.address})"
-        } else {
-            "无"
-        }
+        binding.curDevice.text =
+            if (device != null)  "${device.name}(mac地址: ${device.address})"
+            else "无"
 
         // 点击启动之后开始运行线程，可以读取信息了。
         binding.StartBtn.setOnClickListener {
@@ -165,6 +164,28 @@ class ControlActivity : BaseActivity() {
         }
     }
 
+    // 为了能让toolbar显示用户的名字，需要在数据库里先查一下
+    @SuppressLint("Range")
+    private fun getRealName(id: Int): String {
+        if (id == -1) return "未知用户"
+
+        val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
+        val db = dbHelper.writableDatabase
+        val cursor = db.query("UserInfo", null, null, null, null, null, null)
+        if (cursor.moveToFirst()) {
+            do {
+                val curId = cursor.getInt(cursor.getColumnIndex("id"))
+                val name = cursor.getString(cursor.getColumnIndex("name"))
+                if (curId == id) {
+                    cursor.close()
+                    return name
+                }
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return "未知用户"
+    }
+
     // 右上角三个按钮的点击事件
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar, menu)
@@ -186,8 +207,8 @@ class ControlActivity : BaseActivity() {
                     startActivity(intent)
                     finish()
                 } else {
-                    val builder = AlertDialog.Builder(this)
-                    builder.setTitle("当前蓝牙设备")
+                    AlertDialog.Builder(this)
+                        .setTitle("当前蓝牙设备")
                         .setMessage("设备名称：${device.name}\n" +
                                 "设备地址：${device.address}")
                         .setPositiveButton("我知道了",null)
@@ -197,12 +218,6 @@ class ControlActivity : BaseActivity() {
                         }
                         .create()
                         .show()
-                }
-            }
-
-            R.id.backup -> {
-                if (!judgeIfSkipped()) {
-                    "将数据上传至云端功能：正在开发中".Toast() // TODO
                 }
             }
 
@@ -288,7 +303,7 @@ class ControlActivity : BaseActivity() {
 
     // 判断用户是否跳过登录，如果跳过则返回 true
     private fun judgeIfSkipped(): Boolean {
-        val isSkipped = intent.getBooleanExtra("skip", false)
+        val isSkipped = MyApplication.isSkipped
         if (isSkipped) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("提示")

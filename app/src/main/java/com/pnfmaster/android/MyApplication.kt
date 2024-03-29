@@ -15,6 +15,8 @@ class MyApplication: Application() {
         var bluetoothDevice: BluetoothDevice? = null
         var bluetoothSocket: BluetoothSocket? = null
         var DB_VERSION: Int = 1
+        var isSkipped = false
+        var userId: Int = -1
     }
 
     override fun onCreate() {

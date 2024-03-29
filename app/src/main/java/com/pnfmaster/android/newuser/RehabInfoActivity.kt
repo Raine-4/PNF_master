@@ -1,6 +1,5 @@
 package com.pnfmaster.android.newuser
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,8 +7,11 @@ import com.pnfmaster.android.BaseActivity
 import com.pnfmaster.android.LoginActivity
 import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.database.MyDatabaseHelper
+import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityRehabInfoBinding
 import com.pnfmaster.android.utils.ActivityCollector
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class RehabInfoActivity : BaseActivity() {
     private lateinit var binding: ActivityRehabInfoBinding
@@ -29,7 +31,7 @@ class RehabInfoActivity : BaseActivity() {
         dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
 
         binding.registerButton.setOnClickListener {
-            // 所有准备录入数据库的个人资料
+            // 所有准备录入数据库的个人资料：只有gender和age是Int，其他都是String
             val account = intent.getStringExtra("useraccount")
             val password = intent.getStringExtra("password")
             val name = intent.getStringExtra("name")
@@ -41,9 +43,15 @@ class RehabInfoActivity : BaseActivity() {
             val progressRecord = binding.progressRecord.text.toString()
             val goals = binding.goals.text.toString()
 
-            insertUser(account, password)
-            insertUserInfo(name, gender, age, contact)
-            insertRehabInfo(diagnosisInfo, plan, progressRecord, goals)
+            fun main() {
+                GlobalScope.launch {
+                    connect.insertUser(account!!, password!!)
+                    connect.insertUserInfo(name!!, gender, age!!, contact!!)
+                    connect.insertRehabInfo(diagnosisInfo, plan, progressRecord, goals)
+                }
+                Thread.sleep(1000)
+            }
+            main()
 
             val NEWUSER = 1
             val nextIntent = Intent(this, LoginActivity::class.java)
@@ -68,35 +76,37 @@ class RehabInfoActivity : BaseActivity() {
         return true
     }
 
-    private fun insertUser(username: String?, password: String?) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("username", username)
-            put("password", password)
-        }
-        db.insert("User", null, values)
+/*  使用本地数据库的版本：
+    private fun insertUser(username: String, password: String) {
+    val db = dbHelper.writableDatabase
+    val values = ContentValues().apply {
+        put("username", username)
+        put("password", password)
     }
+    db.insert("User", null, values)
+}
 
-    private fun insertUserInfo(name: String?, gender: Int?, age: Int?, contact: String?) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("name", name)
-            put("gender", gender)
-            put("age", age)
-            put("phone", contact)
-        }
-        db.insert("UserInfo", null, values)
+private fun insertUserInfo(name: String?, gender: Int?, age: Int?, contact: String?) {
+    val db = dbHelper.writableDatabase
+    val values = ContentValues().apply {
+        put("name", name)
+        put("gender", gender)
+        put("age", age)
+        put("phone", contact)
     }
+    db.insert("UserInfo", null, values)
+}
 
-    private fun insertRehabInfo(diagnosisInfo: String?, plan: String?, progressRecord: String?, goals: String?) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("diagnosisInfo", diagnosisInfo)
-            put("treatPlan", plan)
-            put("progressRecord", progressRecord)
-            put("goals", goals)
-        }
-        db.insert("RehabInfo", null, values)
+private fun insertRehabInfo(diagnosisInfo: String?, plan: String?, progressRecord: String?, goals: String?) {
+    val db = dbHelper.writableDatabase
+    val values = ContentValues().apply {
+        put("diagnosisInfo", diagnosisInfo)
+        put("treatPlan", plan)
+        put("progressRecord", progressRecord)
+        put("goals", goals)
     }
+    db.insert("RehabInfo", null, values)
+}
+*/
 
 }

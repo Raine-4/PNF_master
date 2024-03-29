@@ -1,27 +1,54 @@
 package com.pnfmaster.android
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.os.Message
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import com.pnfmaster.android.database.MyDatabaseHelper
+import com.pnfmaster.android.database.TestActivity
+import com.pnfmaster.android.database.connect
+import com.pnfmaster.android.database.connect.DBNAME
 import com.pnfmaster.android.databinding.ActivityLoginBinding
 import com.pnfmaster.android.newuser.NewuserActivity
 import com.pnfmaster.android.utils.Toast
-import kotlin.properties.Delegates
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.sql.SQLException
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityLoginBinding
-    private var id by Delegates.notNull<Int>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.test.setOnClickListener {
+            val intent = Intent(this, TestActivity::class.java)
+            startActivity(intent)
+        }
+
+        val hdSetBgColor = android.os.Handler {
+            when (TestActivity.isConnected) {
+                1 -> binding.test.setBackgroundColor(Color.GREEN)
+                0 -> binding.test.setBackgroundColor(Color.RED)
+            }
+            false
+        }
+
+        Thread {
+            val msg = Message()
+            try {
+                connect.setConnection(DBNAME)
+            } catch (e: SQLException) {
+                e.printStackTrace()
+            }
+            hdSetBgColor.sendMessage(msg) // 跳转到handler1
+        }.start()
 
         // 启动动画
         binding.appName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in))
@@ -54,7 +81,18 @@ class LoginActivity : AppCompatActivity() {
             val account = binding.accountEdit.text.toString()
             val psw = binding.pswEdit.text.toString()
 
-            if (isRegistered(account, psw)) {
+            // ----------------------------------
+            var registerFlag = false
+            fun main() {
+                GlobalScope.launch {
+                    registerFlag = connect.isRegistered(account, psw)
+                }
+                Thread.sleep(1000)
+            }
+            main()
+            // ----------------------------------
+
+            if (registerFlag) {
                 if (flag == 0) {
                     // 如果勾选了“记住密码”选项
                     val editor = prefs.edit()
@@ -67,7 +105,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 val intent = Intent(this, ControlActivity::class.java)
                 intent.putExtra("userAccount", account)
-                intent.putExtra("userId", id)
+                intent.putExtra("userId", MyApplication.userId)
                 startActivity(intent)
                 finish()
             } else { "用户名或密码错误".Toast() }
@@ -85,8 +123,8 @@ class LoginActivity : AppCompatActivity() {
                 setMessage("跳过登录仍然可以使用全部基础功能，但是无法使用个性化服务，建议您登录后使用。")
                 setPositiveButton("返回登录", null)
                 setNegativeButton("直接使用") { _, _ ->
+                    MyApplication.isSkipped = true
                     val intent = Intent(this@LoginActivity, ControlActivity::class.java)
-                    intent.putExtra("skip", true)
                     startActivity(intent)
                     finish()
                 }
@@ -96,7 +134,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("Range")
+    /*@SuppressLint("Range")
     private fun isRegistered(inputAccount:String, inputPassword: String): Boolean {
         val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
         val db = dbHelper.writableDatabase
@@ -106,11 +144,13 @@ class LoginActivity : AppCompatActivity() {
                 val account = cursor.getString(cursor.getColumnIndex("username"))
                 val password = cursor.getString(cursor.getColumnIndex("password"))
                 id = cursor.getInt(cursor.getColumnIndex("id"))
-                Log.d("Login", "id = $id")
-                if (account == inputAccount && password == inputPassword) return true
+                if (account == inputAccount && password == inputPassword) {
+                    cursor.close()
+                    return true
+                }
             } while (cursor.moveToNext())
         }
         cursor.close()
         return false
-    }
+    }*/
 }

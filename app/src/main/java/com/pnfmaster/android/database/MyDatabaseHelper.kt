@@ -5,7 +5,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 // name 是数据库名
-class MyDatabaseHelper(val context: Context, name: String, version: Int) : SQLiteOpenHelper(context, name, null, version) {
+class MyDatabaseHelper(val context: Context, name: String, version: Int) :
+    SQLiteOpenHelper(context, name, null, version) {
 
     private val tag = "DBHelper"
 

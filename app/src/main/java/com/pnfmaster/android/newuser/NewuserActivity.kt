@@ -1,20 +1,18 @@
 package com.pnfmaster.android.newuser
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import com.pnfmaster.android.BaseActivity
-import com.pnfmaster.android.LoginActivity
 import com.pnfmaster.android.MyApplication
-import com.pnfmaster.android.R
 import com.pnfmaster.android.database.MyDatabaseHelper
+import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityNewuserBinding
 import com.pnfmaster.android.utils.ActivityCollector
 import com.pnfmaster.android.utils.Toast
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class NewuserActivity : BaseActivity() {
     private val tag = "NewUserActivity"
@@ -57,7 +55,7 @@ class NewuserActivity : BaseActivity() {
     }
 
     @SuppressLint("Range")
-    private fun isLegal(username: String?, password: String?, confirmPsw: String?): Boolean {
+    private fun isLegal(username: String, password: String, confirmPsw: String): Boolean {
         if (username == "" || password == "") {
             "请输入用户名和密码".Toast()
             return false
@@ -68,6 +66,23 @@ class NewuserActivity : BaseActivity() {
             }
         }
 
+        // ----------------------------------
+        var flag = false
+        fun main() {
+            GlobalScope.launch {
+                flag = connect.isUsernameUsed(username)
+            }
+            Thread.sleep(1000)
+        }
+        main()
+        // ----------------------------------
+
+        if (flag) {
+            "用户名已存在".Toast()
+            return false
+        }
+
+        /* 使用本地数据库
         val db = dbHelper.writableDatabase
         val cursor = db.query("User", arrayOf("username"), null, null, null, null, null)
         if (cursor.moveToFirst()) {
@@ -78,28 +93,8 @@ class NewuserActivity : BaseActivity() {
             }
         }
         cursor.close()
+        */
 
         return true
     }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d(tag, "onStart()")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(tag, "onPause()")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(tag, "onStop()")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(tag, "onDestroy()")
-    }
-
 }

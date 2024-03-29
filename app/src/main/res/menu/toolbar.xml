@@ -7,13 +7,7 @@
         android:id="@+id/bluetooth"
         android:icon="@drawable/ic_bluetooth"
         app:showAsAction="ifRoom"
-        android:title="搜索蓝牙设备"
-        />
-    <item
-        android:id="@+id/backup"
-        android:title="上传记录至云端"
-        android:icon="@drawable/ic_backup"
-        app:showAsAction="ifRoom"/>
+        android:title="搜索蓝牙设备" />
     <item
         android:id="@+id/help"
         android:title="使用帮助"
