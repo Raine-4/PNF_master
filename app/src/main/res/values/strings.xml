@@ -1,23 +1,15 @@
 <resources>
     <string name="app_name">PNF_Master</string>
     <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
     <string name="Introduction">Author: Na Yufeng. Version: v0.1.1</string>
     <string name="usage">
         1. 应用介绍\n
-        “PNF Control Master”是一款安卓应用，它通过蓝牙连接，可以对下肢康复机器人进行远程控制。
+        “PNF Master”是一款安卓应用，它通过蓝牙连接，可以对下肢康复机器人进行远程控制。
         本应用支持对电机速度、循环次数、运转模式等参数进行调节，以满足不同康复需求。\n\n
         2. 操作指南\n
         用户可以通过应用界面右上角的转换按钮轻松切换当前控制的电机；在右上角的更多菜单项中，用户可以将康复数据保存到云端，方便用户进行长期监测和分析；
         还可以通过本应用删除已保存的数据，并自定义设置应用的一些选项，以获得更好的使用体验。
-        PNF Control Master 提供了简便的康复机器人控制功能，为用户提供了更便捷、高效的康复体验。
+        PNF Master 提供了简便的康复机器人控制功能，为用户提供了更便捷、高效的康复体验。
     </string>
     <string name="userName">testuser</string>
     <string name="currentDevice">当前设备名称：</string>
@@ -49,41 +41,44 @@
     <string name="rehabHint2">制定针对患者的康复治疗方案，包括物理治疗、康复训练、药物治疗、康复辅助器具使用等。</string>
     <string name="rehabHint3">记录患者在康复治疗过程中的各种进展情况和改善情况的记录。</string>
     <string name="rehabHint4">制定针对患者个体化的康复目标，包括恢复功能、减轻疼痛、提高生活质量等方面。</string>
-
-    <string name="lorem_ipsum">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
-        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
-        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
-        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
-        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
-        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
-        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
-        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
-        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
-        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
-        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
-        bibendum, vel congue leo egestas.\n\n
-        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
-        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
-        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
-        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
-        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
-        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
-        est.\n\n
-        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
-        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
-        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
-        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
-        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
-        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
-        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
-        convallis.\n\n
-        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
-        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
-        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
-        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
-        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
-        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
-        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
-    </string>
+    <string name="loading">加载中</string>
+    <string name="noDeviceFound">当前无设备</string>
+    <string name="DeviceName">设备名称</string>
+    <string name="MacAddress">Mac地址</string>
+    <string name="SignalStrength">信号强度</string>
+    <string name="Name_">姓名：</string>
+    <string name="Age_">年龄：</string>
+    <string name="Gender_">性别：</string>
+    <string name="male">男</string>
+    <string name="female">女</string>
+    <string name="Contact_">联系方式：</string>
+    <string name="WhatIsYourName">您希望如何称呼您？</string>
+    <string name="WhatIsYourGender">您的性别是？</string>
+    <string name="WhatIsYourAge">您的年龄</string>
+    <string name="WhatIsYourPhone">联系电话（选填）</string>
+    <string name="NextStep">下一步</string>
+    <string name="TasksOfToday">今日任务</string>
+    <string name="BackToControl">返回主界面</string>
+    <string name="StartScanning">开始搜索</string>
+    <string name="ChooseBtDevice">选择蓝牙设备</string>
+    <string name="rehabInfoHint">最后一步：如果有的话，请完善以下康复信息。\n您之后可以随时修改这些信息。</string>
+    <string name="_1_diagnosisinfo">1. 诊断信息：</string>
+    <string name="_2_treatplan">2. 治疗方案：</string>
+    <string name="_3_progressrecord">3. 康复进展记录：</string>
+    <string name="_4_goals">4. 康复目标：</string>
+    <string name="FinishRegister">完成注册</string>
+    <string name="PersonalInfo"> 个人信息</string>
+    <string name="MedicalInfo">医疗信息</string>
+    <string name="diagnosisinfo">诊断信息</string>
+    <string name="treatplan">治疗方案</string>
+    <string name="progressrecord">进展记录</string>
+    <string name="goals">我的目标</string>
+    <string name="UserName">用户名</string>
+    <string name="Password">密码</string>
+    <string name="ConfiremPassword">确认密码</string>
+    <string name="RegisterNow">立即注册</string>
+    <string name="RememberPassword">记住密码</string>
+    <string name="Register">注册</string>
+    <string name="Login">登录</string>
+    <string name="skipLogin">跳过登录，直接进入</string>
 </resources>

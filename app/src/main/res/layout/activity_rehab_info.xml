@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg"
-        tools:ignore="HardcodedText">
+        android:background="@drawable/bg">
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -25,7 +23,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="最后一步：如果有的话，请完善以下康复信息。\n您之后可以随时修改这些信息。"
+            android:text="@string/rehabInfoHint"
             android:textSize="15sp"
             android:typeface="monospace"
             android:layout_marginTop="10dp"
@@ -33,7 +31,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1. 诊断信息："
+            android:text="@string/_1_diagnosisinfo"
             android:textSize="15sp"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
@@ -54,7 +52,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2. 治疗方案："
+            android:text="@string/_2_treatplan"
             android:textSize="15sp"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
@@ -75,7 +73,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3. 康复进展记录："
+            android:text="@string/_3_progressrecord"
             android:textSize="15sp"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
@@ -96,7 +94,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="4. 康复目标："
+            android:text="@string/_4_goals"
             android:textSize="15sp"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
@@ -118,7 +116,7 @@
             android:id="@+id/register_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="完成注册"
+            android:text="@string/FinishRegister"
             android:textSize="18sp"
             android:padding="10dp"
             android:backgroundTint="@color/white"

@@ -57,15 +57,6 @@ class LoginActivity : AppCompatActivity() {
         // 启动动画
         binding.appName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in))
         binding.logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.logo_animation))
-/*        binding.appName.setOnClickListener {
-            "Animation".Toast()
-            val dialog = LoadingDialog(this)
-            dialog.show()
-            // 延迟1秒钟后关闭对话框
-            handler.postDelayed({
-                dialog.dismiss()
-            }, 1000)
-        }*/
 
         /* 先判断是否是从注册界面来的新用户，如果是的话就把他刚注册的用户名和密码填上去
          * 如果不是新用户，就启动记住密码功能。

@@ -9,13 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/teal_200"
-        app:title="选择蓝牙设备"
+        app:title="@string/ChooseBtDevice"
         app:titleTextColor="@color/white">
         <Button
             android:id="@+id/backToMainBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="返回主界面"
+            android:text="@string/BackToControl"
             android:layout_gravity="end"/>
         <TextView
             android:id="@+id/tv_scan_status"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:padding="10dp"
-            android:text="开始搜索"
+            android:text="@string/StartScanning"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:visibility="visible" />
