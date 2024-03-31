@@ -12,12 +12,16 @@ import android.text.Html
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.core.view.GravityCompat
 import com.pnfmaster.android.BtConnection.BluetoothCommunication
 import com.pnfmaster.android.BtConnection.BluetoothScanActivity
-import com.pnfmaster.android.database.MyDatabaseHelper
+import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityControlBinding
+import com.pnfmaster.android.utils.LoadingDialog
 import com.pnfmaster.android.utils.Toast
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 /* 一次清理缓存之后这里就不能再引用了，非常奇怪。
@@ -39,7 +43,6 @@ class ControlActivity : BaseActivity() {
         binding = ActivityControlBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         // 设置ActionBar
         setSupportActionBar(binding.toolbarControl)
         supportActionBar?.let {
@@ -60,6 +63,13 @@ class ControlActivity : BaseActivity() {
             }
             true
         }
+
+        // 在nav_header中显示用户名
+        val navHeaderView = binding.navView.getHeaderView(0)
+        val userAccount = intent.getStringExtra("userAccount")
+        val tvUserName = navHeaderView.findViewById<TextView>(R.id.userName)
+        tvUserName.text = userAccount
+
 
         val handler = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
@@ -169,21 +179,22 @@ class ControlActivity : BaseActivity() {
     private fun getRealName(id: Int): String {
         if (id == -1) return "未知用户"
 
-        val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
-        val db = dbHelper.writableDatabase
-        val cursor = db.query("UserInfo", null, null, null, null, null, null)
-        if (cursor.moveToFirst()) {
-            do {
-                val curId = cursor.getInt(cursor.getColumnIndex("id"))
-                val name = cursor.getString(cursor.getColumnIndex("name"))
-                if (curId == id) {
-                    cursor.close()
-                    return name
-                }
-            } while (cursor.moveToNext())
+        // ----------------------------------
+        var infoList = listOf<Any>()
+        fun main() {
+            GlobalScope.launch {
+                infoList = connect.queryUserInfo(MyApplication.userId)
+                Log.d("profile", "infolist = $infoList")
+            }
+            Thread.sleep(1000)
         }
-        cursor.close()
-        return "未知用户"
+        val loadingDialog = LoadingDialog(this)
+        loadingDialog.show()
+        main()
+        loadingDialog.dismiss()
+        // ----------------------------------
+
+        return infoList[0] as String
     }
 
     // 右上角三个按钮的点击事件
@@ -256,7 +267,6 @@ class ControlActivity : BaseActivity() {
                     val id = intent.getIntExtra("userId", -1)
                     val profileIntent = Intent(this, ProfileActivity::class.java)
                     profileIntent.putExtra("userAccount", account)
-                    profileIntent.putExtra("userId", id)
                     startActivity(profileIntent)
                 }
             }

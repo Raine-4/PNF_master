@@ -10,6 +10,7 @@ import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityNewuserBinding
 import com.pnfmaster.android.utils.ActivityCollector
+import com.pnfmaster.android.utils.LoadingDialog
 import com.pnfmaster.android.utils.Toast
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -74,7 +75,10 @@ class NewuserActivity : BaseActivity() {
             }
             Thread.sleep(1000)
         }
+        val loadingDialog = LoadingDialog(this)
+        loadingDialog.show()
         main()
+        loadingDialog.dismiss()
         // ----------------------------------
 
         if (flag) {

@@ -1,63 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="欢迎进入课程中心！"
-        android:layout_centerHorizontal="true"
-        android:textSize="30dp"
-        android:layout_marginTop="60dp"
-        />
-    <EditText
-        android:id="@+id/IDinput"
-        android:layout_width="150dp"
-        android:layout_height="30dp"
-        android:layout_below="@id/welcome"
-        android:layout_marginTop="80dp"
-        android:layout_marginLeft="70dp"
-        android:hint="请输入学号"
-        android:singleLine="true"
-        android:imeOptions="actionDone"
-        android:background="@android:color/transparent" />
-    <EditText
-        android:id="@+id/code_input"
-        android:layout_width="150dp"
-        android:layout_height="30dp"
-        android:hint="请输入密码"
-        android:inputType="textPassword"
-        android:layout_below="@id/IDinput"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="25dp"
-        android:singleLine="true"
-        android:imeOptions="actionDone"
-        android:background="@android:color/transparent"/>
-    <Button
-        android:id="@+id/log_on"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="登 录"
-        android:textStyle="bold"
-        android:layout_below="@id/code_input"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="110dp"
-        />
-    <Button
-        android:id="@+id/log_on_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/code_input"
-        android:text="注 册"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="107dp"
-        android:layout_toEndOf="@+id/log_on" />
-    <TextView
-        android:id="@+id/conn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="网络未连接" />
-</RelativeLayout>
+    android:layout_height="match_parent"
+    tools:context=".drawing.TestActivity">
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

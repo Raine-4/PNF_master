@@ -1,9 +1,11 @@
 package com.pnfmaster.android.database
 
 import android.util.Log
+import com.pnfmaster.android.LoginActivity
 import com.pnfmaster.android.MyApplication
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.PreparedStatement
 import java.sql.SQLException
 
 
@@ -17,21 +19,29 @@ object connect {
         try {
             // 加载驱动
             Class.forName("com.mysql.jdbc.Driver")
-            // 公网ip
+
+            /* 阿里云
             val ip = "pnfmaster.rwlb.rds.aliyuncs.com"
             conn = DriverManager.getConnection("jdbc:mysql://$ip:3307/$dbName",
                 "nayufeng", "Znn@737402") as Connection
+             */
+
+            // 腾讯云
+            val ip = "bj-cynosdbmysql-grp-izrx8z3u.sql.tencentcdb.com"
+            conn = DriverManager.getConnection("jdbc:mysql://$ip:26938/$dbName",
+                "nayufeng", "Znn737402") as Connection
+
             // 用于向主函数传参，判断连接是否成功
-            TestActivity.isConnected = 1
+            LoginActivity.isConnected = 1
         } catch (ex: SQLException) {
             ex.printStackTrace()
             Log.e("connect", "SQLException")
             // 用于向主函数传参，连接失败
-            TestActivity.isConnected = 0
+            LoginActivity.isConnected = 0
         } catch (ex: ClassNotFoundException) {
             ex.printStackTrace()
             Log.e("connect", "ClassNotFoundException")
-            TestActivity.isConnected = 0
+            LoginActivity.isConnected = 0
         }
         return conn // 返回Connection型变量conn用于后续连接
     }
@@ -82,7 +92,7 @@ object connect {
     fun savePersonInfo(name: String, age: String, gender: Int, contact: String): Int {
         val connection = setConnection(DBNAME)!!
         val statement = connection.createStatement()
-        val sql = "UPDATE UserInfo (name, age, gender, contact)VALUES('$name', '$age', '$gender', '$contact')"
+        val sql = "UPDATE UserInfo SET name = '$name', age = '$age', gender = '$gender', phone = '$contact'\n"
         val res = statement.executeUpdate(sql)
 
         statement.close()
@@ -91,35 +101,36 @@ object connect {
     }
 
     fun saveRehabInfo(userInput: String, columnName: String, id: Int): Int {
-        val connection = setConnection(DBNAME)!!
-        val statement = connection.createStatement()
-        val sql = "UPDATE RehabInfo SET $columnName = $userInput WHERE id = '$id')"
+        var connection: Connection? = null
+        var statement: PreparedStatement? = null
+        var res = 0
 
-        val res = statement.executeUpdate(sql)
+        try {
+            connection = setConnection(DBNAME)
+            val sql = when (columnName) {
+                "diagnosisinfo" -> "UPDATE RehabInfo SET diagnosisinfo = ? WHERE id = ?"
+                "treatplan" -> "UPDATE RehabInfo SET treatplan = ? WHERE id = ?"
+                "progressrecord" -> "UPDATE RehabInfo SET progressrecord = ? WHERE id = ?"
+                "goals" -> "UPDATE RehabInfo SET goals = ? WHERE id = ?"
+                else -> ""
+            }
+            statement = connection!!.prepareStatement(sql)
+            statement.setString(1, userInput)
+            statement.setInt(2, id)
+            res = statement.executeUpdate()
+        } catch (e: SQLException) {
+            e.printStackTrace()
+        } finally {
+            statement?.close()
+            connection?.close()
+        }
 
-        statement.close()
-        connection.close()
         return res
     }
 
 
+
     // --------------------------------QUERY--------------------------------
-
-    @Throws(SQLException::class)
-    fun queryPassword(username: String): String {
-        val password: String
-        val connection = setConnection(DBNAME)!!
-        val statement = connection.createStatement()
-        val resultSet = statement.executeQuery("SELECT password FROM User WHERE username = '$username'")
-
-        resultSet.first()
-        password = resultSet.getString("password")
-
-        resultSet.close()
-        statement.close()
-        connection.close()
-        return password
-    }
 
     // 检查注册时用户名是否已被使用，已被使用会返回True
     fun isUsernameUsed(username: String): Boolean {
@@ -144,7 +155,7 @@ object connect {
             // 处理查询结果
             if (resultSet.next()) {
                 MyApplication.userId = resultSet.getInt("id")
-                Log.d("connect", "id = ${MyApplication.userId}")
+                Log.d("connect.kt", "id = ${MyApplication.userId}")
                 // 关闭连接
                 resultSet.close()
                 statement.close()

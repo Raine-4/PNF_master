@@ -10,13 +10,19 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityProfileBinding
+import com.pnfmaster.android.utils.LoadingDialog
 import com.pnfmaster.android.utils.Toast
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProfileActivity : BaseActivity() {
 
     private lateinit var binding : ActivityProfileBinding
+    private val job = Job()
+    private val scope = CoroutineScope(job)
 
     @SuppressLint("Range")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,23 +38,22 @@ class ProfileActivity : BaseActivity() {
 
         val userId = MyApplication.userId
 
-        // ----------------------------------
         var infoList = listOf<Any>()
-        fun main() {
-            GlobalScope.launch {
-                infoList = connect.queryUserInfo(userId)
-                Log.d("profile", "infolist = $infoList")
-            }
-            Thread.sleep(1000)
+        // ----------------------------------
+        scope.launch {
+            infoList = withContext(Dispatchers.IO) { connect.queryUserInfo(userId) }
         }
-        main()
+        LoadingDialog(this).block(500)
+
         // ----------------------------------
 
+        val username = intent.getStringExtra("userAccount") //用户名
         val name = infoList[0] as String
         val age = infoList[1] as Int
         val gender = infoList[2] as Int
         val phone = infoList[3] as String
 
+        binding.userName.text = username
         binding.USERNAME.text = name
         binding.AGE.text = age.toString()
         binding.GENDER.text = if (gender == 1) "男" else "女"
@@ -56,7 +61,7 @@ class ProfileActivity : BaseActivity() {
 
         binding.personInfo.setOnClickListener {
             // 使用LayoutInflater来加载自定义布局
-            val dialogView = layoutInflater.inflate(R.layout.custom_dialog, null)
+            val dialogView = layoutInflater.inflate(R.layout.edit_userinfo_dialog, null)
             val nameEditText = dialogView.findViewById<EditText>(R.id.name_edit_text)
             val ageEditText = dialogView.findViewById<EditText>(R.id.age_edit_text)
             val genderRadioGroup = dialogView.findViewById<RadioGroup>(R.id.gender_radio_group)
@@ -90,17 +95,21 @@ class ProfileActivity : BaseActivity() {
                 val inputContact = contactEditText.text.toString()
 
                 // ----------------------------------
-                fun main() {
-                    GlobalScope.launch {
+                try {
+                    scope.launch {
                         connect.savePersonInfo(inputName, inputAge, inputGender, inputContact)
                     }
-                    Thread.sleep(1000)
+                    Thread.sleep(500)
+                    "修改成功".Toast()
+                    this.recreate()
+                } catch (e: Exception) {
+                    "修改失败！".Toast()
+                    Log.e("profile", "dialogBuilder.setPositiveButton")
                 }
-                main()
                 // ----------------------------------
-
                 dialog.dismiss()
             }
+
             val dialog = dialogBuilder.create()
             dialog.show()
         }
@@ -110,13 +119,10 @@ class ProfileActivity : BaseActivity() {
 
         var rehabInfoList = listOf<String>()
         // ----------------------------------
-        fun main2() {
-            GlobalScope.launch {
-                rehabInfoList = connect.queryRehabInfo(userId)
-            }
-            Thread.sleep(1000)
+        scope.launch {
+            rehabInfoList = connect.queryRehabInfo(userId)
         }
-        main2()
+        LoadingDialog(this).block(500)
         // ----------------------------------
 
         val curDiagnosisInfo = rehabInfoList[0]
@@ -128,29 +134,6 @@ class ProfileActivity : BaseActivity() {
         val treatPlan = if (curTreatPlan!="尚未填写" && curTreatPlan != "") curTreatPlan else "尚未填写"
         val progressRecord = if (curProgressRecord!="尚未填写" && curProgressRecord != "") curProgressRecord else "尚未填写"
         val goals = if (curGoals!="尚未填写" && curGoals != "") curGoals else "尚未填写"
-
-        /* 本地数据库版本：
-        val cursor2 = db.query("RehabInfo", null, null, null, null, null, null)
-        if (cursor2.moveToFirst()) {
-            do {
-                binding.userName.text = userAccount
-                val id = cursor2.getInt(cursor2.getColumnIndex("id"))
-
-                val curDiagnosisInfo = cursor2.getString(cursor2.getColumnIndex("diagnosisInfo"))
-                val curTreatPlan = cursor2.getString(cursor2.getColumnIndex("treatPlan"))
-                val curProgressRecord = cursor2.getString(cursor2.getColumnIndex("progressRecord"))
-                val curGoals = cursor2.getString(cursor2.getColumnIndex("goals"))
-
-                if (id == userId) {
-                    diagnosisInfo = if (curDiagnosisInfo != "尚未填写" && curDiagnosisInfo != "") curDiagnosisInfo else "尚未填写"
-                    treatPlan = if (curTreatPlan!="尚未填写" && curTreatPlan != "") curTreatPlan else "尚未填写"
-                    progressRecord = if (curProgressRecord!="尚未填写" && curProgressRecord != "") curProgressRecord else "尚未填写"
-                    goals = if (curGoals!="尚未填写" && curGoals != "") curGoals else "尚未填写"
-                }
-            } while (cursor2.moveToNext())
-        }
-        cursor2.close()
-        */
 
         binding.diagnosisInfo.setOnClickListener {
             popUpDialog("诊断信息", diagnosisInfo, "diagnosisinfo")
@@ -168,24 +151,6 @@ class ProfileActivity : BaseActivity() {
             popUpDialog("我的目标", goals, "goals")
         }
     }
-
-    /*private fun savePersonInfo(name: String, age: String, gender: Int, contact: String) {
-        val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
-        val db = dbHelper.writableDatabase
-        val values = ContentValues()
-        values.put("name", name)
-        values.put("age", age)
-        values.put("gender", gender)
-        values.put("phone", contact)
-        try {
-            db.update("UserInfo", values, "id = ?", arrayOf(userId.toString()))
-            "修改成功".Toast()
-            this.recreate() // 刷新页面
-        } catch (e: Exception) {
-            Log.e("Profile", e.toString())
-            "修改失败".Toast()
-        }
-    }*/
 
     private fun popUpDialog(title: String, msg: String, columnName: String) {
         val builder = AlertDialog.Builder(this)
@@ -220,20 +185,18 @@ class ProfileActivity : BaseActivity() {
                 val userInput = editText.text.toString()
                 try {
                     // ----------------------------------
-                    fun main() {
-                        GlobalScope.launch {
-                            connect.saveRehabInfo(userInput, columnName, MyApplication.userId)
-                        }
-                        Thread.sleep(1000)
+                    scope.launch {
+                        connect.saveRehabInfo(userInput, columnName, MyApplication.userId)
                     }
-                    main()
+                    Thread.sleep(1000)
                     // ----------------------------------
                     "修改成功".Toast()
                     this.recreate() // 刷新页面
                 } catch (e: Exception) {
                     "修改失败".Toast()
-                    "修改失败".Toast()
+                    Log.e("profile", "private fun popUpDialog")
                 }
+
                 newDialog.dismiss()
             }
             // 设置“取消”按钮，点击后不保存修改，直接关闭对话框

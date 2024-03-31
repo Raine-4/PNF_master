@@ -8,14 +8,18 @@ import android.os.Bundle
 import android.os.Message
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import com.pnfmaster.android.database.TestActivity
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.database.connect.DBNAME
 import com.pnfmaster.android.databinding.ActivityLoginBinding
+import com.pnfmaster.android.drawing.TestActivity
 import com.pnfmaster.android.newuser.NewuserActivity
+import com.pnfmaster.android.utils.LoadingDialog
 import com.pnfmaster.android.utils.Toast
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.sql.SQLException
 
 class LoginActivity : AppCompatActivity() {
@@ -33,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         val hdSetBgColor = android.os.Handler {
-            when (TestActivity.isConnected) {
+            when (isConnected) {
                 1 -> binding.test.setBackgroundColor(Color.GREEN)
                 0 -> binding.test.setBackgroundColor(Color.RED)
             }
@@ -53,6 +57,15 @@ class LoginActivity : AppCompatActivity() {
         // 启动动画
         binding.appName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in))
         binding.logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.logo_animation))
+/*        binding.appName.setOnClickListener {
+            "Animation".Toast()
+            val dialog = LoadingDialog(this)
+            dialog.show()
+            // 延迟1秒钟后关闭对话框
+            handler.postDelayed({
+                dialog.dismiss()
+            }, 1000)
+        }*/
 
         /* 先判断是否是从注册界面来的新用户，如果是的话就把他刚注册的用户名和密码填上去
          * 如果不是新用户，就启动记住密码功能。
@@ -81,16 +94,18 @@ class LoginActivity : AppCompatActivity() {
             val account = binding.accountEdit.text.toString()
             val psw = binding.pswEdit.text.toString()
 
-            // ----------------------------------
             var registerFlag = false
-            fun main() {
-                GlobalScope.launch {
-                    registerFlag = connect.isRegistered(account, psw)
+
+            val job = Job()
+            val scope = CoroutineScope(job)
+            scope.launch {
+                registerFlag = withContext(Dispatchers.IO) {
+                    connect.isRegistered(account, psw)
                 }
-                Thread.sleep(1000)
             }
-            main()
-            // ----------------------------------
+
+            LoadingDialog(this).block(200)
+
 
             if (registerFlag) {
                 if (flag == 0) {
@@ -133,24 +148,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-
-    /*@SuppressLint("Range")
-    private fun isRegistered(inputAccount:String, inputPassword: String): Boolean {
-        val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
-        val db = dbHelper.writableDatabase
-        val cursor = db.query("User", null, null, null, null, null, null)
-        if (cursor.moveToFirst()) {
-            do {
-                val account = cursor.getString(cursor.getColumnIndex("username"))
-                val password = cursor.getString(cursor.getColumnIndex("password"))
-                id = cursor.getInt(cursor.getColumnIndex("id"))
-                if (account == inputAccount && password == inputPassword) {
-                    cursor.close()
-                    return true
-                }
-            } while (cursor.moveToNext())
-        }
-        cursor.close()
-        return false
-    }*/
+    companion object {
+        var isConnected = -1
+    }
 }
