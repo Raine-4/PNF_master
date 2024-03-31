@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">PNF_Master</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="Introduction">Author: Na Yufeng. Version: v0.1.1</string>
+    <string name="app_name" translatable="false">PNF_Master</string>
+    <string name="Introduction">作者: 那雨枫. 版本: v0.1.1</string>
     <string name="usage">
         1. 应用介绍\n
         “PNF Master”是一款安卓应用，它通过蓝牙连接，可以对下肢康复机器人进行远程控制。
@@ -11,21 +10,17 @@
         还可以通过本应用删除已保存的数据，并自定义设置应用的一些选项，以获得更好的使用体验。
         PNF Master 提供了简便的康复机器人控制功能，为用户提供了更便捷、高效的康复体验。
     </string>
-    <string name="userName">testuser</string>
-    <string name="currentDevice">当前设备名称：</string>
+    <string name="userName">测试用户</string>
+    <string name="currentDevice">当前设备</string>
     <string name="start_bluetooth">开启蓝牙</string>
     <string name="show_devices">查询配对设备</string>
     <string name="find_devices">搜索设备</string>
     <string name="connect_devices">连接设备</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="requestForBtPermission">您必须授权开启蓝牙相关功能才可以和康复机器人连接，请问您是否同意？</string>
     <string name="hint">在此输入要发送的信息</string>
-    <string name="title_activity_bluetooth_connect">BluetoothConnectActivity</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="next">下一个</string>
+    <string name="previous">上一个</string>
     <string name="UUID">00001101-0000-1000-8000-00805f9b34fb</string>
     <string name="TargetDeviceName">YANK.CAO</string>
     <string name="welcome_register">欢迎注册PNF Master</string>
@@ -34,7 +29,7 @@
     <string name="Control">操控页面</string>
     <string name="Tasks">我的任务</string>
     <string name="Logout">退出登录</string>
-    <string name="defaultUserName">未登录</string>
+    <string name="defaultUserName">未登录用户</string>
     <string name="unknown_value">未知</string>
     <string name="new_user_hint">请完善个人信息，这有助于为您定制更好的训练计划。</string>
     <string name="rehabHint1">医疗专业人士对患者进行的评估和诊断，包括健康状况评估和病史等。</string>
@@ -58,7 +53,7 @@
     <string name="WhatIsYourPhone">联系电话（选填）</string>
     <string name="NextStep">下一步</string>
     <string name="TasksOfToday">今日任务</string>
-    <string name="BackToControl">返回主界面</string>
+    <string name="BackToControl">返回</string>
     <string name="StartScanning">开始搜索</string>
     <string name="ChooseBtDevice">选择蓝牙设备</string>
     <string name="rehabInfoHint">最后一步：如果有的话，请完善以下康复信息。\n您之后可以随时修改这些信息。</string>
@@ -68,7 +63,7 @@
     <string name="_4_goals">4. 康复目标：</string>
     <string name="FinishRegister">完成注册</string>
     <string name="PersonalInfo"> 个人信息</string>
-    <string name="MedicalInfo">医疗信息</string>
+    <string name="MedicalInfo">" 医疗信息"</string>
     <string name="diagnosisinfo">诊断信息</string>
     <string name="treatplan">治疗方案</string>
     <string name="progressrecord">进展记录</string>
@@ -81,4 +76,52 @@
     <string name="Register">注册</string>
     <string name="Login">登录</string>
     <string name="skipLogin">跳过登录，直接进入</string>
+    <string name="wrong_name_psw">用户名或密码错误</string>
+    <string name="Hint">提示</string>
+    <string name="Skip_hint">跳过登录仍然可以使用全部基础功能，但是无法使用个性化服务，建议您登录后使用。</string>
+    <string name="BackToLogin">返回登录</string>
+    <string name="UseDirectly">直接使用</string>
+    <string name="changeLanguage">English</string>
+    <string name="hello_">你好，</string>
+    <string name="None">无</string>
+    <string name="EnterHere">在此输入内容</string>
+    <string name="send">发送</string>
+    <string name="start">启动</string>
+    <string name="SearchBtDevices">搜索蓝牙设备</string>
+    <string name="Help">使用帮助</string>
+    <string name="DeveloperMode">开发者模式</string>
+    <string name="Settings">设置</string>
+    <string name="not_connected_back">尚未与设备建立蓝牙连接。是否确定返回主界面？</string>
+    <string name="Yes">确定</string>
+    <string name="No">取消</string>
+    <string name="StopScanning">停止搜索</string>
+    <string name="ClickToConnect">与设备配对完成。再次点击设备名称即可连接</string>
+    <string name="Pairring">正在配对中:</string>
+    <string name="CancelPairring">取消配对：</string>
+    <string name="startPairring">未配对：开始配对</string>
+    <string name="buildSocketSuccess">Socket连接成功，可以开始训练。</string>
+    <string name="timeout">连接超时</string>
+    <string name="fail_not_pair">连接失败：尚未配对</string>
+    <string name="msgSend">发送消息：</string>
+    <string name="msgRcv">收到消息：</string>
+    <string name="fail_no_connection">启动失败：尚未连接设备</string>
+    <string name="Close">关闭</string>
+    <string name="break_connection">断开连接</string>
+    <string name="intro">用法介绍</string>
+    <string name="developerMode">确认进入开发者模式？</string>
+    <string name="logout">确定要退出登录吗？</string>
+    <string name="notLoginYet">未登录用户无法使用此功能。是否现在登录？</string>
+    <string name="not_filled_yet">尚未填写</string>
+    <string name="save">保存</string>
+    <string name="editUserInfo">修改个人信息</string>
+    <string name="edit_success">修改成功</string>
+    <string name="edit_fail">修改失败！</string>
+    <string name="edit">编辑</string>
+    <string name="NewUser">新用户注册</string>
+    <string name="input_username_psw">请输入用户名和密码</string>
+    <string name="not_the_same">密码与确认密码不一致！</string>
+    <string name="already_exist">用户名已存在</string>
+    <string name="enter_name">请填写您的姓名</string>
+    <string name="enter_gender">请选择您的性别</string>
+    <string name="enter_age">请填写您的年龄</string>
 </resources>

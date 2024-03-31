@@ -18,7 +18,7 @@ class TasksActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbarTasks)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
-            it.title = "我的任务"
+            it.title = getString(R.string.Tasks)
         }
 
         binding.fab.setOnClickListener { view ->

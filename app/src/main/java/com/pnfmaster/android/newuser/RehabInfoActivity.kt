@@ -6,6 +6,7 @@ import android.view.MenuItem
 import com.pnfmaster.android.BaseActivity
 import com.pnfmaster.android.LoginActivity
 import com.pnfmaster.android.MyApplication
+import com.pnfmaster.android.R
 import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityRehabInfoBinding
@@ -25,7 +26,7 @@ class RehabInfoActivity : BaseActivity() {
         setSupportActionBar(binding.toolbarNewUser)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
-            it.title = "新用户注册"
+            it.title = getString(R.string.NewUser)
         }
 
         dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)

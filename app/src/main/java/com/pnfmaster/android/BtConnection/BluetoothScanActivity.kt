@@ -55,14 +55,14 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
 
         binding.backToMainBtn.setOnClickListener {
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("提示")
-                .setMessage("尚未与设备建立蓝牙连接。是否确定返回主界面？")
-                .setPositiveButton("确定") { _, _ ->
+            builder.setTitle(getString(R.string.Hint))
+                .setMessage(getString(R.string.not_connected_back))
+                .setPositiveButton(getString(R.string.Yes)) { _, _ ->
                     val backIntent = Intent(this, ControlActivity::class.java)
                     startActivity(backIntent)
                     finish()
                 }
-                .setNegativeButton("取消") { _, _ -> }
+                .setNegativeButton(getString(R.string.No)) { _, _ -> }
                 .create()
                 .show()
         }
@@ -94,7 +94,7 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
         listDeviceName.clear()
         mAdapter?.notifyDataSetChanged() // 通知适配器刷新视图
         mBluetoothAdapter.startDiscovery()
-        binding.tvScanStatus.text = "停止搜索"
+        binding.tvScanStatus.text = getString(R.string.StopScanning)
         binding.pbScanLoading.visibility = View.VISIBLE
     }
 
@@ -116,7 +116,7 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
             return
         }
         mBluetoothAdapter.cancelDiscovery()
-        binding.tvScanStatus.text = "开始搜索"
+        binding.tvScanStatus.text = getString(R.string.StartScanning)
         binding.pbScanLoading.visibility = View.INVISIBLE
     }
 
@@ -165,13 +165,13 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
                     intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)!!
 
                 when (device.bondState) {
-                    BluetoothDevice.BOND_BONDING -> "正在与${device.name}配对中".Toast()
-                    BluetoothDevice.BOND_NONE -> "取消与${device.name}的配对".Toast()
+                    BluetoothDevice.BOND_BONDING -> (getString(R.string.Pairring) + device.name).Toast()
+                    BluetoothDevice.BOND_NONE -> (getString(R.string.CancelPairring) + device.name).Toast()
                     BluetoothDevice.BOND_BONDED -> {
                         val builder = AlertDialog.Builder(context)
-                        builder.setTitle("提示")
-                            .setMessage("与设备配对完成。再次点击设备名称即可连接")
-                            .setPositiveButton("我知道了") { _, _ ->
+                        builder.setTitle(getString(R.string.Hint))
+                            .setMessage(getString(R.string.ClickToConnect))
+                            .setPositiveButton(getString(R.string.Yes)) { _, _ ->
                             }.create().show()
                     }
                 }
@@ -206,10 +206,10 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
     override fun onItemClick(view: View?, position: Int) {
 
         if (mBluetoothAdapter.isDiscovering) stopScanning()
-        binding.tvScanStatus.text = "开始搜索"
+        binding.tvScanStatus.text = getString(R.string.StartScanning)
 
         if (listDevices[position].bondState == BluetoothDevice.BOND_NONE) {
-            "未配对：开始配对".Toast()
+            getString(R.string.startPairring).Toast()
             val method = BluetoothDevice::class.java.getMethod("createBond")
             method.invoke(listDevices[position])
         }
@@ -228,9 +228,9 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
                     MyApplication.bluetoothSocket = socket
                     try{
                         socket.connect()
-                        "Socket连接成功，可以开始训练。".Toast()
+                        getString(R.string.buildSocketSuccess).Toast()
                     } catch (e: IOException) {
-                        "连接超时".Toast()
+                        getString(R.string.timeout).Toast()
                         Log.e(TAG, "BluetoothScan: onItemClick. Socket connection time out.")
                     }
 
@@ -239,7 +239,7 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
                     finish()
                 } else {
                     Log.e(TAG, "BluetoothScan: fun onItemClick: device is $pairedDevice | socket is $socket")
-                    "连接失败：尚未配对".Toast()
+                    getString(R.string.fail_not_pair).Toast()
                 }
                 break
             }

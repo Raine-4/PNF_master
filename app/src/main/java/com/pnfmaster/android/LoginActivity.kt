@@ -3,6 +3,7 @@ package com.pnfmaster.android
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Message
@@ -11,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.database.connect.DBNAME
 import com.pnfmaster.android.databinding.ActivityLoginBinding
-import com.pnfmaster.android.drawing.TestActivity
 import com.pnfmaster.android.newuser.NewuserActivity
 import com.pnfmaster.android.utils.LoadingDialog
 import com.pnfmaster.android.utils.Toast
@@ -21,6 +21,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.sql.SQLException
+import java.util.Locale
 
 class LoginActivity : AppCompatActivity() {
 
@@ -31,11 +32,29 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.test.setOnClickListener {
+        /*binding.test.setOnClickListener {
             val intent = Intent(this, TestActivity::class.java)
             startActivity(intent)
+        }*/
+
+        // 切换语言
+        binding.changeLanguage.setOnClickListener {
+            if (binding.changeLanguage.text == "English") {
+                Locale.setDefault(Locale.ENGLISH)
+                val config: Configuration = baseContext.resources.configuration
+                config.locale = Locale.ENGLISH
+                baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
+                recreate()
+            } else {
+                Locale.setDefault(Locale.CHINESE)
+                val config: Configuration = baseContext.resources.configuration
+                config.locale = Locale.CHINESE
+                baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
+                recreate()
+            }
         }
 
+        /* 如果数据库连接成功，则设置底部文字的背景为绿色；否则为红色 */
         val hdSetBgColor = android.os.Handler {
             when (isConnected) {
                 1 -> binding.test.setBackgroundColor(Color.GREEN)
@@ -97,7 +116,6 @@ class LoginActivity : AppCompatActivity() {
 
             LoadingDialog(this).block(200)
 
-
             if (registerFlag) {
                 if (flag == 0) {
                     // 如果勾选了“记住密码”选项
@@ -114,7 +132,8 @@ class LoginActivity : AppCompatActivity() {
                 intent.putExtra("userId", MyApplication.userId)
                 startActivity(intent)
                 finish()
-            } else { "用户名或密码错误".Toast() }
+            } else {
+                getString(R.string.wrong_name_psw).Toast() }
         }
 
         // 跳转至注册界面
@@ -125,10 +144,10 @@ class LoginActivity : AppCompatActivity() {
 
         binding.skipLoginEnter.setOnClickListener {
             AlertDialog.Builder(this).apply {
-                setTitle("提示")
-                setMessage("跳过登录仍然可以使用全部基础功能，但是无法使用个性化服务，建议您登录后使用。")
-                setPositiveButton("返回登录", null)
-                setNegativeButton("直接使用") { _, _ ->
+                setTitle(getString(R.string.Hint))
+                setMessage(getString(R.string.Skip_hint))
+                setPositiveButton(getString(R.string.BackToLogin), null)
+                setNegativeButton(getString(R.string.UseDirectly)) { _, _ ->
                     MyApplication.isSkipped = true
                     val intent = Intent(this@LoginActivity, ControlActivity::class.java)
                     startActivity(intent)

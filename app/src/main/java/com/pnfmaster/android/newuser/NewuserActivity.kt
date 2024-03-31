@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import com.pnfmaster.android.BaseActivity
 import com.pnfmaster.android.MyApplication
+import com.pnfmaster.android.R
 import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityNewuserBinding
@@ -16,7 +17,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class NewuserActivity : BaseActivity() {
-    private val tag = "NewUserActivity"
     private lateinit var binding: ActivityNewuserBinding
     private lateinit var dbHelper: MyDatabaseHelper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +29,7 @@ class NewuserActivity : BaseActivity() {
         setSupportActionBar(binding.toolbarNewUser)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
-            it.title = "新用户注册"
+            it.title = getString(R.string.NewUser)
         }
 
         binding.registerButton.setOnClickListener {
@@ -58,11 +58,11 @@ class NewuserActivity : BaseActivity() {
     @SuppressLint("Range")
     private fun isLegal(username: String, password: String, confirmPsw: String): Boolean {
         if (username == "" || password == "") {
-            "请输入用户名和密码".Toast()
+            getString(R.string.input_username_psw).Toast()
             return false
         } else {
             if (password != confirmPsw) {
-                "密码与确认密码不一致！".Toast()
+                getString(R.string.not_the_same).Toast()
                 return false
             }
         }
@@ -82,7 +82,7 @@ class NewuserActivity : BaseActivity() {
         // ----------------------------------
 
         if (flag) {
-            "用户名已存在".Toast()
+            getString(R.string.already_exist).Toast()
             return false
         }
 

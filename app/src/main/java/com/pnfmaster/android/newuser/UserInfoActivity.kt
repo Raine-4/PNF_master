@@ -20,7 +20,7 @@ class UserInfoActivity : BaseActivity() {
         setSupportActionBar(binding.toolbarNewUser)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
-            it.title = "新用户注册"
+            it.title = getString(R.string.NewUser)
         }
 
         var gender = -1
@@ -41,7 +41,7 @@ class UserInfoActivity : BaseActivity() {
             val age = binding.age.text.toString()
             val contact = binding.contact.text.toString()
 
-            if (isLegal(name, gender, age, contact)) {
+            if (isLegal(name, gender, age)) {
                 // 上一个Activity传过来的参数
                 val useraccount = intent.getStringExtra("account")
                 val password = intent.getStringExtra("psw")
@@ -59,17 +59,17 @@ class UserInfoActivity : BaseActivity() {
 
     }
 
-    private fun isLegal(name: String, gender: Int, age: String, contact: String): Boolean {
+    private fun isLegal(name: String, gender: Int, age: String): Boolean {
         if (name == "" ) {
-            "请填写您的姓名。".Toast()
+            getString(R.string.enter_name).Toast()
             return false
         }
         if (gender == -1) {
-            "请选择您的性别".Toast()
+            getString(R.string.enter_gender).Toast()
             return false
         }
         if (age == "") {
-            "请填写您的年龄".Toast()
+            getString(R.string.enter_age).Toast()
             return false
         }
         return true

@@ -49,7 +49,8 @@ class ControlActivity : BaseActivity() {
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeAsUpIndicator(R.drawable.ic_menu)
             val name = getRealName(intent.getIntExtra("userId", -1))
-            it.title = "你好，$name"
+            val welcome = getString(R.string.hello_)
+            it.title = "$welcome$name"
         }
 
         val navView = binding.navView
@@ -64,12 +65,13 @@ class ControlActivity : BaseActivity() {
             true
         }
 
-        // 在nav_header中显示用户名
         val navHeaderView = binding.navView.getHeaderView(0)
         val userAccount = intent.getStringExtra("userAccount")
         val tvUserName = navHeaderView.findViewById<TextView>(R.id.userName)
-        tvUserName.text = userAccount
-
+        // 如果不是未登录状态，则在nav_header中显示用户名
+        if (!MyApplication.isSkipped) {
+            tvUserName.text = userAccount
+        }
 
         val handler = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
@@ -107,7 +109,7 @@ class ControlActivity : BaseActivity() {
                         "错误：连接异常。".Toast()
                     }
                     1 -> {
-                        val content = "<font color='blue'>[$curTime]发送消息：${binding.inputEditText.text}</font>\n"
+                        val content = "<font color='blue'>[$curTime]" + getString(R.string.msgSend) + "${binding.inputEditText.text}</font>\n"
                         binding.receiveText.append(Html.fromHtml(content))
                         binding.receiveText.append("\n")
 
@@ -127,8 +129,8 @@ class ControlActivity : BaseActivity() {
         val socket = MyApplication.bluetoothSocket
 
         binding.curDevice.text =
-            if (device != null)  "${device.name}(mac地址: ${device.address})"
-            else "无"
+            if (device != null)  "${device.name}(mac: ${device.address})"
+            else " ${getString(R.string.None)}"
 
         // 点击启动之后开始运行线程，可以读取信息了。
         binding.StartBtn.setOnClickListener {
@@ -138,19 +140,19 @@ class ControlActivity : BaseActivity() {
                         "socket is $socket \n" +
                         "MyApplication.bluetoothDevice is ${MyApplication.bluetoothDevice} \n " +
                         "MyApplication.bluetoothSocket is ${MyApplication.bluetoothSocket}")
-                "启动失败：尚未连接设备".Toast()
+                getString(R.string.fail_no_connection).Toast()
             } else {
                 socket.let {
                     Log.d(TAG, "Both device and socket are not null.\n" +
                             "device is $device\n" +
                             "socket is $it")
                     val connectedThread = btComm.ConnectedThread(it)
-                    if (binding.StartBtn.text == "启动") {
+                    if (binding.StartBtn.text == getString(R.string.start)) {
                         connectedThread.start()
-                        binding.StartBtn.text = "关闭"
+                        binding.StartBtn.text = getString(R.string.Close)
                     } else {
                         connectedThread.cancel()
-                        binding.StartBtn.text = "启动"
+                        binding.StartBtn.text = getString(R.string.start)
                     }
                 }
 
@@ -160,7 +162,7 @@ class ControlActivity : BaseActivity() {
         // 点击发送按钮调用write(bytes: ByteArray)方法
         binding.SendBtn.setOnClickListener {
             if (device == null || MyApplication.bluetoothSocket == null) {
-                 "发送失败：设备或Socket为空".Toast()
+                getString(R.string.fail_no_connection).Toast()
                  Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
                 "device: $device\n" +
                 "socket: $socket")
@@ -177,7 +179,7 @@ class ControlActivity : BaseActivity() {
     // 为了能让toolbar显示用户的名字，需要在数据库里先查一下
     @SuppressLint("Range")
     private fun getRealName(id: Int): String {
-        if (id == -1) return "未知用户"
+        if (id == -1) return getString(R.string.defaultUserName)
 
         // ----------------------------------
         var infoList = listOf<Any>()
@@ -219,11 +221,11 @@ class ControlActivity : BaseActivity() {
                     finish()
                 } else {
                     AlertDialog.Builder(this)
-                        .setTitle("当前蓝牙设备")
-                        .setMessage("设备名称：${device.name}\n" +
-                                "设备地址：${device.address}")
-                        .setPositiveButton("我知道了",null)
-                        .setNegativeButton("断开连接") { _, _ ->
+                        .setTitle(getString(R.string.currentDevice))
+                        .setMessage(getString(R.string.currentDevice) + "：${device.name}\n" +
+                                getString(R.string.MacAddress) + "：${device.address}")
+                        .setPositiveButton(getString(R.string.Yes),null)
+                        .setNegativeButton(getString(R.string.break_connection)) { _, _ ->
                             Log.d(TAG, "Main: onOptionsItemSelected. User cancelled the bluetooth.")
                             MyApplication.bluetoothSocket!!.close()
                         }
@@ -234,26 +236,26 @@ class ControlActivity : BaseActivity() {
 
             R.id.help -> {
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("用法介绍")
+                builder.setTitle(getString(R.string.intro))
                     .setMessage(R.string.usage)
-                    .setPositiveButton("我知道了") { _, _ -> }
+                    .setPositiveButton(getString(R.string.Yes)) { _, _ -> }
                     .create()
                     .show()
             }
 
             R.id.developerMode -> {
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("提示")
-                    .setMessage("确认进入开发者模式？")
-                    .setPositiveButton("确认") { _, _ ->
+                builder.setTitle(getString(R.string.Hint))
+                    .setMessage(getString(R.string.developerMode))
+                    .setPositiveButton(getString(R.string.Yes)) { _, _ ->
                         // TODO: 跳转至 Developer Mode
                     }
-                    .setNegativeButton("取消",null)
+                    .setNegativeButton(getString(R.string.No),null)
                     .create()
                     .show()
             }
 
-            R.id.settings -> "设置功能：正在开发中".Toast() // TODO
+            R.id.settings -> "^_^".Toast() // TODO
         }
         return true
     }
@@ -264,7 +266,6 @@ class ControlActivity : BaseActivity() {
             "Profile" -> {
                 if (!judgeIfSkipped()) {
                     val account = intent.getStringExtra("userAccount")
-                    val id = intent.getIntExtra("userId", -1)
                     val profileIntent = Intent(this, ProfileActivity::class.java)
                     profileIntent.putExtra("userAccount", account)
                     startActivity(profileIntent)
@@ -292,14 +293,14 @@ class ControlActivity : BaseActivity() {
             "Logout" -> { // 返回登录菜单
                 if (!judgeIfSkipped()) {
                     val builder = AlertDialog.Builder(this)
-                    builder.setTitle("提示")
-                        .setMessage("确定要退出登录吗？")
-                        .setPositiveButton("退出") { _, _ ->
+                    builder.setTitle(getString(R.string.Hint))
+                        .setMessage(getString(R.string.logout))
+                        .setPositiveButton(getString(R.string.Yes)) { _, _ ->
                             val logOutIntent = Intent(context, LoginActivity::class.java)
                             startActivity(logOutIntent)
                             finish()
                         }
-                        .setNegativeButton("取消",null)
+                        .setNegativeButton(getString(R.string.No),null)
                         .create()
                         .show()
                 } else {
@@ -316,14 +317,14 @@ class ControlActivity : BaseActivity() {
         val isSkipped = MyApplication.isSkipped
         if (isSkipped) {
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("提示")
-                .setMessage("未登录用户无法使用此功能。是否现在登录？")
-                .setPositiveButton("是") { _, _ ->
+            builder.setTitle(getString(R.string.Hint))
+                .setMessage(getString(R.string.notLoginYet))
+                .setPositiveButton(getString(R.string.Yes)) { _, _ ->
                     val backIntent = Intent(this, LoginActivity::class.java)
                     startActivity(backIntent)
                     finish()
                 }
-                .setNegativeButton("否", null)
+                .setNegativeButton(getString(R.string.No), null)
                 .create()
                 .show()
             return true
