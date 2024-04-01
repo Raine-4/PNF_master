@@ -114,7 +114,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
 
-            LoadingDialog(this).block(200)
+            LoadingDialog(this).block(500)
 
             if (registerFlag) {
                 if (flag == 0) {
@@ -146,10 +146,11 @@ class LoginActivity : AppCompatActivity() {
             AlertDialog.Builder(this).apply {
                 setTitle(getString(R.string.Hint))
                 setMessage(getString(R.string.Skip_hint))
-                setPositiveButton(getString(R.string.BackToLogin), null)
-                setNegativeButton(getString(R.string.UseDirectly)) { _, _ ->
+                setNegativeButton(getString(R.string.BackToLogin), null)
+                setPositiveButton(getString(R.string.UseDirectly)) { _, _ ->
                     MyApplication.isSkipped = true
                     val intent = Intent(this@LoginActivity, ControlActivity::class.java)
+                    intent.putExtra("userId", -1)
                     startActivity(intent)
                     finish()
                 }

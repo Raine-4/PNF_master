@@ -147,6 +147,7 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun popUpDialog(title: String, msg: String, columnName: String) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(title)
@@ -165,11 +166,12 @@ class ProfileActivity : BaseActivity() {
                     getString(R.string.treatplan) -> getString(R.string.rehabHint2)
                     getString(R.string.progressrecord) -> getString(R.string.rehabHint3)
                     getString(R.string.goals) -> getString(R.string.rehabHint4)
-                    else -> ""
+                    else -> getString(R.string.EnterHere)
                 }
             } else {
                 editText.setText(msg)
             }
+
             // 创建一个新的AlertDialog.Builder来替换原来的对话框
             val newBuilder = AlertDialog.Builder(this).apply{
                 setTitle(getString(R.string.edit) + title)

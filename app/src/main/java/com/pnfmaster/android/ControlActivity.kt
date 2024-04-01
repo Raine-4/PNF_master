@@ -12,16 +12,15 @@ import android.text.Html
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.view.GravityCompat
 import com.pnfmaster.android.BtConnection.BluetoothCommunication
 import com.pnfmaster.android.BtConnection.BluetoothScanActivity
-import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityControlBinding
-import com.pnfmaster.android.utils.LoadingDialog
 import com.pnfmaster.android.utils.Toast
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import java.nio.charset.Charset
 import java.util.Calendar
 
 /* 一次清理缓存之后这里就不能再引用了，非常奇怪。
@@ -37,6 +36,7 @@ class ControlActivity : BaseActivity() {
     private lateinit var binding: ActivityControlBinding
     private val TAG = "MainActivity"
 
+
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,9 +48,7 @@ class ControlActivity : BaseActivity() {
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeAsUpIndicator(R.drawable.ic_menu)
-            val name = getRealName(intent.getIntExtra("userId", -1))
-            val welcome = getString(R.string.hello_)
-            it.title = "$welcome$name"
+            it.title = getString(R.string.Control)
         }
 
         val navView = binding.navView
@@ -84,19 +82,19 @@ class ControlActivity : BaseActivity() {
                 when (msg.what) {
                     // 处理从蓝牙设备读取的数据
                     0 -> {
-                        val bytes = msg.arg1
+                        // val bytes = msg.arg1
                         val buffer = msg.obj as ByteArray
                         // 将buffer数组内的字节转换成字符串
-                        val receivedData = String(buffer, 0, bytes)
-                        val content = "<font color='red'>[$curTime]收到消息：$receivedData</font>"
+                        val receivedData = String(buffer, Charset.forName("GBK"))
+                        val filteredData = receivedData.filter { !it.isWhitespace() && it.code != 0xFFFD }
+                        val content = "<font color='red'>[$curTime]收到消息：$filteredData</font>"
                         binding.receiveText.append(Html.fromHtml(content))
                         binding.receiveText.append("\n")
 
-                        // 设置让收到内容的TextView自动滚动到最后一行：
-                        val textView = binding.receiveText
-                        val offset = textView.lineCount * textView.lineHeight
-                        if (offset > textView.height) {
-                            textView.scrollTo(0, offset - textView.height)
+                        // ScrollView自动滚动到最后一行：
+                        val scrollView = findViewById<ScrollView>(R.id.scrollView)
+                        scrollView.post {
+                            scrollView.fullScroll(View.FOCUS_DOWN)
                         }
                     }
                     // 处理连接中的错误信息
@@ -112,13 +110,6 @@ class ControlActivity : BaseActivity() {
                         val content = "<font color='blue'>[$curTime]" + getString(R.string.msgSend) + "${binding.inputEditText.text}</font>\n"
                         binding.receiveText.append(Html.fromHtml(content))
                         binding.receiveText.append("\n")
-
-                        // 设置让收到内容的TextView自动滚动到最后一行：
-                        val textView = binding.receiveText
-                        val offset = textView.lineCount * textView.lineHeight
-                        if (offset > textView.height) {
-                            textView.scrollTo(0, offset - textView.height)
-                        }
                     }
                 }
             }
@@ -129,7 +120,7 @@ class ControlActivity : BaseActivity() {
         val socket = MyApplication.bluetoothSocket
 
         binding.curDevice.text =
-            if (device != null)  "${device.name}(mac: ${device.address})"
+            if (device != null)  device.name
             else " ${getString(R.string.None)}"
 
         // 点击启动之后开始运行线程，可以读取信息了。
@@ -159,6 +150,35 @@ class ControlActivity : BaseActivity() {
             }
         }
 
+        // TEST
+        binding.enableBtn.setOnClickListener {
+            if (device == null || MyApplication.bluetoothSocket == null) {
+                getString(R.string.fail_no_connection).Toast()
+                Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
+                        "device: $device\n" +
+                        "socket: $socket")
+            } else {
+                val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
+                val hexString = "B5E7BBFACAB9C4DC0d0a"  // 十六进制字符串
+                val bytes = hexString.hexStringToByteArray() // 将十六进制字符串转换为字节数组
+                connectedThread.write(bytes)
+            }
+        }
+
+        binding.disableBtn.setOnClickListener {
+            if (device == null || MyApplication.bluetoothSocket == null) {
+                getString(R.string.fail_no_connection).Toast()
+                Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
+                        "device: $device\n" +
+                        "socket: $socket")
+            } else {
+                val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
+                val hexString = "CDA3D6B9CAB9C4DC0d0a"  // 十六进制字符串
+                val bytes = hexString.hexStringToByteArray() // 将十六进制字符串转换为字节数组
+                connectedThread.write(bytes)
+            }
+        }
+
         // 点击发送按钮调用write(bytes: ByteArray)方法
         binding.SendBtn.setOnClickListener {
             if (device == null || MyApplication.bluetoothSocket == null) {
@@ -168,25 +188,49 @@ class ControlActivity : BaseActivity() {
                 "socket: $socket")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
-                val msg = binding.inputEditText.text
-                val msgString = msg.toString()
-                Log.d(TAG, "Ready to send $msgString")
-                connectedThread.write(msgString.toByteArray())
+                val hexString = binding.inputEditText.text.toString()  // 十六进制字符串
+                val bytes = hexString.hexStringToByteArray() // 将十六进制字符串转换为字节数组
+                connectedThread.write(bytes)
             }
         }
     }
 
-    // 为了能让toolbar显示用户的名字，需要在数据库里先查一下
+    private fun String.hexStringToByteArray(): ByteArray {
+        val result = ByteArray(length / 2)
+        for (i in indices step 2) {
+            val firstDigit = Character.digit(this[i], 16)
+            val secondDigit = Character.digit(this[i + 1], 16)
+            result[i / 2] = ((firstDigit shl 4) + secondDigit).toByte()
+        }
+        return result
+    }
+
+    /*private fun gbk2Hex(chineseText: String): String {
+        // 将字符串从UTF-8转换为GBK编码
+        val gbkBytes = chineseText.toByteArray(Charset.forName("GBK"))
+
+        // 将字节数组转换为16进制字符串
+        val hexString = gbkBytes.joinToString("") { byte ->
+            "%02X".format(byte)
+        }
+
+        // 输出16进制字符串
+        return hexString
+    }*/
+
+    /*// 为了能让toolbar显示用户的名字，需要用userId在数据库里查一下
     @SuppressLint("Range")
     private fun getRealName(id: Int): String {
-        if (id == -1) return getString(R.string.defaultUserName)
+        if (id == -1) {
+            return getString(R.string.defaultUserName)
+        }
 
         // ----------------------------------
         var infoList = listOf<Any>()
         fun main() {
             GlobalScope.launch {
                 infoList = connect.queryUserInfo(MyApplication.userId)
-                Log.d("profile", "infolist = $infoList")
+                Log.d("profile", "private fun getRealName： infolist = $infoList")
             }
             Thread.sleep(1000)
         }
@@ -197,7 +241,7 @@ class ControlActivity : BaseActivity() {
         // ----------------------------------
 
         return infoList[0] as String
-    }
+    }*/
 
     // 右上角三个按钮的点击事件
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -205,7 +249,7 @@ class ControlActivity : BaseActivity() {
         return true
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "SetTextI18n")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             // 打开左滑菜单
@@ -227,7 +271,9 @@ class ControlActivity : BaseActivity() {
                         .setPositiveButton(getString(R.string.Yes),null)
                         .setNegativeButton(getString(R.string.break_connection)) { _, _ ->
                             Log.d(TAG, "Main: onOptionsItemSelected. User cancelled the bluetooth.")
+                            binding.curDevice.text = " ${getString(R.string.None)}"
                             MyApplication.bluetoothSocket!!.close()
+                            MyApplication.bluetoothDevice = null
                         }
                         .create()
                         .show()

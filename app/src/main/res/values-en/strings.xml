@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="Introduction">Author: Na Yufeng. Version: v0.1.1</string>
     <string name="usage">
         1. Application Introduction\n
@@ -20,7 +20,7 @@
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="UUID">00001101-0000-1000-8000-00805f9b34fb</string>
+    <string name="UUID" tools:ignore="TypographyDashes">00001101-0000-1000-8000-00805f9b34fb</string>
     <string name="TargetDeviceName">YANK.CAO</string>
     <string name="welcome_register">Welcome to register PNF Master</string>
     <string name="poem">Welcome to use PNF Master.</string>
@@ -80,8 +80,8 @@
     <string name="Hint">Prompt</string>
     <string name="Skip_hint">You can still use all the basic functions by skipping the login, but you will not be able to use the personalised services, so it is recommended that you login to use the app.</string>
     <string name="changeLanguage">简体中文</string>
-    <string name="BackToLogin">Back to Login</string>
-    <string name="UseDirectly">Use Directly</string>
+    <string name="BackToLogin">Login</string>
+    <string name="UseDirectly">Use Anyway</string>
     <string name="hello_">"Hello, "</string>
     <string name="None">None</string>
     <string name="EnterHere">Enter content here</string>
