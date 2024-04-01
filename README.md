@@ -106,7 +106,7 @@ Subtitle is the updating date.
 1. LoginActivity：點擊登錄按鈕之後需要等待一秒鐘；
 2. NewUserActivity：點擊下一步時需要檢測用戶名是否已存在，需要等待一秒；
 3. RehabInfoActivity：上傳至數據庫；
-4. ProfileActivity：打開的時候需要調取數據庫的信息；
+4. ProfileActivity：打開的時候需要調取數據庫的訊息；
 
 ### 2.2 更新日誌
 
