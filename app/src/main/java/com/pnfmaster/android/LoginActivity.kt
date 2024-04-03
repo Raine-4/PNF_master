@@ -6,8 +6,12 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.view.animation.AnimationUtils
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.database.connect.DBNAME
@@ -158,6 +162,21 @@ class LoginActivity : AppCompatActivity() {
                 show()
             }
         }
+
+        var doubleBackToExitPressedOnce = false
+        onBackPressedDispatcher.addCallback(this) {
+            if (doubleBackToExitPressedOnce) {
+                finish() // 退出应用
+            } else {
+                doubleBackToExitPressedOnce = true
+                Toast.makeText(this@LoginActivity,
+                    getString(R.string.doubleBack), Toast.LENGTH_SHORT).show()
+
+                // 如果两秒内没有再次点击返回键，则重置标志
+                Handler(Looper.getMainLooper()).postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
+            }
+        }
+
     }
     companion object {
         var isConnected = -1

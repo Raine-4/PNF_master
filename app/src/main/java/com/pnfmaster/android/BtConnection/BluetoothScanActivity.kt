@@ -19,7 +19,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.pnfmaster.android.ControlActivity
 import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.R
 import com.pnfmaster.android.adapters.OnItemClickListener
@@ -37,7 +36,6 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
     private val TAG = "ScanActivity"
     private var mAdapter: btDeviceAdapter? = null
 
-    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityScanBinding.inflate(layoutInflater)
@@ -50,7 +48,29 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
         registerReceiver(mBluetoothReceiver, intentFilter)
 
         binding.tvScanStatus.setOnClickListener {
-            if (mBluetoothAdapter.isDiscovering) stopScanning() else startScanning()
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
+                != PackageManager.PERMISSION_GRANTED) {
+                // 当用户拒绝了权限
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.BLUETOOTH_SCAN)) {
+                    // 解释为什么需要权限
+                    AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.permission_needed))
+                        .setMessage(getString(R.string.permission_BtScan_needed))
+                        .setPositiveButton(getString(R.string.Yes)) { _, _ ->
+                            // 再次请求权限
+                            requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1)
+                        }
+                        .setNegativeButton(getString(R.string.No)) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
+                } else {
+                    // 直接请求权限
+                    requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1)
+                }
+            } else {
+                if (mBluetoothAdapter.isDiscovering) stopScanning() else startScanning()
+            }
         }
 
         binding.backToMainBtn.setOnClickListener {
@@ -58,9 +78,10 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
             builder.setTitle(getString(R.string.Hint))
                 .setMessage(getString(R.string.not_connected_back))
                 .setPositiveButton(getString(R.string.Yes)) { _, _ ->
-                    val backIntent = Intent(this, ControlActivity::class.java)
+                    /*val backIntent = Intent(this, ControlActivity::class.java)
                     startActivity(backIntent)
-                    finish()
+                    finish()*/
+                    onBackPressedDispatcher.onBackPressed()
                 }
                 .setNegativeButton(getString(R.string.No)) { _, _ -> }
                 .create()
@@ -78,17 +99,17 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
      * 5. 设置进度条可见
      * 当扫描到设备时系统会发出广播
      */
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "MissingPermission")
     private fun startScanning() {
         // Request for permission
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.BLUETOOTH_SCAN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1)
-            return
-        }
+//        if (ActivityCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.BLUETOOTH_SCAN
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1)
+//            return
+//        }
 
         listDevices.clear()
         listDeviceName.clear()
@@ -106,15 +127,16 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
      * 3. 设置进度条不可见
      * 当扫描到设备时系统会发出广播
      */
+    @SuppressLint("MissingPermission")
     private fun stopScanning() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.BLUETOOTH_SCAN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_SCAN), 2)
-            return
-        }
+//        if (ActivityCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.BLUETOOTH_SCAN
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1)
+//            return
+//        }
         mBluetoothAdapter.cancelDiscovery()
         binding.tvScanStatus.text = getString(R.string.StartScanning)
         binding.pbScanLoading.visibility = View.INVISIBLE
@@ -234,9 +256,13 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
                         Log.e(TAG, "BluetoothScan: onItemClick. Socket connection time out.")
                     }
 
-                    val backIntent = Intent(this, ControlActivity::class.java)
+                    // TEST
+                    "fun onItemClick".Toast()
+                    /*val backIntent = Intent(this, ControlActivity::class.java)
                     startActivity(backIntent)
-                    finish()
+                    finish()*/
+                    onBackPressedDispatcher.onBackPressed()
+
                 } else {
                     Log.e(TAG, "BluetoothScan: fun onItemClick: device is $pairedDevice | socket is $socket")
                     getString(R.string.fail_not_pair).Toast()
@@ -246,10 +272,46 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
         }
     }
 
-    @SuppressLint("MissingPermission")
     override fun onStop() {
         super.onStop()
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BLUETOOTH_SCAN
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(this,
+                arrayOf(Manifest.permission.BLUETOOTH_CONNECT), 2)
+            unregisterReceiver(mBluetoothReceiver)
+            return
+        }
         if (mBluetoothAdapter.isDiscovering) mBluetoothAdapter.cancelDiscovery()
         unregisterReceiver(mBluetoothReceiver) // 取消注册接收蓝牙广播通知
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1 -> {
+                if (grantResults.isNotEmpty() &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getString(R.string.Permission_granted).Toast()
+                } else {
+                    getString(R.string.Permission_rejected).Toast()
+                }
+            }
+            2 -> {
+                if (grantResults.isNotEmpty() &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getString(R.string.Permission_granted).Toast()
+                } else {
+                    getString(R.string.Permission_rejected).Toast()
+                }
+            }
+        }
+    }
+
 }

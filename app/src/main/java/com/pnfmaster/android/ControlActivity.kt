@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.core.view.GravityCompat
 import com.pnfmaster.android.BtConnection.BluetoothCommunication
 import com.pnfmaster.android.BtConnection.BluetoothScanActivity
@@ -150,7 +151,7 @@ class ControlActivity : BaseActivity() {
             }
         }
 
-        // TEST
+        // 电机使能
         binding.enableBtn.setOnClickListener {
             if (device == null || MyApplication.bluetoothSocket == null) {
                 getString(R.string.fail_no_connection).Toast()
@@ -165,6 +166,7 @@ class ControlActivity : BaseActivity() {
             }
         }
 
+        // 停止使能
         binding.disableBtn.setOnClickListener {
             if (device == null || MyApplication.bluetoothSocket == null) {
                 getString(R.string.fail_no_connection).Toast()
@@ -173,8 +175,8 @@ class ControlActivity : BaseActivity() {
                         "socket: $socket")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
-                val hexString = "CDA3D6B9CAB9C4DC0d0a"  // 十六进制字符串
-                val bytes = hexString.hexStringToByteArray() // 将十六进制字符串转换为字节数组
+                val hexString = "CDA3D6B9CAB9C4DC0d0a"
+                val bytes = hexString.hexStringToByteArray()
                 connectedThread.write(bytes)
             }
         }
@@ -193,6 +195,21 @@ class ControlActivity : BaseActivity() {
                 connectedThread.write(bytes)
             }
         }
+
+        onBackPressedDispatcher.addCallback(this) {
+            val builder = AlertDialog.Builder(this@ControlActivity)
+            builder.setTitle(getString(R.string.Hint))
+                .setMessage(getString(R.string.logout))
+                .setPositiveButton(getString(R.string.Yes)) { _, _ ->
+                    val logOutIntent = Intent(this@ControlActivity, LoginActivity::class.java)
+                    startActivity(logOutIntent)
+                    finish()
+                }
+                .setNegativeButton(getString(R.string.No),null)
+                .create()
+                .show()
+        }
+
     }
 
     private fun String.hexStringToByteArray(): ByteArray {
@@ -262,7 +279,7 @@ class ControlActivity : BaseActivity() {
                     Log.d(TAG, "Device is null. Start the BluetoothScanActivity")
                     val intent = Intent(this, BluetoothScanActivity::class.java)
                     startActivity(intent)
-                    finish()
+//                    finish()
                 } else {
                     AlertDialog.Builder(this)
                         .setTitle(getString(R.string.currentDevice))
@@ -301,7 +318,10 @@ class ControlActivity : BaseActivity() {
                     .show()
             }
 
-            R.id.settings -> "^_^".Toast() // TODO
+            R.id.settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+            }
         }
         return true
     }
@@ -366,6 +386,7 @@ class ControlActivity : BaseActivity() {
             builder.setTitle(getString(R.string.Hint))
                 .setMessage(getString(R.string.notLoginYet))
                 .setPositiveButton(getString(R.string.Yes)) { _, _ ->
+                    MyApplication.isSkipped = true
                     val backIntent = Intent(this, LoginActivity::class.java)
                     startActivity(backIntent)
                     finish()

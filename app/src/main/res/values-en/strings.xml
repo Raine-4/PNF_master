@@ -124,4 +124,26 @@
     <string name="enter_name">Please enter your name</string>
     <string name="enter_gender">Please enter your gender</string>
     <string name="enter_age">Please enter your age</string>
+
+    <string name="permission_needed">Permission Needed</string>
+    <string name="permission_BtScan_needed">Bluetooth scanning permission is required to use this feature, please grant Bluetooth scanning permission</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your Signature</string>
+    <string name="reply_title">Default Reply Action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync Email Periodically</string>
+    <string name="attachment_title">Download Incoming Attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="Permission_granted">Bluetooth Scanning Permission Granted</string>
+    <string name="Permission_rejected">You have denied the scanning permission.</string>
+    <string name="doubleBack">Slide again to exit</string>
+
 </resources>

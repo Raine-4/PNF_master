@@ -124,4 +124,25 @@
     <string name="enter_name">请填写您的姓名</string>
     <string name="enter_gender">请选择您的性别</string>
     <string name="enter_age">请填写您的年龄</string>
+    <string name="permission_needed">需要权限</string>
+    <string name="permission_BtScan_needed">必须取得蓝牙扫描权限才能使用此功能，请授权蓝牙扫描权限</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="Permission_granted">蓝牙扫描权限已通过</string>
+    <string name="Permission_rejected">您已拒绝授予扫描权限。</string>
+    <string name="doubleBack">再次滑动以退出</string>
 </resources>
