@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_position"
+        android:icon="@drawable/ic_position"
+        android:title="@string/position" />
+    <item
+        android:id="@+id/nav_velocity"
+        android:icon="@drawable/ic_velocity"
+        android:title="@string/velocity" />
+    <item
+        android:id="@+id/nav_current"
+        android:icon="@drawable/ic_current"
+        android:title="@string/current" />
+
+    <item
+        android:id="@+id/nav_torque"
+        android:icon="@drawable/ic_torque"
+        android:title="@string/torque" />
+</menu>

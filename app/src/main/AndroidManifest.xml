@@ -27,7 +27,7 @@
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".drawing.TestActivity"
+            android:name=".TestActivity"
             android:exported="false" />
         <activity
             android:name=".TasksActivity"

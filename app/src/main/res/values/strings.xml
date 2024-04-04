@@ -108,7 +108,7 @@
     <string name="Close">关闭</string>
     <string name="break_connection">断开连接</string>
     <string name="intro">用法介绍</string>
-    <string name="developerMode">确认进入开发者模式？</string>
+    <string name="developerMode">确认进入调式模式？</string>
     <string name="logout">确定要退出登录吗？</string>
     <string name="notLoginYet">未登录用户无法使用此功能。是否现在登录？</string>
     <string name="not_filled_yet">尚未填写</string>
@@ -145,4 +145,12 @@
     <string name="Permission_granted">蓝牙扫描权限已通过</string>
     <string name="Permission_rejected">您已拒绝授予扫描权限。</string>
     <string name="doubleBack">再次滑动以退出</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="position">位置</string>
+    <string name="velocity">速度</string>
+    <string name="current">电流</string>
+    <string name="torque">力矩</string>
+    <string name="enable">电机使能</string>
+    <string name="disable">停止使能</string>
 </resources>

@@ -36,10 +36,13 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        /*binding.test.setOnClickListener {
-            val intent = Intent(this, TestActivity::class.java)
+        /*
+        // 测试通道
+        binding.test.setOnClickListener {
+            val intent = Intent(this, ControlActivity::class.java)
             startActivity(intent)
-        }*/
+        }
+        */
 
         // 切换语言
         binding.changeLanguage.setOnClickListener {
@@ -131,7 +134,7 @@ class LoginActivity : AppCompatActivity() {
                     } else { editor.clear() }
                     editor.apply()
                 }
-                val intent = Intent(this, ControlActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra("userAccount", account)
                 intent.putExtra("userId", MyApplication.userId)
                 startActivity(intent)
