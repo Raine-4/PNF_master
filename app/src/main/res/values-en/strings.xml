@@ -21,7 +21,6 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="UUID" tools:ignore="TypographyDashes">00001101-0000-1000-8000-00805f9b34fb</string>
-    <string name="TargetDeviceName">YANK.CAO</string>
     <string name="welcome_register">Welcome to register PNF Master</string>
     <string name="poem">Welcome to use PNF Master.</string>
     <string name="Profile">My Profile</string>
@@ -116,7 +115,7 @@
     <string name="editUserInfo">Modify Info</string>
     <string name="edit_success">Modification Successful</string>
     <string name="edit_fail">Modification Failed!</string>
-    <string name="edit">Edit</string>
+    <string name="edit">Edit </string>
     <string name="NewUser">New User</string>
     <string name="input_username_psw">Please enter your username and password</string>
     <string name="not_the_same">The password does not match the confirmation password!</string>
@@ -145,5 +144,11 @@
     <string name="Permission_granted">Bluetooth Scanning Permission Granted</string>
     <string name="Permission_rejected">You have denied the scanning permission.</string>
     <string name="doubleBack">Slide again to exit</string>
+    <string name="position">Position</string>
+    <string name="velocity">Velocity</string>
+    <string name="current">Current</string>
+    <string name="torque">Torque</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
 
 </resources>

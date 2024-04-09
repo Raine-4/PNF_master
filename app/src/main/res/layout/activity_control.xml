@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/start"
                 style="@style/common_button1"
-                android:layout_marginEnd="50dp"/>
+                android:layout_marginEnd="40dp"/>
             <Button
                 android:id="@+id/SendBtn"
                 android:layout_width="wrap_content"
@@ -97,17 +97,17 @@
             android:layout_marginTop="20dp">
             <Button
                 android:id="@+id/enableBtn"
+                style="@style/common_button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="电机使能"
-                style="@style/common_button1"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="40dp"
+                android:text="@string/enable" />
             <Button
                 android:id="@+id/disableBtn"
+                style="@style/common_button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="停止使能"
-                style="@style/common_button1" />
+                android:text="@string/disable" />
         </LinearLayout>
 
         <ScrollView

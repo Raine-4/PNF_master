@@ -35,8 +35,6 @@ import java.util.Calendar
 class ControlActivity : BaseActivity() {
 
     private lateinit var binding: ActivityControlBinding
-    private val TAG = "MainActivity"
-
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -397,5 +395,9 @@ class ControlActivity : BaseActivity() {
             return true
         }
         return false
+    }
+
+    companion object {
+        const val TAG = "ControlActivity"
     }
 }

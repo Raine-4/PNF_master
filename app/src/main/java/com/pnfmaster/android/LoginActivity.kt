@@ -36,13 +36,11 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        /*
         // 测试通道
         binding.test.setOnClickListener {
             val intent = Intent(this, ControlActivity::class.java)
             startActivity(intent)
         }
-        */
 
         // 切换语言
         binding.changeLanguage.setOnClickListener {
@@ -62,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         /* 如果数据库连接成功，则设置底部文字的背景为绿色；否则为红色 */
-        val hdSetBgColor = android.os.Handler {
+        val hdSetBgColor = Handler {
             when (isConnected) {
                 1 -> binding.test.setBackgroundColor(Color.GREEN)
                 0 -> binding.test.setBackgroundColor(Color.RED)
@@ -134,7 +132,7 @@ class LoginActivity : AppCompatActivity() {
                     } else { editor.clear() }
                     editor.apply()
                 }
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, ControlActivity::class.java)
                 intent.putExtra("userAccount", account)
                 intent.putExtra("userId", MyApplication.userId)
                 startActivity(intent)

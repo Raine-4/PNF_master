@@ -2,83 +2,83 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/bg">
+    android:background="@drawable/bg"
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarNewUser"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:id="@+id/toolbarNewUser"
-        android:background="@color/teal_200"/>
+        android:background="@color/teal_200" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
         android:text="@string/welcome_register"
         android:textSize="25sp"
-        android:typeface="serif"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="16dp"/>
+        android:typeface="serif" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
         android:text="@string/poem"
         android:textSize="15sp"
-        android:typeface="monospace"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="16dp"/>
+        android:typeface="monospace" />
 
     <EditText
         android:id="@+id/register_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
         android:background="@color/半透明"
         android:hint="@string/UserName"
         android:inputType="textPersonName"
         android:padding="10dp"
-        android:textSize="16sp"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/register_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
         android:background="@color/半透明"
         android:hint="@string/Password"
         android:inputType="textPassword"
         android:padding="10dp"
-        android:textSize="16sp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/confirm_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
         android:background="@color/半透明"
         android:hint="@string/ConfiremPassword"
         android:inputType="textPassword"
         android:padding="10dp"
-        android:textSize="16sp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/register_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/RegisterNow"
-        android:textSize="18sp"
-        android:padding="10dp"
-        android:backgroundTint="@color/white"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="10dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/white"
+        android:padding="10dp"
+        android:text="@string/RegisterNow"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
 
 </LinearLayout>
