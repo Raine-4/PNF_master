@@ -115,28 +115,29 @@ class ControlActivity : BaseActivity() {
         }
 
         val btComm = BluetoothCommunication(handler)
-        val device = MyApplication.bluetoothDevice
-        val socket = MyApplication.bluetoothSocket
+        // 由于未知原因，这里如果使用device和socket进行赋值，有时会出现为null的情况
+//        val device = MyApplication.bluetoothDevice
+//        val socket = MyApplication.bluetoothSocket
 
         binding.curDevice.text =
-            if (device != null)  device.name
+            if (MyApplication.bluetoothDevice != null)  MyApplication.bluetoothDevice!!.name
             else " ${getString(R.string.None)}"
 
         // 点击启动之后开始运行线程，可以读取信息了。
         binding.StartBtn.setOnClickListener {
-            if (device == null || socket == null) {
+            if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 Log.e(TAG, "MainActivity:StartBtn.\n" +
-                        "device is $device \n" +
-                        "socket is $socket \n" +
+//                        "device is $device \n" +
+//                        "socket is $socket \n" +
                         "MyApplication.bluetoothDevice is ${MyApplication.bluetoothDevice} \n " +
                         "MyApplication.bluetoothSocket is ${MyApplication.bluetoothSocket}")
                 getString(R.string.fail_no_connection).Toast()
             } else {
-                socket.let {
+                MyApplication.bluetoothSocket.let {
                     Log.d(TAG, "Both device and socket are not null.\n" +
-                            "device is $device\n" +
+                            "device is ${MyApplication.bluetoothDevice}\n" +
                             "socket is $it")
-                    val connectedThread = btComm.ConnectedThread(it)
+                    val connectedThread = btComm.ConnectedThread(it!!)
                     if (binding.StartBtn.text == getString(R.string.start)) {
                         connectedThread.start()
                         binding.StartBtn.text = getString(R.string.Close)
@@ -151,14 +152,15 @@ class ControlActivity : BaseActivity() {
 
         // 电机使能
         binding.enableBtn.setOnClickListener {
-            if (device == null || MyApplication.bluetoothSocket == null) {
+            if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 getString(R.string.fail_no_connection).Toast()
                 Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
-                        "device: $device\n" +
-                        "socket: $socket")
+                        "device: ${MyApplication.bluetoothDevice}\n" +
+                        "socket: ${MyApplication.bluetoothSocket}")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
-                val hexString = "B5E7BBFACAB9C4DC0d0a"  // 十六进制字符串
+//                val hexString = "B5E7BBFACAB9C4DC0d0a"  // 电机使能
+                val hexString = "CEBBD6C3C4ACC8CF0d0a" // 位置默认
                 val bytes = hexString.hexStringToByteArray() // 将十六进制字符串转换为字节数组
                 connectedThread.write(bytes)
             }
@@ -166,11 +168,11 @@ class ControlActivity : BaseActivity() {
 
         // 停止使能
         binding.disableBtn.setOnClickListener {
-            if (device == null || MyApplication.bluetoothSocket == null) {
+            if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 getString(R.string.fail_no_connection).Toast()
                 Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
-                        "device: $device\n" +
-                        "socket: $socket")
+                        "device: ${MyApplication.bluetoothDevice}\n" +
+                        "socket: ${MyApplication.bluetoothSocket}")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
                 val hexString = "CDA3D6B9CAB9C4DC0d0a"
@@ -181,11 +183,11 @@ class ControlActivity : BaseActivity() {
 
         // 点击发送按钮调用write(bytes: ByteArray)方法
         binding.SendBtn.setOnClickListener {
-            if (device == null || MyApplication.bluetoothSocket == null) {
+            if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 getString(R.string.fail_no_connection).Toast()
                  Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
-                "device: $device\n" +
-                "socket: $socket")
+                         "device: ${MyApplication.bluetoothDevice}\n" +
+                         "socket: ${MyApplication.bluetoothSocket}")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
                 val hexString = binding.inputEditText.text.toString()  // 十六进制字符串

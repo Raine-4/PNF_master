@@ -139,8 +139,7 @@
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
     <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="Permission_granted">蓝牙扫描权限已通过</string>
     <string name="Permission_rejected">您已拒绝授予扫描权限。</string>
@@ -150,6 +149,6 @@
     <string name="velocity">速度</string>
     <string name="current">电流</string>
     <string name="torque">力矩</string>
-    <string name="enable">电机使能</string>
-    <string name="disable">停止使能</string>
+    <string name="enable">启动电机</string>
+    <string name="disable">停止电机</string>
 </resources>
