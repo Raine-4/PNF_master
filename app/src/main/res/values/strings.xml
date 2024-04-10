@@ -89,7 +89,7 @@
     <string name="start">启动</string>
     <string name="SearchBtDevices">搜索蓝牙设备</string>
     <string name="Help">使用帮助</string>
-    <string name="DeveloperMode">开发者模式</string>
+    <string name="DeveloperMode">调试模式</string>
     <string name="Settings">设置</string>
     <string name="not_connected_back">尚未与设备建立蓝牙连接。是否确定返回主界面？</string>
     <string name="Yes">确定</string>

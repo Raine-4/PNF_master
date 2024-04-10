@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
 
         // 测试通道
         binding.test.setOnClickListener {
-            val intent = Intent(this, ControlActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
 
@@ -78,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
             hdSetBgColor.sendMessage(msg) // 跳转到handler1
         }.start()
 
-        // 启动动画
+        // 启动logo和欢迎标语动画
         binding.appName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in))
         binding.logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.logo_animation))
 
@@ -132,6 +132,7 @@ class LoginActivity : AppCompatActivity() {
                     } else { editor.clear() }
                     editor.apply()
                 }
+                MyApplication.isSkipped = false
                 val intent = Intent(this, ControlActivity::class.java)
                 intent.putExtra("userAccount", account)
                 intent.putExtra("userId", MyApplication.userId)

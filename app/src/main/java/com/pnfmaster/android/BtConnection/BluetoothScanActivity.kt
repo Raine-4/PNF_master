@@ -68,7 +68,35 @@ class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
                     // 直接请求权限
                     requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1)
                 }
-            } else {
+            }
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+                // 当用户拒绝了权限
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // 解释为什么需要权限
+                    AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.permission_needed))
+                        .setMessage(getString(R.string.permission_BtScan_needed))
+                        .setPositiveButton(getString(R.string.Yes)) { _, _ ->
+                            // 再次请求权限
+                            requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+                        }
+                        .setNegativeButton(getString(R.string.No)) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
+                } else {
+                    // 直接请求权限
+                    requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+                }
+            }
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
+                == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
+            {
                 if (mBluetoothAdapter.isDiscovering) stopScanning() else startScanning()
             }
         }
