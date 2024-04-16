@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
 
         // 测试通道
         binding.test.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, TestActivity::class.java)
             startActivity(intent)
         }
 
@@ -47,13 +47,13 @@ class LoginActivity : AppCompatActivity() {
             if (binding.changeLanguage.text == "English") {
                 Locale.setDefault(Locale.ENGLISH)
                 val config: Configuration = baseContext.resources.configuration
-                config.locale = Locale.ENGLISH
+                config.setLocale(Locale.ENGLISH)
                 baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
                 recreate()
             } else {
-                Locale.setDefault(Locale.CHINESE)
+                Locale.setDefault(Locale.SIMPLIFIED_CHINESE)
                 val config: Configuration = baseContext.resources.configuration
-                config.locale = Locale.CHINESE
+                config.setLocale(Locale.SIMPLIFIED_CHINESE)
                 baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
                 recreate()
             }

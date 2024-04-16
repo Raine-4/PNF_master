@@ -87,7 +87,7 @@ class ControlActivity : BaseActivity() {
                         val receivedData = String(buffer, Charset.forName("GBK"))
                         val filteredData = receivedData.filter { !it.isWhitespace() && it.code != 0xFFFD }
                         val content = "<font color='red'>[$curTime]收到消息：$filteredData</font>"
-                        binding.receiveText.append(Html.fromHtml(content))
+                        binding.receiveText.append(Html.fromHtml(content, 0))
                         binding.receiveText.append("\n")
 
                         // ScrollView自动滚动到最后一行：
@@ -107,7 +107,7 @@ class ControlActivity : BaseActivity() {
                     }
                     1 -> {
                         val content = "<font color='blue'>[$curTime]" + getString(R.string.msgSend) + "${binding.inputEditText.text}</font>\n"
-                        binding.receiveText.append(Html.fromHtml(content))
+                        binding.receiveText.append(Html.fromHtml(content, 1))
                         binding.receiveText.append("\n")
                     }
                 }
@@ -279,7 +279,6 @@ class ControlActivity : BaseActivity() {
                     Log.d(TAG, "Device is null. Start the BluetoothScanActivity")
                     val intent = Intent(this, BluetoothScanActivity::class.java)
                     startActivity(intent)
-//                    finish()
                 } else {
                     AlertDialog.Builder(this)
                         .setTitle(getString(R.string.currentDevice))
@@ -287,7 +286,7 @@ class ControlActivity : BaseActivity() {
                                 getString(R.string.MacAddress) + "：${device.address}")
                         .setPositiveButton(getString(R.string.Yes),null)
                         .setNegativeButton(getString(R.string.break_connection)) { _, _ ->
-                            Log.d(TAG, "Main: onOptionsItemSelected. User cancelled the bluetooth.")
+                            Log.d(TAG, "Main: onOptionsItemSelected. User ended the connection.")
                             binding.curDevice.text = " ${getString(R.string.None)}"
                             MyApplication.bluetoothSocket!!.close()
                             MyApplication.bluetoothDevice = null

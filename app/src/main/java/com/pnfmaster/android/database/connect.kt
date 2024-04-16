@@ -8,7 +8,6 @@ import java.sql.DriverManager
 import java.sql.PreparedStatement
 import java.sql.SQLException
 
-
 object connect {
 
     const val DBNAME = "pnf_master"

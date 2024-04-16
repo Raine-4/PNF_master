@@ -151,4 +151,6 @@
     <string name="torque">力矩</string>
     <string name="enable">启动电机</string>
     <string name="disable">停止电机</string>
+    <string name="my_param">我的参数</string>
+    <string name="add">加</string>
 </resources>
