@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="Introduction">Author: Na Yufeng. Version: v0.1.1</string>
     <string name="usage">
         1. Application Introduction\n
@@ -20,7 +20,6 @@
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="UUID" tools:ignore="TypographyDashes">00001101-0000-1000-8000-00805f9b34fb</string>
     <string name="welcome_register">Welcome to register PNF Master</string>
     <string name="poem">Welcome to use PNF Master.</string>
     <string name="Profile">My Profile</string>
@@ -153,5 +152,7 @@
     <string name="my_param">My Parameters</string>
     <string name="add">Add</string>
     <string name="chat_with_AI">Click to chat with AI.</string>
+    <string name="what_do_you_want_to_know">What do you want to know?</string>
+    <string name="how_can_I_help">Hello! I am PNF Master. How can I help you?</string>
 
 </resources>

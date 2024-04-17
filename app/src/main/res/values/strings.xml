@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">PNF_Master</string>
+    <string name="app_name" translatable="false">PNF Master</string>
     <string name="Introduction">作者: 那雨枫. 版本: v0.1.1</string>
     <string name="usage">
         1. 应用介绍\n
@@ -21,7 +21,7 @@
     <!-- Strings used for fragments for navigation -->
     <string name="next">下一个</string>
     <string name="previous">上一个</string>
-    <string name="UUID">00001101-0000-1000-8000-00805f9b34fb</string>
+    <string name="UUID" translatable="false">00001101-0000-1000-8000-00805f9b34fb</string>
     <string name="TargetDeviceName" translatable="false">YANK.CAO</string>
     <string name="welcome_register">欢迎注册PNF Master</string>
     <string name="poem">科技织梦，康复成诗。</string>
@@ -154,5 +154,7 @@
     <string name="my_param">我的参数</string>
     <string name="add">加</string>
     <string name="chat_with_AI">点击此处与人工智能交流。</string>
+    <string name="what_do_you_want_to_know">您想知道什么？</string>
+    <string name="how_can_I_help">你好！我是PNF Master，请问你有什么需要帮助的呢？</string>
     <!-- Strings used for fragments for navigation -->
 </resources>

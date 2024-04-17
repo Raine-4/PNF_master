@@ -31,7 +31,7 @@ class ChatActivity : AppCompatActivity() {
 
         // Initialize Greeting Message
         val mData = ArrayList<Chatlist>()
-        val firstChat = Chatlist("PNFMaster: ", "你好！我是PNF Master，请问你有什么需要帮助的呢？")
+        val firstChat = Chatlist("PNFMaster: ", getString(R.string.how_can_I_help))
         mData.add(firstChat)
 
         // Set adapter and manager for recyclerView
