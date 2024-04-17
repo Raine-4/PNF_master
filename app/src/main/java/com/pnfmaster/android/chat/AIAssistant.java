@@ -1,5 +1,7 @@
 package com.pnfmaster.android.chat;
 
+import com.pnfmaster.android.BuildConfig;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,9 +15,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class AIAssistant{
-    // public static final String APP_ID = "61872386";
-    public static final String API_KEY = "Lb0TBhOswHkiutLhW9ECI4xH";
-    public static final String SECRET_KEY = "iYOfF5xRRAXUQ4386KX0exOkmpEHPbQ6";
 
     // Store the dialog content.
     public JSONArray Dialogue_Content;
@@ -71,8 +70,8 @@ public class AIAssistant{
      */
     public String getAccessToken() throws IOException, JSONException {
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, "grant_type=client_credentials&client_id=" + API_KEY
-                + "&client_secret=" + SECRET_KEY);
+        RequestBody body = RequestBody.create(mediaType, "grant_type=client_credentials&client_id=" + BuildConfig.API_KEY
+                + "&client_secret=" + BuildConfig.SECRET_KEY);
         Request request = new Request.Builder()
                 .url("https://aip.baidubce.com/oauth/2.0/token")
                 .method("POST", body)

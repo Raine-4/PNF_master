@@ -3,6 +3,9 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+val SECRET_KEY: String by project
+val API_KEY: String by project
+
 android {
     namespace = "com.pnfmaster.android"
     compileSdk = 34
@@ -16,6 +19,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_KEY", API_KEY)
+        buildConfigField("String", "SECRET_KEY", SECRET_KEY)
     }
 
     buildTypes {
@@ -35,6 +41,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures{
+        buildConfig = true
         viewBinding = true
     }
 }

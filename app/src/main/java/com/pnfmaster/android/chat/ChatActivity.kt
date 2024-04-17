@@ -49,17 +49,18 @@ class ChatActivity : AppCompatActivity() {
         binding.sendBtn.setOnClickListener {
             val user_ask = binding.etChat.text.toString()
             val newChatlist = Chatlist(getString(R.string.you_), user_ask)
+            // Clear EditText
+            binding.etChat.setText("")
 
             // 设置TextView的drawableStart为用户头像
             val drawable = ContextCompat.getDrawable(context, R.drawable.ic_username)
             val textview = findViewById<TextView>(R.id.speaker_name)
             textview.setCompoundDrawablesWithIntrinsicBounds(drawable,null,null,null)
             mData.add(newChatlist)
+
             // Update data
             chatAdapter.update(mData)
             rc_chatlist.adapter = chatAdapter
-            // Clear EditText
-            binding.etChat.setText("")
 
             // Get answer from AI
             Thread {
@@ -92,14 +93,14 @@ class ChatActivity : AppCompatActivity() {
             val activity = activityReference.get() ?: return
             when (msg.what) {
                 MESSAGE_UPDATE -> {
-                    val mData = msg.obj as List<Chatlist>
-                    activity.chatAdapter.update(mData)
-                    activity.rc_chatlist.adapter = activity.chatAdapter
-
                     // 设置TextView的drawableStart为AI头像
                     val drawable = ContextCompat.getDrawable(activity, R.drawable.ic_robot)
                     val textview = activity.findViewById<TextView>(R.id.speaker_name)
                     textview?.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+
+                    val mData = msg.obj as List<Chatlist>
+                    activity.chatAdapter.update(mData)
+                    activity.rc_chatlist.adapter = activity.chatAdapter
                 }
             }
         }
