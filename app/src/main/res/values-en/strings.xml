@@ -154,5 +154,6 @@
     <string name="chat_with_AI">Click to chat with AI.</string>
     <string name="what_do_you_want_to_know">What do you want to know?</string>
     <string name="how_can_I_help">Hello! I am PNF Master. How can I help you?</string>
+    <string name="you_">"You: "</string>
 
 </resources>

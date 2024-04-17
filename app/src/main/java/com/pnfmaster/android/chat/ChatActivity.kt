@@ -1,17 +1,21 @@
 package com.pnfmaster.android.chat
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.util.Log
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pnfmaster.android.MyApplication.Companion.context
 import com.pnfmaster.android.R
 import com.pnfmaster.android.databinding.ActivityChatBinding
+import com.pnfmaster.android.utils.Toast
+import java.lang.ref.WeakReference
 
 class ChatActivity : AppCompatActivity() {
     private lateinit var binding : ActivityChatBinding
@@ -31,7 +35,7 @@ class ChatActivity : AppCompatActivity() {
 
         // Initialize Greeting Message
         val mData = ArrayList<Chatlist>()
-        val firstChat = Chatlist("PNFMaster: ", getString(R.string.how_can_I_help))
+        val firstChat = Chatlist("Master: ", getString(R.string.how_can_I_help))
         mData.add(firstChat)
 
         // Set adapter and manager for recyclerView
@@ -44,7 +48,12 @@ class ChatActivity : AppCompatActivity() {
         // Send button
         binding.sendBtn.setOnClickListener {
             val user_ask = binding.etChat.text.toString()
-            val newChatlist = Chatlist("User: ", user_ask)
+            val newChatlist = Chatlist(getString(R.string.you_), user_ask)
+
+            // 设置TextView的drawableStart为用户头像
+            val drawable = ContextCompat.getDrawable(context, R.drawable.ic_username)
+            val textview = findViewById<TextView>(R.id.speaker_name)
+            textview.setCompoundDrawablesWithIntrinsicBounds(drawable,null,null,null)
             mData.add(newChatlist)
             // Update data
             chatAdapter.update(mData)
@@ -56,10 +65,13 @@ class ChatActivity : AppCompatActivity() {
             Thread {
                 val reply = try {
                     val ai = AIAssistant()
-                    Chatlist("PNFMaster: ", ai.GetAnswer(user_ask))
+                    runOnUiThread {
+                        "正在思考中...".Toast()
+                    }
+                    Chatlist("Master: ", ai.GetAnswer(user_ask))
                 } catch (e: Exception) {
                     Log.e("ChatActivity", e.toString())
-                    Chatlist("PNFMaster: ", "Error")
+                    Chatlist("Master: ", "Error")
                 }
                 mData.add(reply)
 
@@ -67,20 +79,27 @@ class ChatActivity : AppCompatActivity() {
                 val msg = Message()
                 msg.what = MESSAGE_UPDATE
                 msg.obj = mData
-                myHandler().sendMessage(msg)
+                MyHandler(this).sendMessage(msg)
             }.start()
         }
     } // onCrete
 
-    @SuppressLint("HandlerLeak")
-    inner class myHandler : Handler(Looper.getMainLooper()) {
+    private class MyHandler(activity: ChatActivity) : Handler(Looper.getMainLooper()) {
+        // 弱引用防止内存泄漏，并且在ChatActivity被销毁后，MyHandler不会尝试错误地更新UI。
+        private val activityReference = WeakReference(activity)
         @Suppress("UNCHECKED_CAST")
         override fun handleMessage(msg: Message) {
+            val activity = activityReference.get() ?: return
             when (msg.what) {
-                MESSAGE_UPDATE ->  {
+                MESSAGE_UPDATE -> {
                     val mData = msg.obj as List<Chatlist>
-                    chatAdapter.update(mData)
-                    rc_chatlist.adapter = chatAdapter
+                    activity.chatAdapter.update(mData)
+                    activity.rc_chatlist.adapter = activity.chatAdapter
+
+                    // 设置TextView的drawableStart为AI头像
+                    val drawable = ContextCompat.getDrawable(activity, R.drawable.ic_robot)
+                    val textview = activity.findViewById<TextView>(R.id.speaker_name)
+                    textview?.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
                 }
             }
         }

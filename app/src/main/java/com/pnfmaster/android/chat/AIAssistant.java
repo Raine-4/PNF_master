@@ -17,11 +17,10 @@ public class AIAssistant{
     public static final String API_KEY = "Lb0TBhOswHkiutLhW9ECI4xH";
     public static final String SECRET_KEY = "iYOfF5xRRAXUQ4386KX0exOkmpEHPbQ6";
 
-    public JSONArray Dialogue_Content;//用来储存对话内容，当然初始是空的
+    // Store the dialog content.
+    public JSONArray Dialogue_Content;
 
     AIAssistant(){
-        // 构造函数，先初始化Dialogue_Content一下，此时里边是空的啥也没有
-        // 不过也可以预先添加对话，以实现一些希望的业务功能
         Dialogue_Content = new JSONArray();
     }
 
