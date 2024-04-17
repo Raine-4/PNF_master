@@ -82,12 +82,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
-
-
-
-
 //  --------------------------------------  以下为基础设置  ------------------------------------------
 
         // 设置底部导航栏
@@ -95,14 +89,15 @@ class MainActivity : AppCompatActivity() {
         bottomNavView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_position -> { showFragment(PositionFragment())
-                    true}
+                    true }
                 R.id.nav_velocity -> { showFragment(VelocityFragment())
-                    true}
+                    true }
                 R.id.nav_current -> { showFragment(CurrentFragment())
-                    true}
+                    true }
                 R.id.nav_torque -> { showFragment(TorqueFragment())
-                    true}
-                else -> { false }
+                    true }
+                else -> {
+                    false}
             }
         }
     }

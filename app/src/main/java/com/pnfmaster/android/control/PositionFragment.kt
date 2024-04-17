@@ -1,5 +1,6 @@
 package com.pnfmaster.android.control
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -26,17 +27,29 @@ import java.util.Calendar
 
 class PositionFragment : Fragment() {
 
-    private val TAG = "PositionFragment"
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    companion object {
+        const val TAG = "PositionFragment"
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d(TAG, "onAttach")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate")
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View? {
+        Log.d(TAG, "onCreateView")
         return inflater.inflate(R.layout.fragment_position, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated")
 
         /* 1. 图表部分
         * 目前的数据是随机生成的。
@@ -70,10 +83,7 @@ class PositionFragment : Fragment() {
         */
 
         // 设置Y轴
-        chart.axisRight.isEnabled = false
-
         chart.axisLeft.apply {
-            isEnabled = true
             axisMinimum = 0f
             axisMaximum = 100f
             granularity = 1f // 颗粒度
@@ -192,6 +202,13 @@ class PositionFragment : Fragment() {
         }
 
     }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart")
+    }
+
+
 // -----------------------------------------  工具函数  -----------------------------------------
     private fun addData(chart: LineChart, entries: MutableList<Entry>) {
 

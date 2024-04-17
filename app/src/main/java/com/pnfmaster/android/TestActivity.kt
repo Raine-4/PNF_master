@@ -1,29 +1,36 @@
 package com.pnfmaster.android
 
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pnfmaster.android.databinding.ActivityTestBinding
-import android.view.ViewGroup
-import android.widget.*
 
 class TestActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityTestBinding
     private lateinit var containerLayout: LinearLayout
     private lateinit var starButton: Button
+    private lateinit var mask: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTestBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        containerLayout = findViewById(R.id.containerLayout)
-        starButton = findViewById(R.id.starButton)
+        containerLayout = binding.containerLayout
+        starButton = binding.starButton
+        mask = binding.mask
 
-        findViewById<Button>(R.id.addButton).setOnClickListener {
+        binding.addButton.setOnClickListener {
             addEditText()
         }
 
-        starButton.setOnClickListener {
+        binding.starButton.setOnClickListener {
             // 处理收集内容的逻辑
             // 星号按钮状态切换
             starButton.isSelected = !starButton.isSelected
@@ -60,5 +67,11 @@ class TestActivity : AppCompatActivity() {
                 Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show()
             }
         }
+
+        // 遮罩层的点击事件
+        mask.setOnClickListener {
+            editText.clearFocus()
+        }
+
     }
 }
