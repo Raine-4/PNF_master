@@ -1,4 +1,4 @@
-package com.pnfmaster.android;
+package com.pnfmaster.android.chat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,7 +19,7 @@ public class AIAssistant{
 
     public JSONArray Dialogue_Content;//用来储存对话内容，当然初始是空的
 
-    void WenXin(){
+    AIAssistant(){
         // 构造函数，先初始化Dialogue_Content一下，此时里边是空的啥也没有
         // 不过也可以预先添加对话，以实现一些希望的业务功能
         Dialogue_Content = new JSONArray();

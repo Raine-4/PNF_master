@@ -1,9 +1,11 @@
 package com.pnfmaster.android
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.pnfmaster.android.chat.ChatActivity
 import com.pnfmaster.android.databinding.ActivityTasksBinding
 import com.pnfmaster.android.utils.Toast
 
@@ -22,11 +24,12 @@ class TasksActivity : AppCompatActivity() {
             it.title = getString(R.string.my_param)
         }
 
-//        binding.fab.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null)
-//                .setAnchorView(R.id.fab).show()
-//        }
+        // 打开AI聊天界面
+        binding.fab.setOnClickListener {
+            val intent = Intent(this, ChatActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

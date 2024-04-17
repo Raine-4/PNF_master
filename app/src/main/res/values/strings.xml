@@ -153,4 +153,6 @@
     <string name="disable">停止电机</string>
     <string name="my_param">我的参数</string>
     <string name="add">加</string>
+    <string name="chat_with_AI">点击此处与人工智能交流。</string>
+    <!-- Strings used for fragments for navigation -->
 </resources>
