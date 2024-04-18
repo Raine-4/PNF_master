@@ -7,6 +7,7 @@ import android.os.Message
 import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,10 +34,23 @@ class ChatActivity : AppCompatActivity() {
             it.title = getString(R.string.app_name)
         }
 
-        // Initialize Greeting Message
+        // Initialize user background and generate greeting message
         val mData = ArrayList<Chatlist>()
-        val firstChat = Chatlist("Master: ", getString(R.string.how_can_I_help))
-        mData.add(firstChat)
+        val initMsg = getString(R.string.initMsg)
+        Thread {
+            val reply = try {
+                runOnUiThread {
+                    "正在加载中，请稍后..".Toast(Toast.LENGTH_LONG)
+                }
+                Chatlist("Master: ", AIAssistant().GetAnswer(initMsg))
+            } catch (e: Exception) {
+                Log.e("ChatActivity", e.toString())
+                Chatlist("Master: ", "Error")
+            }
+            mData.add(reply)
+        }.start()
+//        val firstChat = Chatlist("Master: ", getString(R.string.how_can_I_help))
+//        mData.add(firstChat)
 
         // Set adapter and manager for recyclerView
         chatAdapter = ChatlistAdapter(this, mData)
@@ -67,7 +81,7 @@ class ChatActivity : AppCompatActivity() {
                 val reply = try {
                     val ai = AIAssistant()
                     runOnUiThread {
-                        "正在思考中...".Toast()
+                        "正在思考中...".Toast(Toast.LENGTH_LONG)
                     }
                     Chatlist("Master: ", ai.GetAnswer(user_ask))
                 } catch (e: Exception) {

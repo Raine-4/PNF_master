@@ -19,20 +19,16 @@ public class AIAssistant{
     // Store the dialog content.
     public JSONArray Dialogue_Content;
 
-    AIAssistant(){
-        Dialogue_Content = new JSONArray();
-    }
+    AIAssistant(){ Dialogue_Content = new JSONArray(); }
 
     static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().build();
 
     public String GetAnswer(String user_msg) throws IOException, JSONException {
 
+        // 将JSONObject添加到JSONArray中
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("role", "user");
         jsonObject.put("content", user_msg);
-
-        // 将JSONObject添加到JSONArray中
-        // 这里就是把用户说的话添加进对话内容里，然后发给ai
         Dialogue_Content.put(jsonObject);
 
         MediaType mediaType = MediaType.parse("application/json");
@@ -63,7 +59,7 @@ public class AIAssistant{
     }
 
     /**
-     * 从用户的AK，SK生成鉴权签名（Access Token）
+     * 从用户的API_KEK和SECRET_KEK生成鉴权签名（Access Token）
      *
      * @return 鉴权签名（Access Token）
      * @throws IOException IO异常
