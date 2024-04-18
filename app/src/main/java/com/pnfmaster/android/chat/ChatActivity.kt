@@ -1,5 +1,6 @@
 package com.pnfmaster.android.chat
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -26,6 +27,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var binding : ActivityChatBinding
     private lateinit var chatAdapter : ChatlistAdapter
     private lateinit var rcChatlist : RecyclerView
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Initialize Interface
@@ -38,26 +40,37 @@ class ChatActivity : AppCompatActivity() {
             it.title = getString(R.string.app_name)
         }
 
-        // Initialize user background and generate greeting message
         val mData = ArrayList<Chatlist>()
-        val initMsg = getString(R.string.initMsg)
-        Thread {
-            val reply = try {
-                runOnUiThread {
-                    "正在加载中，请稍后..".Toast(Toast.LENGTH_LONG)
+        chatAdapter = ChatlistAdapter(this, mData) // Initialize adapter
+
+        // Add a loading message
+        val loading = Chatlist("Master: ", "正在初始化...")
+        mData.add(loading)
+        chatAdapter.update(mData)
+
+//        val initMsg = getString(R.string.initMsg)
+        val initMsg = "今天天气怎么样？"
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val reply = withContext(Dispatchers.IO) {
+                try {
+                    Chatlist("Master: ", AIAssistant().GetAnswer(initMsg))
+                } catch (e: Exception) {
+                    Log.e("ChatActivity", e.toString())
+                    Chatlist("Master: ", "Error: $e")
                 }
-                Chatlist("Master: ", AIAssistant().GetAnswer(initMsg))
-            } catch (e: Exception) {
-                Log.e("ChatActivity", e.toString())
-                Chatlist("Master: ", "Error")
             }
             mData.add(reply)
-        }.start()
-//        val firstChat = Chatlist("Master: ", getString(R.string.how_can_I_help))
-//        mData.add(firstChat)
+            chatAdapter.update(mData)
+            // chatAdapter.notifyDataSetChanged() // 我也不知道为什么加上这一句就可以自动显示了。
+        }
+
+        // Remove the loading message
+        mData.removeAt(mData.size-1)
+        chatAdapter.update(mData)
+
 
         // Set adapter and manager for recyclerView
-        chatAdapter = ChatlistAdapter(this, mData)
         val layoutManager = LinearLayoutManager(this)
         rcChatlist.adapter = chatAdapter
         rcChatlist.layoutManager = layoutManager
@@ -70,43 +83,21 @@ class ChatActivity : AppCompatActivity() {
             // Clear EditText
             binding.etChat.setText("")
 
-//            // 设置TextView的drawableStart为用户头像
-//            val drawable = ContextCompat.getDrawable(context, R.drawable.ic_username)
-//            val textview = findViewById<TextView>(R.id.speaker_name)
-//            textview.setCompoundDrawablesWithIntrinsicBounds(drawable,null,null,null)
-
             // Update data
             mData.add(newChatlist)
             chatAdapter.update(mData)
             rcChatlist.adapter = chatAdapter
 
-            // Get answer from AI
-//            Thread {
-//                val reply = try {
-//                    val ai = AIAssistant()
-//                    runOnUiThread {
-//                        "正在思考中...".Toast(Toast.LENGTH_LONG)
-//                    }
-//                    Chatlist("Master: ", ai.GetAnswer(user_ask))
-//                } catch (e: Exception) {
-//                    Log.e("ChatActivity", e.toString())
-//                    Chatlist("Master: ", "Error")
-//                }
-//                mData.add(reply)
-//
-//                // 子线程中不能直接更新UI，必须发给handler在主线程中完成
-//                val msg = Message()
-//                msg.what = MESSAGE_UPDATE
-//                msg.obj = mData
-//                MyHandler(this).sendMessage(msg)
-//            }.start()
+            // Add a loading message
+            val loading = Chatlist("Master: ", "正在思考中...")
+            mData.add(loading)
+            chatAdapter.update(mData)
 
             // Get answer from AI
             CoroutineScope(Dispatchers.Main).launch {
                 val reply = withContext(Dispatchers.IO) {
                     try {
                         val ai = AIAssistant()
-                        "正在思考中...".Toast(Toast.LENGTH_LONG)
                         Chatlist("Master: ", ai.GetAnswer(user_ask))
                     } catch (e: Exception) {
                         Log.e("ChatActivity", e.toString())
@@ -116,6 +107,11 @@ class ChatActivity : AppCompatActivity() {
                 mData.add(reply)
                 chatAdapter.update(mData)
             }
+
+            // Remove the loading message
+            mData.removeAt(mData.size-1)
+            chatAdapter.update(mData)
+
         }
     } // onCrete
 
@@ -127,11 +123,6 @@ class ChatActivity : AppCompatActivity() {
 //            val activity = activityReference.get() ?: return
 //            when (msg.what) {
 //                MESSAGE_UPDATE -> {
-//                    // 设置TextView的drawableStart为AI头像
-//                    val drawable = ContextCompat.getDrawable(activity, R.drawable.ic_robot)
-//                    val textview = activity.findViewById<TextView>(R.id.speaker_name)
-//                    textview?.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
-//
 //                    val mData = msg.obj as List<Chatlist>
 //                    activity.chatAdapter.update(mData)
 //                    activity.rcChatlist.adapter = activity.chatAdapter

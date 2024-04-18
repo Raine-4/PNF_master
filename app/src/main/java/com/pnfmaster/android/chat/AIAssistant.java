@@ -37,7 +37,6 @@ public class AIAssistant{
                 Dialogue_Content.toString() +
                 ",\"disable_search\":false,\"enable_citation\":false}");
 
-
         Request request = new Request.Builder()
                 .url("https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=" +
                         getAccessToken())
