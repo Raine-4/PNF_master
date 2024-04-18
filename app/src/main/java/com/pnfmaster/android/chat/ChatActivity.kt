@@ -16,18 +16,22 @@ import com.pnfmaster.android.MyApplication.Companion.context
 import com.pnfmaster.android.R
 import com.pnfmaster.android.databinding.ActivityChatBinding
 import com.pnfmaster.android.utils.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
 class ChatActivity : AppCompatActivity() {
     private lateinit var binding : ActivityChatBinding
     private lateinit var chatAdapter : ChatlistAdapter
-    private lateinit var rc_chatlist : RecyclerView
+    private lateinit var rcChatlist : RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Initialize Interface
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        rc_chatlist = binding.rcChatlist
+        rcChatlist = binding.rcChatlist
         setSupportActionBar(binding.toolbarChat)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
@@ -55,9 +59,9 @@ class ChatActivity : AppCompatActivity() {
         // Set adapter and manager for recyclerView
         chatAdapter = ChatlistAdapter(this, mData)
         val layoutManager = LinearLayoutManager(this)
-        rc_chatlist.adapter = chatAdapter
-        rc_chatlist.layoutManager = layoutManager
-//        rc_chatlist.hasFixedSize() = true
+        rcChatlist.adapter = chatAdapter
+        rcChatlist.layoutManager = layoutManager
+//        rcChatlist.hasFixedSize() = true
 
         // Send button
         binding.sendBtn.setOnClickListener {
@@ -66,59 +70,75 @@ class ChatActivity : AppCompatActivity() {
             // Clear EditText
             binding.etChat.setText("")
 
-            // 设置TextView的drawableStart为用户头像
-            val drawable = ContextCompat.getDrawable(context, R.drawable.ic_username)
-            val textview = findViewById<TextView>(R.id.speaker_name)
-            textview.setCompoundDrawablesWithIntrinsicBounds(drawable,null,null,null)
-            mData.add(newChatlist)
+//            // 设置TextView的drawableStart为用户头像
+//            val drawable = ContextCompat.getDrawable(context, R.drawable.ic_username)
+//            val textview = findViewById<TextView>(R.id.speaker_name)
+//            textview.setCompoundDrawablesWithIntrinsicBounds(drawable,null,null,null)
 
             // Update data
+            mData.add(newChatlist)
             chatAdapter.update(mData)
-            rc_chatlist.adapter = chatAdapter
+            rcChatlist.adapter = chatAdapter
 
             // Get answer from AI
-            Thread {
-                val reply = try {
-                    val ai = AIAssistant()
-                    runOnUiThread {
+//            Thread {
+//                val reply = try {
+//                    val ai = AIAssistant()
+//                    runOnUiThread {
+//                        "正在思考中...".Toast(Toast.LENGTH_LONG)
+//                    }
+//                    Chatlist("Master: ", ai.GetAnswer(user_ask))
+//                } catch (e: Exception) {
+//                    Log.e("ChatActivity", e.toString())
+//                    Chatlist("Master: ", "Error")
+//                }
+//                mData.add(reply)
+//
+//                // 子线程中不能直接更新UI，必须发给handler在主线程中完成
+//                val msg = Message()
+//                msg.what = MESSAGE_UPDATE
+//                msg.obj = mData
+//                MyHandler(this).sendMessage(msg)
+//            }.start()
+
+            // Get answer from AI
+            CoroutineScope(Dispatchers.Main).launch {
+                val reply = withContext(Dispatchers.IO) {
+                    try {
+                        val ai = AIAssistant()
                         "正在思考中...".Toast(Toast.LENGTH_LONG)
+                        Chatlist("Master: ", ai.GetAnswer(user_ask))
+                    } catch (e: Exception) {
+                        Log.e("ChatActivity", e.toString())
+                        Chatlist("Master: ", "Error")
                     }
-                    Chatlist("Master: ", ai.GetAnswer(user_ask))
-                } catch (e: Exception) {
-                    Log.e("ChatActivity", e.toString())
-                    Chatlist("Master: ", "Error")
                 }
                 mData.add(reply)
-
-                // 子线程中不能直接更新UI，必须发给handler在主线程中完成
-                val msg = Message()
-                msg.what = MESSAGE_UPDATE
-                msg.obj = mData
-                MyHandler(this).sendMessage(msg)
-            }.start()
+                chatAdapter.update(mData)
+            }
         }
     } // onCrete
 
-    private class MyHandler(activity: ChatActivity) : Handler(Looper.getMainLooper()) {
-        // 弱引用防止内存泄漏，并且在ChatActivity被销毁后，MyHandler不会尝试错误地更新UI。
-        private val activityReference = WeakReference(activity)
-        @Suppress("UNCHECKED_CAST")
-        override fun handleMessage(msg: Message) {
-            val activity = activityReference.get() ?: return
-            when (msg.what) {
-                MESSAGE_UPDATE -> {
-                    // 设置TextView的drawableStart为AI头像
-                    val drawable = ContextCompat.getDrawable(activity, R.drawable.ic_robot)
-                    val textview = activity.findViewById<TextView>(R.id.speaker_name)
-                    textview?.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
-
-                    val mData = msg.obj as List<Chatlist>
-                    activity.chatAdapter.update(mData)
-                    activity.rc_chatlist.adapter = activity.chatAdapter
-                }
-            }
-        }
-    }
+//    private class MyHandler(activity: ChatActivity) : Handler(Looper.getMainLooper()) {
+//        // 弱引用防止内存泄漏，并且在ChatActivity被销毁后，MyHandler不会尝试错误地更新UI。
+//        private val activityReference = WeakReference(activity)
+//        @Suppress("UNCHECKED_CAST")
+//        override fun handleMessage(msg: Message) {
+//            val activity = activityReference.get() ?: return
+//            when (msg.what) {
+//                MESSAGE_UPDATE -> {
+//                    // 设置TextView的drawableStart为AI头像
+//                    val drawable = ContextCompat.getDrawable(activity, R.drawable.ic_robot)
+//                    val textview = activity.findViewById<TextView>(R.id.speaker_name)
+//                    textview?.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+//
+//                    val mData = msg.obj as List<Chatlist>
+//                    activity.chatAdapter.update(mData)
+//                    activity.rcChatlist.adapter = activity.chatAdapter
+//                }
+//            }
+//        }
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
