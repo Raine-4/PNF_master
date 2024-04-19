@@ -2,26 +2,18 @@ package com.pnfmaster.android.chat
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.util.Log
 import android.view.MenuItem
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pnfmaster.android.MyApplication.Companion.context
 import com.pnfmaster.android.R
 import com.pnfmaster.android.databinding.ActivityChatBinding
-import com.pnfmaster.android.utils.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.ref.WeakReference
 
 class ChatActivity : AppCompatActivity() {
     private lateinit var binding : ActivityChatBinding
@@ -44,12 +36,12 @@ class ChatActivity : AppCompatActivity() {
         chatAdapter = ChatlistAdapter(this, mData) // Initialize adapter
 
         // Add a loading message
-        val loading = Chatlist("Master: ", "正在初始化...")
-        mData.add(loading)
+        val loading1 = Chatlist("Master: ", "正在初始化...")
+        mData.add(loading1)
         chatAdapter.update(mData)
 
-//        val initMsg = getString(R.string.initMsg)
-        val initMsg = "今天天气怎么样？"
+        val initMsg = getString(R.string.initMsg)
+//        val initMsg = "今天天气怎么样？"
 
         CoroutineScope(Dispatchers.Main).launch {
             val reply = withContext(Dispatchers.IO) {
@@ -60,15 +52,13 @@ class ChatActivity : AppCompatActivity() {
                     Chatlist("Master: ", "Error: $e")
                 }
             }
+            // Remove the loading message
+            mData.removeAt(mData.size-1)
+
             mData.add(reply)
             chatAdapter.update(mData)
             // chatAdapter.notifyDataSetChanged() // 我也不知道为什么加上这一句就可以自动显示了。
         }
-
-        // Remove the loading message
-        mData.removeAt(mData.size-1)
-        chatAdapter.update(mData)
-
 
         // Set adapter and manager for recyclerView
         val layoutManager = LinearLayoutManager(this)
@@ -78,8 +68,17 @@ class ChatActivity : AppCompatActivity() {
 
         // Send button
         binding.sendBtn.setOnClickListener {
-            val user_ask = binding.etChat.text.toString()
-            val newChatlist = Chatlist(getString(R.string.you_), user_ask)
+            val input = binding.etChat.text.toString()
+
+            // Check if input is empty
+            if (input.isBlank()) {
+                Toast.makeText(this, "输入不能为空", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val myPrompt = " Reply me in English."
+            val userAsk = input + myPrompt
+            val newChatlist = Chatlist(getString(R.string.you_), input)
             // Clear EditText
             binding.etChat.setText("")
 
@@ -98,19 +97,18 @@ class ChatActivity : AppCompatActivity() {
                 val reply = withContext(Dispatchers.IO) {
                     try {
                         val ai = AIAssistant()
-                        Chatlist("Master: ", ai.GetAnswer(user_ask))
+                        Chatlist("Master: ", ai.GetAnswer(userAsk))
                     } catch (e: Exception) {
                         Log.e("ChatActivity", e.toString())
                         Chatlist("Master: ", "Error")
                     }
                 }
+                // Remove the loading message
+                mData.removeAt(mData.size-1)
+
                 mData.add(reply)
                 chatAdapter.update(mData)
             }
-
-            // Remove the loading message
-            mData.removeAt(mData.size-1)
-            chatAdapter.update(mData)
 
         }
     } // onCrete
@@ -138,7 +136,7 @@ class ChatActivity : AppCompatActivity() {
         return true
     }
 
-    companion object {
-        const val MESSAGE_UPDATE = 1
-    }
+//    companion object {
+//        const val MESSAGE_UPDATE = 1
+//    }
 }
