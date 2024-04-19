@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
 class ChatActivity : AppCompatActivity() {
     private lateinit var binding : ActivityChatBinding
@@ -76,7 +77,9 @@ class ChatActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val myPrompt = " Reply me in English."
+            // Check if the system language is English
+            val myPrompt = if (Locale.getDefault().language == "en") " Reply me in English." else ""
+
             val userAsk = input + myPrompt
             val newChatlist = Chatlist(getString(R.string.you_), input)
             // Clear EditText
@@ -100,7 +103,7 @@ class ChatActivity : AppCompatActivity() {
                         Chatlist("Master: ", ai.GetAnswer(userAsk))
                     } catch (e: Exception) {
                         Log.e("ChatActivity", e.toString())
-                        Chatlist("Master: ", "Error")
+                        Chatlist("Master: ", "Error: $e")
                     }
                 }
                 // Remove the loading message

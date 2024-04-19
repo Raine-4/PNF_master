@@ -1,5 +1,7 @@
 package com.pnfmaster.android.chat;
 
+import android.util.Log;
+
 import com.pnfmaster.android.BuildConfig;
 
 import org.json.JSONArray;
@@ -19,7 +21,7 @@ public class AIAssistant{
     // Store the dialog content.
     public JSONArray Dialogue_Content;
 
-    AIAssistant(){ Dialogue_Content = new JSONArray(); }
+    AIAssistant() { Dialogue_Content = new JSONArray(); }
 
     static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().build();
 
@@ -48,6 +50,7 @@ public class AIAssistant{
         // 解析出ai的回答
         JSONObject json_feedback = new JSONObject(response.body().string());
         // 这里在开发的时候遇到了一个问题，注意response在上一行被取出里边的内容之后就自动关闭了，不能多次传参。
+        Log.d("AIAssistant", "json_feedback: " + json_feedback);
         String re = json_feedback.getString("result");
         // 接下来把ai的回答加入到Dialogue_Content中
         JSONObject jsontmp = new JSONObject();
