@@ -3,7 +3,6 @@ package com.pnfmaster.android
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -44,19 +43,22 @@ class LoginActivity : AppCompatActivity() {
 
         // 切换语言
         binding.changeLanguage.setOnClickListener {
-            if (binding.changeLanguage.text == "English") {
-                Locale.setDefault(Locale.ENGLISH)
-                val config: Configuration = baseContext.resources.configuration
-                config.setLocale(Locale.ENGLISH)
-                baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
-                recreate()
+            val currentLocale = Locale.getDefault()
+            val newLocale: Locale
+            if (currentLocale.language == "en") {
+                MyApplication.language = "cn"
+                newLocale = Locale.SIMPLIFIED_CHINESE
             } else {
-                Locale.setDefault(Locale.SIMPLIFIED_CHINESE)
-                val config: Configuration = baseContext.resources.configuration
-                config.setLocale(Locale.SIMPLIFIED_CHINESE)
-                baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
-                recreate()
+                MyApplication.language = "en"
+                newLocale = Locale.ENGLISH
             }
+
+            Locale.setDefault(newLocale)
+            val config = resources.configuration
+            config.setLocale(newLocale)
+            resources.updateConfiguration(config, resources.displayMetrics)
+
+            recreate()
         }
 
         /* 如果数据库连接成功，则设置底部文字的背景为绿色；否则为红色 */
