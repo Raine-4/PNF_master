@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.pnfmaster.android.utils.Toast
 import java.util.Locale
 import kotlin.system.exitProcess
 
@@ -105,13 +104,13 @@ class SettingsActivity : AppCompatActivity(),
     class MessagesFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.basic_setings_preferences, rootKey)
+
             val languagePreference = findPreference<ListPreference>("language")
             if (MyApplication.language == "en") {
                 languagePreference?.setDefaultValue("en")
             } else {
                 languagePreference?.setDefaultValue("cn")
             }
-
 
             languagePreference?.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _, newValue ->
@@ -125,15 +124,15 @@ class SettingsActivity : AppCompatActivity(),
                             when (newValue) {
                                 "en" -> {
                                     language = Locale.ENGLISH
-                                    "Switched to English.".Toast()
+                                    MyApplication.language = "en"
                                 }
                                 "cn" -> {
                                     language = Locale.SIMPLIFIED_CHINESE
-                                    "切换至简体中文".Toast()
+                                    MyApplication.language = "cn"
                                 }
                                 else -> language = Locale.ENGLISH
                             }
-                            (activity?.application as MyApplication).setLocale(language)
+//                            (activity?.application as MyApplication).setLocale(language)
                             restartApp()
                         }
                         create()
@@ -145,7 +144,7 @@ class SettingsActivity : AppCompatActivity(),
         }
 
         private fun restartApp() {
-            val intent = Intent(context, MainActivity::class.java)
+            val intent = Intent(context, ControlActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)

@@ -39,8 +39,11 @@ class MyApplication: Application() {
         config.setLocale(locale)
         resources.updateConfiguration(config, resources.displayMetrics)
 
-        // Add a Toast here
-        "Language changed to ${locale.displayLanguage}".Toast()
+        if (language == "en") {
+            "Language changed to ${locale.displayLanguage}".Toast()
+        } else {
+            "语言已更改为${locale.displayLanguage}".Toast()
+        }
     }
 
 }

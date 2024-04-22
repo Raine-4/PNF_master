@@ -1,9 +1,11 @@
 package com.pnfmaster.android.chat
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -119,7 +121,13 @@ class ChatActivity : AppCompatActivity() {
 
                 mData.add(reply)
                 chatAdapter.update(mData)
+
+                // scroll to the end
+                rcChatlist.scrollToPosition(mData.size - 1)
             }
+
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
 
         }
     } // onCrete
