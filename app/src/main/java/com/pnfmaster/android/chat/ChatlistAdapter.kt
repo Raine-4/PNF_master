@@ -45,7 +45,7 @@ class ChatlistAdapter(val context: Context, private var mData: List<Chatlist>) :
         holder.speakerName.text = data.speakerName
         holder.speakContent.text = data.speakContent
         // Set drawableStartCompat based on the speaker
-        val drawable = if (data.speakerName.startsWith("Master")) {
+        val drawable = if (data.speakerName.startsWith("PNF Master")) {
             ContextCompat.getDrawable(context, R.drawable.ic_robot)
         } else {
             ContextCompat.getDrawable(context, R.drawable.ic_username)

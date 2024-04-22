@@ -1,11 +1,18 @@
 package com.pnfmaster.android
 
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.pnfmaster.android.utils.Toast
+import java.util.Locale
+import kotlin.system.exitProcess
 
 private const val TITLE_TAG = "settingsActivityTitle"
 
@@ -23,6 +30,7 @@ class SettingsActivity : AppCompatActivity(),
             it.setTitle(R.string.Settings)
         }
 
+        // Display the fragment as the main content.
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
@@ -31,6 +39,8 @@ class SettingsActivity : AppCompatActivity(),
         } else {
             title = savedInstanceState.getCharSequence(TITLE_TAG)
         }
+
+        // Add back stack listener to update the title
         supportFragmentManager.addOnBackStackChangedListener {
             if (supportFragmentManager.backStackEntryCount == 0) {
                 setTitle(R.string.title_activity_settings)
@@ -45,6 +55,7 @@ class SettingsActivity : AppCompatActivity(),
         outState.putCharSequence(TITLE_TAG, title)
     }
 
+    // Handle back navigation with the back button
     override fun onSupportNavigateUp(): Boolean {
         if (supportFragmentManager.popBackStackImmediate()) {
             return true
@@ -93,7 +104,55 @@ class SettingsActivity : AppCompatActivity(),
 
     class MessagesFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.messages_preferences, rootKey)
+            setPreferencesFromResource(R.xml.basic_setings_preferences, rootKey)
+            val languagePreference = findPreference<ListPreference>("language")
+            if (MyApplication.language == "en") {
+                languagePreference?.setDefaultValue("en")
+            } else {
+                languagePreference?.setDefaultValue("cn")
+            }
+
+
+            languagePreference?.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, newValue ->
+
+                    AlertDialog.Builder(requireContext()).apply {
+                        setTitle(getString(R.string.Hint))
+                        setMessage("需要重新启动应用。是否继续？")
+                        setNegativeButton(getString(R.string.No), null)
+                        setPositiveButton(getString(R.string.Yes)) { _, _ ->
+                            val language: Locale
+                            when (newValue) {
+                                "en" -> {
+                                    language = Locale.ENGLISH
+                                    "Switched to English.".Toast()
+                                }
+                                "cn" -> {
+                                    language = Locale.SIMPLIFIED_CHINESE
+                                    "切换至简体中文".Toast()
+                                }
+                                else -> language = Locale.ENGLISH
+                            }
+                            (activity?.application as MyApplication).setLocale(language)
+                            restartApp()
+                        }
+                        create()
+                        show()
+                    }
+
+                    true
+                }
+        }
+
+        private fun restartApp() {
+            val intent = Intent(context, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            if (context is Activity) {
+                (context as Activity).finish()
+            }
+            exitProcess(0)
         }
     }
 

@@ -5,6 +5,7 @@ import android.app.Application
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Context
+import com.pnfmaster.android.utils.Toast
 import java.util.Locale
 
 
@@ -18,7 +19,7 @@ class MyApplication: Application() {
         var DB_VERSION: Int = 1
         var isSkipped = false
         var userId: Int = -1
-        var language: String = "en"
+        var language: String = "en" // current language
     }
 
     override fun onCreate() {
@@ -26,6 +27,7 @@ class MyApplication: Application() {
         context = applicationContext
         if (language == "en") {
             setLocale(Locale.ENGLISH)
+
         } else {
             setLocale(Locale.SIMPLIFIED_CHINESE)
         }
@@ -36,6 +38,9 @@ class MyApplication: Application() {
         val config = resources.configuration
         config.setLocale(locale)
         resources.updateConfiguration(config, resources.displayMetrics)
+
+        // Add a Toast here
+        "Language changed to ${locale.displayLanguage}".Toast()
     }
 
 }

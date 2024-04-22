@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.R
 import com.pnfmaster.android.databinding.ActivityChatBinding
-import com.pnfmaster.android.utils.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -77,18 +76,15 @@ class ChatActivity : AppCompatActivity() {
 
             // Check if input is empty
             if (input.isBlank()) {
-                Toast.makeText(this, "输入不能为空", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.empty_input_not_allowed), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             // Check if the system language is English
-            var setLanguage = ""
-            if (MyApplication.language == "en") {
-                setLanguage = " Reply me in English."
-                "Language: English".Toast()
+            val setLanguage: String = if (MyApplication.language == "en") {
+                " Reply me in English."
             }  else {
-                setLanguage = " 回答请用中文。"
-                "Language: Chinese".Toast()
+                " 请用中文回答。"
             }
 
             val userAsk = initMsg + input + setLanguage
@@ -103,7 +99,7 @@ class ChatActivity : AppCompatActivity() {
             rcChatlist.adapter = chatAdapter
 
             // Add a loading message
-            val loading = Chatlist("PNF Master", "正在思考中...")
+            val loading = Chatlist("PNF Master", getString(R.string.thinking))
             mData.add(loading)
             chatAdapter.update(mData)
 
@@ -115,7 +111,7 @@ class ChatActivity : AppCompatActivity() {
                         Chatlist("PNF Master", ai.GetAnswer(userAsk))
                     } catch (e: Exception) {
                         Log.e("ChatActivity", e.toString())
-                        Chatlist("PNF Master", "Error: $e")
+                        Chatlist("PNF Master", "请重试/Please Retry.\n错误信息/Error Message: $e")
                     }
                 }
                 // Remove the loading message

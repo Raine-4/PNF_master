@@ -73,7 +73,6 @@
     <string name="Register">Register</string>
     <string name="Login">Login</string>
     <string name="skipLogin">Skip Login, Enter Directly</string>
-    <string name="mode">Spinner</string>
     <string name="wrong_name_psw">Wrong username or password</string>
     <string name="Hint">Prompt</string>
     <string name="Skip_hint">You can still use all the basic functions by skipping the login, but you will not be able to use the personalised services, so it is recommended that you login to use the app.</string>
@@ -133,7 +132,7 @@
 
     <!-- Messages Preferences -->
     <string name="signature_title">Your Signature</string>
-    <string name="reply_title">Default Reply Action</string>
+    <string name="language_title">Language</string>
 
     <!-- Sync Preferences -->
     <string name="sync_title">Sync Email Periodically</string>
@@ -171,6 +170,8 @@
     </string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="you">You</string>
+    <string name="thinking">Thinking...</string>
+    <string name="empty_input_not_allowed">Input cannot be empty</string>
 
 
 </resources>

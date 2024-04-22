@@ -46,14 +46,14 @@ class LoginActivity : AppCompatActivity() {
             val currentLocale = Locale.getDefault()
             val newLocale: Locale
             if (currentLocale.language == "en") {
-                MyApplication.language = "cn"
                 newLocale = Locale.SIMPLIFIED_CHINESE
+                MyApplication.language = "cn"
             } else {
-                MyApplication.language = "en"
                 newLocale = Locale.ENGLISH
+                MyApplication.language = "en"
             }
-
             Locale.setDefault(newLocale)
+
             val config = resources.configuration
             config.setLocale(newLocale)
             resources.updateConfiguration(config, resources.displayMetrics)
