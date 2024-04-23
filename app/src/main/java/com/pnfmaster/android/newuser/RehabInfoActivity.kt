@@ -1,5 +1,7 @@
 package com.pnfmaster.android.newuser
 
+import android.app.ProgressDialog
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -11,12 +13,13 @@ import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityRehabInfoBinding
 import com.pnfmaster.android.utils.ActivityCollector
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class RehabInfoActivity : BaseActivity() {
     private lateinit var binding: ActivityRehabInfoBinding
     private lateinit var dbHelper: MyDatabaseHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRehabInfoBinding.inflate(layoutInflater)
@@ -44,25 +47,38 @@ class RehabInfoActivity : BaseActivity() {
             val progressRecord = binding.progressRecord.text.toString()
             val goals = binding.goals.text.toString()
 
-            fun main() {
-                GlobalScope.launch {
-                    connect.insertUser(account!!, password!!)
+            // 存储至本地数据库
+            insertUser(account!!, password!!)
+            insertUserInfo(name, gender, age, contact)
+            insertRehabInfo(diagnosisInfo, plan, progressRecord, goals)
+
+            // 创建并显示ProgressDialog
+            val progressDialog = ProgressDialog(this@RehabInfoActivity)
+            progressDialog.setMessage("正在加载...")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+            // 存储至云端数据库
+            runBlocking {
+                launch {
+                    connect.insertUser(account, password)
                     connect.insertUserInfo(name!!, gender, age!!, contact!!)
                     connect.insertRehabInfo(diagnosisInfo, plan, progressRecord, goals)
-                }
-                Thread.sleep(1000)
+                }.join() // 等待协程完成
+
+                // 关闭ProgressDialog
+                progressDialog.dismiss()
+
+                val NEWUSER = 1
+                val nextIntent = Intent(this@RehabInfoActivity, LoginActivity::class.java)
+                nextIntent.putExtra("newAccount", account)
+                nextIntent.putExtra("newPassword", password)
+                nextIntent.putExtra("newUserFlag", NEWUSER)
+                startActivity(nextIntent)
+
+                // 关闭全部注册activity
+                ActivityCollector.finishAll()
             }
-            main()
-
-            val NEWUSER = 1
-            val nextIntent = Intent(this, LoginActivity::class.java)
-            nextIntent.putExtra("newAccount", account)
-            nextIntent.putExtra("newPassword", password)
-            nextIntent.putExtra("newUserFlag", NEWUSER)
-            startActivity(nextIntent)
-
-            // 关闭全部注册activity
-            ActivityCollector.finishAll()
 
         }
     }
@@ -77,37 +93,35 @@ class RehabInfoActivity : BaseActivity() {
         return true
     }
 
-/*  使用本地数据库的版本：
-    private fun insertUser(username: String, password: String) {
-    val db = dbHelper.writableDatabase
-    val values = ContentValues().apply {
-        put("username", username)
-        put("password", password)
+  // 使用本地数据库:
+  private fun insertUser(username: String, password: String) {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+          put("username", username)
+          put("password", password)
+        }
+        db.insert("User", null, values)
     }
-    db.insert("User", null, values)
-}
+    private fun insertUserInfo(name: String?, gender: Int?, age: Int?, contact: String?) {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("name", name)
+            put("gender", gender)
+            put("age", age)
+            put("phone", contact)
+        }
+        db.insert("UserInfo", null, values)
+    }
 
-private fun insertUserInfo(name: String?, gender: Int?, age: Int?, contact: String?) {
-    val db = dbHelper.writableDatabase
-    val values = ContentValues().apply {
-        put("name", name)
-        put("gender", gender)
-        put("age", age)
-        put("phone", contact)
+    private fun insertRehabInfo(diagnosisInfo: String?, plan: String?, progressRecord: String?, goals: String?) {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("diagnosisInfo", diagnosisInfo)
+            put("treatPlan", plan)
+            put("progressRecord", progressRecord)
+            put("goals", goals)
+        }
+        db.insert("RehabInfo", null, values)
     }
-    db.insert("UserInfo", null, values)
-}
-
-private fun insertRehabInfo(diagnosisInfo: String?, plan: String?, progressRecord: String?, goals: String?) {
-    val db = dbHelper.writableDatabase
-    val values = ContentValues().apply {
-        put("diagnosisInfo", diagnosisInfo)
-        put("treatPlan", plan)
-        put("progressRecord", progressRecord)
-        put("goals", goals)
-    }
-    db.insert("RehabInfo", null, values)
-}
-*/
 
 }

@@ -2,6 +2,7 @@ package com.pnfmaster.android
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -16,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class ProfileActivity : BaseActivity() {
@@ -40,10 +42,25 @@ class ProfileActivity : BaseActivity() {
 
         var infoList = listOf<Any>()
         // ----------------------------------
-        scope.launch {
-            infoList = withContext(Dispatchers.IO) { connect.queryUserInfo(userId) }
+//        scope.launch {
+//            infoList = withContext(Dispatchers.IO) { connect.queryUserInfo(userId) }
+//        }
+
+        // 创建并显示ProgressDialog
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("正在加载...")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+        runBlocking {
+            launch {
+                infoList = withContext(Dispatchers.IO) {
+                    connect.queryUserInfo(userId)
+                }
+                // 关闭ProgressDialog
+                progressDialog.dismiss()
+            }
         }
-        LoadingDialog(this).block(500)
 
         // ----------------------------------
 
@@ -95,6 +112,7 @@ class ProfileActivity : BaseActivity() {
                 val inputContact = contactEditText.text.toString()
 
                 // ----------------------------------
+                // TODO: 设置成dispatcher(IO)和progressDialog的形式
                 try {
                     scope.launch {
                         connect.savePersonInfo(inputName, inputAge, inputGender, inputContact)
@@ -119,6 +137,7 @@ class ProfileActivity : BaseActivity() {
 
         var rehabInfoList = listOf<String>()
         // ----------------------------------
+        // TODO: 设置成dispatcher(IO)和progressDialog的形式
         scope.launch {
             rehabInfoList = connect.queryRehabInfo(userId)
         }
@@ -181,6 +200,7 @@ class ProfileActivity : BaseActivity() {
             newBuilder.setPositiveButton(getString(R.string.save)) { newDialog, _ ->
                 val userInput = editText.text.toString()
                 try {
+                    // TODO: 设置成dispatcher(IO)和progressDialog的形式
                     // ----------------------------------
                     scope.launch {
                         connect.saveRehabInfo(userInput, columnName, MyApplication.userId)

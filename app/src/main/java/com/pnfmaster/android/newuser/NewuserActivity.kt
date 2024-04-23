@@ -69,6 +69,7 @@ class NewuserActivity : BaseActivity() {
 
         // ----------------------------------
         var flag = false
+        // TODO: 设置成dispatcher(IO)和progressDialog的形式
         fun main() {
             GlobalScope.launch {
                 flag = connect.isUsernameUsed(username)

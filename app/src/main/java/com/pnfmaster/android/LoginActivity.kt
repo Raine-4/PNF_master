@@ -1,6 +1,9 @@
 package com.pnfmaster.android
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.ProgressDialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -8,20 +11,20 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.addCallback
 import com.pnfmaster.android.MyApplication.Companion.sharedPreferences
+import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.database.connect.DBNAME
 import com.pnfmaster.android.databinding.ActivityLoginBinding
 import com.pnfmaster.android.newuser.NewuserActivity
-import com.pnfmaster.android.utils.LoadingDialog
 import com.pnfmaster.android.utils.Toast
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.sql.SQLException
 import java.util.Locale
@@ -38,7 +41,6 @@ class LoginActivity : BaseActivity() {
         // get the current language from sharedPreferences
         val language = sharedPreferences.getString("language", "en") ?: "en"
         val currentLocale = if (language == "en") Locale.ENGLISH else Locale.CHINESE
-//        Log.d("LoginActivity", "onCreate: Language is $language")
 
         // Test tunnel
         binding.test.setOnClickListener {
@@ -87,11 +89,13 @@ class LoginActivity : BaseActivity() {
         binding.appName.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in))
         binding.logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.logo_animation))
 
-        /* 先判断是否是从注册界面来的新用户，如果是的话就把他刚注册的用户名和密码填上去
+        /**
+         * 先判断是否是从注册界面来的新用户，如果是的话就把他刚注册的用户名和密码填上去
          * 如果不是新用户，就启动记住密码功能。
          */
-        val flag = intent.getIntExtra("newUserFlag", 0)
+        val flag = intent.getIntExtra("newUserFlag", 0) // 是刚注册的新用户
         val prefs = getPreferences(Context.MODE_PRIVATE)
+        var isRemember = prefs.getBoolean("rememberPsw", false)
 
         if (flag == 1) {
             val newAccount = intent.getStringExtra("newAccount")
@@ -99,7 +103,6 @@ class LoginActivity : BaseActivity() {
             binding.accountEdit.setText(newAccount)
             binding.pswEdit.setText(newPassword)
         } else {
-            val isRemember = prefs.getBoolean("rememberPsw", false)
             if (isRemember) {
                 val account = prefs.getString("account", "")
                 val password = prefs.getString("password", "")
@@ -114,17 +117,114 @@ class LoginActivity : BaseActivity() {
             val account = binding.accountEdit.text.toString()
             val psw = binding.pswEdit.text.toString()
 
-            var registerFlag = false
+            isRemember = if (binding.rememberPsw.isChecked) {
+                prefs.edit().putBoolean("rememberPsw", true).apply()
+                true
+            } else {
+                prefs.edit().putBoolean("rememberPsw", false).apply()
+                false
+            }
 
-            val job = Job()
-            val scope = CoroutineScope(job)
-            scope.launch {
-                registerFlag = withContext(Dispatchers.IO) {
-                    connect.isRegistered(account, psw)
+            // 创建并显示ProgressDialog
+            val progressDialog = ProgressDialog(this)
+            progressDialog.setMessage("正在加载...")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+            // 先在本地数据库检索
+            var registerFlag = isRegistered(account, psw)
+            Log.d("LoginActivity", "LocalDB  registerFlag: $registerFlag")
+
+            // 如果本地数据库没有检索到, 再在网络数据库里检索.
+            if (!registerFlag) {
+                runBlocking {
+                    launch {
+                        registerFlag = withContext(Dispatchers.IO) {
+                            connect.isRegistered(account, psw)
+                        }
+                        Log.d("LoginActivity", "OnlineDB registerFlag: $registerFlag")
+                    }
+                }
+
+                // 如果已注册并且用户信任该设备(勾选了记住密码),则存储至本地数据库
+                Log.d("LoginActivity", "isRemember: $isRemember")
+                // TODO：这里有bug，在本地数据库里没有，但网络数据库里有的账户在将云端数据保存到本地的时候会出问题。不知道修好了没，还需要测试。
+                if (registerFlag && isRemember) {
+                    // 1 存储账户信息
+                    fun insertUser(username: String, password: String) {
+                        val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
+                        val db = dbHelper.writableDatabase
+                        val values = ContentValues().apply {
+                            put("username", username)
+                            put("password", password)
+                        }
+                        db.insert("User", null, values)
+                    }
+                    insertUser(account, psw)
+
+                    runBlocking {
+                        // 2 个人资料
+                        launch {
+                            val infoList = withContext(Dispatchers.IO) {
+                                connect.queryUserInfo(MyApplication.userId)
+                            }
+                            if (isConnected == -1) {
+                                "2:连接错误,请重试.".Toast(Toast.LENGTH_LONG)
+                                return@launch
+                            }
+                            val name = infoList[0] as String
+                            val age = infoList[1] as Int
+                            val gender = infoList[2] as Int
+                            val phone = infoList[3] as String
+                            fun insertUserInfo(name: String?, gender: Int?, age: Int?, contact: String?) {
+                                val dbHelper = MyDatabaseHelper(this@LoginActivity, "user.db", MyApplication.DB_VERSION)
+                                val db = dbHelper.writableDatabase
+                                val values = ContentValues().apply {
+                                    put("name", name)
+                                    put("gender", gender)
+                                    put("age", age)
+                                    put("phone", contact)
+                                }
+                                db.insert("UserInfo", null, values)
+                            }
+                            insertUserInfo(name, age, gender, phone)
+                        }.join()
+                        // 3 康复资料
+                        launch {
+                            val rehabInfoList = withContext(Dispatchers.IO) {
+                                connect.queryRehabInfo(MyApplication.userId)
+                            }
+                            if (isConnected == -1) {
+                                "3:连接错误,请重试.".Toast(Toast.LENGTH_LONG)
+                                return@launch
+                            }
+                            fun assign(string: String):String {
+                                return if (string != getString(R.string.not_filled_yet) && string != "") string
+                                else getString(R.string.not_filled_yet)
+                            }
+                            val diagnosisInfo = assign(rehabInfoList[0])
+                            val treatPlan = assign(rehabInfoList[1])
+                            val progressRecord = assign(rehabInfoList[2])
+                            val goals = assign(rehabInfoList[3])
+                            fun insertRehabInfo(diagnosisInfo: String?, plan: String?, progressRecord: String?, goals: String?) {
+                                val dbHelper = MyDatabaseHelper(this@LoginActivity, "user.db", MyApplication.DB_VERSION)
+                                val db = dbHelper.writableDatabase
+                                val values = ContentValues().apply {
+                                    put("diagnosisInfo", diagnosisInfo)
+                                    put("treatPlan", plan)
+                                    put("progressRecord", progressRecord)
+                                    put("goals", goals)
+                                }
+                                db.insert("RehabInfo", null, values)
+                            }
+                            insertRehabInfo(diagnosisInfo, treatPlan, progressRecord, goals)
+                        }.join()
+                    }
                 }
             }
 
-            LoadingDialog(this).block(500)
+            // 关闭ProgressDialog
+            progressDialog.dismiss()
 
             if (registerFlag) {
                 if (flag == 0) {
@@ -144,7 +244,8 @@ class LoginActivity : BaseActivity() {
                 startActivity(intent)
                 finish()
             } else {
-                getString(R.string.wrong_name_psw).Toast() }
+                getString(R.string.wrong_name_psw).Toast()
+            }
         }
 
         // 跳转至注册界面
@@ -185,6 +286,31 @@ class LoginActivity : BaseActivity() {
         }
 
     }
+
+    /**
+     * 该方法在本地数据库中检索用户是否已注册
+     *
+     * @param inputAccount 用户输入的账号
+     * @param inputPassword 用户输入的密码
+     * @return 是否已注册
+     */
+    @SuppressLint("Range")
+    private fun isRegistered(inputAccount:String, inputPassword: String): Boolean {
+        val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
+        val db = dbHelper.writableDatabase
+        val cursor = db.query("User", null, null, null, null, null, null)
+        if (cursor.moveToFirst()) {
+            do {
+                val account = cursor.getString(cursor.getColumnIndex("username"))
+                val password = cursor.getString(cursor.getColumnIndex("password"))
+                MyApplication.userId = cursor.getInt(cursor.getColumnIndex("id"))
+                if (account == inputAccount && password == inputPassword) return true
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return false
+    }
+
     companion object {
         var isConnected = -1
     }

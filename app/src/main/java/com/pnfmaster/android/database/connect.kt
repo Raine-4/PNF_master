@@ -49,7 +49,11 @@ object connect {
 
     @Throws(SQLException::class)
     fun insertUser(username: String, password: String): Int {
-        val connection = setConnection(DBNAME)!!
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e("connect", "fun insertUser. Connection is null.")
+            return -1
+        }
         val statement = connection.createStatement()
         val sql = "INSERT INTO User (username,password) VALUES ('$username','$password')"
 
@@ -62,7 +66,11 @@ object connect {
 
     @Throws(SQLException::class)
     fun insertUserInfo(name: String, gender: Int, age: Int, phone: String): Int {
-        val connection = setConnection(DBNAME)!!
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e("connect", "fun insertUserInfo. Connection is null.")
+            return -1
+        }
         val statement = connection.createStatement()
         val sql = "INSERT INTO UserInfo(name, gender, age, phone) VALUES ('$name', '$gender', '$age', '$phone')"
 
@@ -75,7 +83,11 @@ object connect {
 
     @Throws(SQLException::class)
     fun insertRehabInfo(diagnosisInfo: String, plan: String, progressRecord: String, goals: String): Int {
-        val connection = setConnection(DBNAME)!!
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e("connect", "fun insertRehabInfo. Connection is null.")
+            return -1
+        }
         val statement = connection.createStatement()
         val sql = "INSERT INTO RehabInfo (diagnosisinfo, treatplan, progressrecord, goals) VALUES ('$diagnosisInfo', '$plan', '$progressRecord', '$goals')"
 
@@ -89,7 +101,11 @@ object connect {
     // --------------------------------UPDATE--------------------------------
 
     fun savePersonInfo(name: String, age: String, gender: Int, contact: String): Int {
-        val connection = setConnection(DBNAME)!!
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e("connect", "fun savePersonInfo. Connection is null.")
+            return -1
+        }
         val statement = connection.createStatement()
         val sql = "UPDATE UserInfo SET name = '$name', age = '$age', gender = '$gender', phone = '$contact'\n"
         val res = statement.executeUpdate(sql)
@@ -133,7 +149,11 @@ object connect {
 
     // 检查注册时用户名是否已被使用，已被使用会返回True
     fun isUsernameUsed(username: String): Boolean {
-        val connection = setConnection(DBNAME)!!
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e("connect", "fun isUsernameUsed. Connection is null.")
+            return true
+        }
         val statement = connection.createStatement()
         val resultSet = statement.executeQuery("SELECT 1 FROM User WHERE username = '$username'")
         // 如果resultSet中不存在任何数据，resultSet.next()会返回false
@@ -147,7 +167,11 @@ object connect {
     // 查询数据库中是否存在用户名和密码符合的账户
     fun isRegistered(inputAccount:String, inputPassword: String): Boolean {
         try {
-            val connection = setConnection(DBNAME)!!
+            val connection = setConnection(DBNAME)
+            if (connection == null) {
+                Log.e("connect", "fun insertUser. Connection is null.")
+                return true
+            }
             // 执行查询
             val statement = connection.createStatement()
             val resultSet = statement.executeQuery("SELECT * FROM User WHERE username = '$inputAccount' AND password = '$inputPassword'")
@@ -169,7 +193,11 @@ object connect {
 
     fun queryUserInfo(id: Int): List<Any> {
         val userInfo = mutableListOf("", -1, -1, "") // name, age, gender, phone
-        val connection = setConnection(DBNAME)!!
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e("connect", "fun queryUserInfo. Connection is null.")
+            return emptyList()
+        }
         val statement = connection.createStatement()
         val resultSet = statement.executeQuery("SELECT * FROM userinfo WHERE id = '$id'")
 
@@ -192,7 +220,11 @@ object connect {
 
     fun queryRehabInfo(id: Int): List<String> {
         val rehabInfo = mutableListOf("", "", "", "")
-        val connection = setConnection(DBNAME)!!
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e("connect", "fun queryRehabInfo. Connection is null.")
+            return emptyList()
+        }
         val statement = connection.createStatement()
         val resultSet = statement.executeQuery("SELECT * FROM RehabInfo WHERE id = '$id'")
 

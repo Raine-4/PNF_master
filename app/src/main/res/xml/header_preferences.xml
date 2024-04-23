@@ -1,8 +1,9 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
         app:fragment="com.pnfmaster.android.SettingsActivity$BasicSettingFragment"
-        app:icon="@drawable/nav_control"
+        app:icon="@drawable/ic_add"
         app:key="messages_header"
         app:title="@string/basic_setting_header" />
 

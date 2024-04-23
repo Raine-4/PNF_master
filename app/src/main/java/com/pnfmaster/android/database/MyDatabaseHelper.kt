@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper
 class MyDatabaseHelper(val context: Context, name: String, version: Int) :
     SQLiteOpenHelper(context, name, null, version) {
 
-    private val tag = "DBHelper"
-
     private val createUser =
         "CREATE TABLE IF NOT EXISTS User (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
