@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -15,7 +14,7 @@ import java.util.Locale
 
 private const val TITLE_TAG = "settingsActivityTitle"
 
-class SettingsActivity : AppCompatActivity(),
+class SettingsActivity : BaseActivity(),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,7 +119,13 @@ class SettingsActivity : AppCompatActivity(),
                     AlertDialog.Builder(requireContext()).apply {
                         setTitle(getString(R.string.Hint))
                         setMessage(getString(R.string.if_restart_activity))
-                        setNegativeButton(getString(R.string.No), null)
+                        setNegativeButton(getString(R.string.No)) { _, _ ->
+                            if (curLanguage == "en") {
+                                languagePreference?.value = "en"
+                            } else {
+                                languagePreference?.value = "cn"
+                            }
+                        }
                         setPositiveButton(getString(R.string.Yes)) { _, _ ->
                             val newLocale: Locale = when (newValue) {
                                 "en" -> {
@@ -130,7 +135,7 @@ class SettingsActivity : AppCompatActivity(),
 
                                 "cn" -> {
                                     sharedPreferences.edit().putString("language", "cn").apply()
-                                    Locale.SIMPLIFIED_CHINESE
+                                    Locale.CHINESE
                                 }
 
                                 else -> {

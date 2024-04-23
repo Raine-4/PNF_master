@@ -14,11 +14,11 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.pnfmaster.android.BaseActivity
 import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.R
 import com.pnfmaster.android.adapters.OnItemClickListener
@@ -28,7 +28,7 @@ import com.pnfmaster.android.utils.Toast
 import java.io.IOException
 import java.util.UUID
 
-class BluetoothScanActivity : AppCompatActivity(), OnItemClickListener {
+class BluetoothScanActivity : BaseActivity(), OnItemClickListener {
 
     private lateinit var binding: ActivityScanBinding
 

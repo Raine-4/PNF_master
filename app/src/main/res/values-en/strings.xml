@@ -172,7 +172,7 @@
     <string name="you">You</string>
     <string name="thinking">Thinking...</string>
     <string name="empty_input_not_allowed">Input cannot be empty</string>
-    <string name="if_restart_activity">The application needs to be restarted. Do you want to continue?</string>
+    <string name="if_restart_activity">After changing the language, you will return to the main interface. Continue?</string>
 
 
 </resources>

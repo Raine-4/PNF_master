@@ -7,9 +7,9 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pnfmaster.android.BaseActivity
 import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.R
 import com.pnfmaster.android.databinding.ActivityChatBinding
@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ChatActivity : AppCompatActivity() {
+class ChatActivity : BaseActivity() {
     private lateinit var binding : ActivityChatBinding
     private lateinit var chatAdapter : ChatlistAdapter
     private lateinit var rcChatlist : RecyclerView

@@ -4,12 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import com.pnfmaster.android.chat.ChatActivity
 import com.pnfmaster.android.databinding.ActivityTasksBinding
 import com.pnfmaster.android.utils.Toast
 
-class TasksActivity : AppCompatActivity() {
+class TasksActivity : BaseActivity() {
 
     private lateinit var binding: ActivityTasksBinding
 

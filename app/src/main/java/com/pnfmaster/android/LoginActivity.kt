@@ -8,11 +8,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
+import com.pnfmaster.android.MyApplication.Companion.sharedPreferences
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.database.connect.DBNAME
 import com.pnfmaster.android.databinding.ActivityLoginBinding
@@ -27,7 +26,7 @@ import kotlinx.coroutines.withContext
 import java.sql.SQLException
 import java.util.Locale
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
     private lateinit var binding : ActivityLoginBinding
 
@@ -36,7 +35,12 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 测试通道
+        // get the current language from sharedPreferences
+        val language = sharedPreferences.getString("language", "en") ?: "en"
+        val currentLocale = if (language == "en") Locale.ENGLISH else Locale.CHINESE
+//        Log.d("LoginActivity", "onCreate: Language is $language")
+
+        // Test tunnel
         binding.test.setOnClickListener {
             val intent = Intent(this, TestActivity::class.java)
             startActivity(intent)
@@ -44,23 +48,19 @@ class LoginActivity : AppCompatActivity() {
 
         // 切换语言
         binding.changeLanguage.setOnClickListener {
-            val currentLocale = Locale.getDefault() // en
             val newLocale: Locale
             if (currentLocale.language == "en") {
-                newLocale = Locale.SIMPLIFIED_CHINESE
-                MyApplication.sharedPreferences.edit().putString("language", "cn").apply()
-                Log.d("LoginActivity", "onCreate: Language is cn")
+                newLocale = Locale.CHINESE
+                sharedPreferences.edit().putString("language", "cn").apply()
             } else {
                 newLocale = Locale.ENGLISH
-                MyApplication.sharedPreferences.edit().putString("language", "en").apply()
-                Log.d("LoginActivity", "onCreate: Language is en")
+                sharedPreferences.edit().putString("language", "en").apply()
             }
 
             Locale.setDefault(newLocale)
             val config = resources.configuration
             config.setLocale(newLocale)
             resources.updateConfiguration(config, resources.displayMetrics)
-
             recreate()
         }
 

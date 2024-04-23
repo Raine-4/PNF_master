@@ -7,10 +7,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.pnfmaster.android.databinding.ActivityTestBinding
 
-class TestActivity : AppCompatActivity() {
+class TestActivity : BaseActivity() {
 
     private lateinit var binding : ActivityTestBinding
     private lateinit var containerLayout: LinearLayout

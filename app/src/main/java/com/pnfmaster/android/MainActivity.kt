@@ -5,29 +5,21 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import com.pnfmaster.android.BtConnection.BluetoothCommunication
 import com.pnfmaster.android.BtConnection.BluetoothScanActivity
 import com.pnfmaster.android.control.CurrentFragment
 import com.pnfmaster.android.control.PositionFragment
 import com.pnfmaster.android.control.TorqueFragment
 import com.pnfmaster.android.control.VelocityFragment
 import com.pnfmaster.android.databinding.ActivityMainBinding
-import com.pnfmaster.android.utils.Toast
-import java.nio.charset.Charset
-import java.util.Calendar
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
