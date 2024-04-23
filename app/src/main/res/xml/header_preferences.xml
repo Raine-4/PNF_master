@@ -1,10 +1,10 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:fragment="com.pnfmaster.android.SettingsActivity$MessagesFragment"
-        app:icon="@drawable/messages"
+        app:fragment="com.pnfmaster.android.SettingsActivity$BasicSettingFragment"
+        app:icon="@drawable/nav_control"
         app:key="messages_header"
-        app:title="@string/messages_header" />
+        app:title="@string/basic_setting_header" />
 
     <Preference
         app:fragment="com.pnfmaster.android.SettingsActivity$SyncFragment"

@@ -5,7 +5,8 @@ import android.app.Application
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Context
-import com.pnfmaster.android.utils.Toast
+import android.content.SharedPreferences
+import android.util.Log
 import java.util.Locale
 
 
@@ -19,31 +20,30 @@ class MyApplication: Application() {
         var DB_VERSION: Int = 1
         var isSkipped = false
         var userId: Int = -1
-        var language: String = "en" // current language
+        lateinit var sharedPreferences: SharedPreferences
     }
 
     override fun onCreate() {
         super.onCreate()
         context = applicationContext
+
+        // get the current language from sharedPreferences
+        sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE)
+        val language = sharedPreferences.getString("language", "en") ?: "en"
+        Log.d("MyApplication", "onCreate: Language is $language")
+
         if (language == "en") {
             setLocale(Locale.ENGLISH)
-
-        } else {
+        } else if (language == "cn") {
             setLocale(Locale.SIMPLIFIED_CHINESE)
         }
     }
 
-    fun setLocale(locale: Locale) {
+    private fun setLocale(locale: Locale) {
+//        Log.d("MyApplication", "setLocale: Language is ${locale.displayLanguage}")
         Locale.setDefault(locale)
         val config = resources.configuration
         config.setLocale(locale)
         resources.updateConfiguration(config, resources.displayMetrics)
-
-        if (language == "en") {
-            "Language changed to ${locale.displayLanguage}".Toast()
-        } else {
-            "语言已更改为${locale.displayLanguage}".Toast()
-        }
     }
-
 }

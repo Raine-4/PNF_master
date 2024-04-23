@@ -127,10 +127,10 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
+    <string name="basic_setting_header">Basic Settings</string>
     <string name="sync_header">Sync</string>
 
-    <!-- Messages Preferences -->
+    <!-- Basic Settings Preferences -->
     <string name="signature_title">Your Signature</string>
     <string name="language_title">Language</string>
 
@@ -172,6 +172,7 @@
     <string name="you">You</string>
     <string name="thinking">Thinking...</string>
     <string name="empty_input_not_allowed">Input cannot be empty</string>
+    <string name="if_restart_activity">The application needs to be restarted. Do you want to continue?</string>
 
 
 </resources>

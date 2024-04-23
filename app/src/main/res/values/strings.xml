@@ -129,10 +129,10 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
+    <string name="basic_setting_header">基本设置</string>
     <string name="sync_header">Sync</string>
 
-    <!-- Messages Preferences -->
+    <!-- Basic Settings Preferences -->
     <string name="signature_title">Your signature</string>
     <string name="language_title">语言</string>
 
@@ -175,4 +175,5 @@
     <string name="you">你</string>
     <string name="thinking">正在思考中...</string>
     <string name="empty_input_not_allowed">输入不能为空</string>
+    <string name="if_restart_activity">需要重新启动应用。是否继续？</string>
 </resources>

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -43,17 +44,19 @@ class LoginActivity : AppCompatActivity() {
 
         // 切换语言
         binding.changeLanguage.setOnClickListener {
-            val currentLocale = Locale.getDefault()
+            val currentLocale = Locale.getDefault() // en
             val newLocale: Locale
             if (currentLocale.language == "en") {
                 newLocale = Locale.SIMPLIFIED_CHINESE
-                MyApplication.language = "cn"
+                MyApplication.sharedPreferences.edit().putString("language", "cn").apply()
+                Log.d("LoginActivity", "onCreate: Language is cn")
             } else {
                 newLocale = Locale.ENGLISH
-                MyApplication.language = "en"
+                MyApplication.sharedPreferences.edit().putString("language", "en").apply()
+                Log.d("LoginActivity", "onCreate: Language is en")
             }
-            Locale.setDefault(newLocale)
 
+            Locale.setDefault(newLocale)
             val config = resources.configuration
             config.setLocale(newLocale)
             resources.updateConfiguration(config, resources.displayMetrics)

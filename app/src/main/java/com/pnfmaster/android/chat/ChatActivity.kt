@@ -83,7 +83,7 @@ class ChatActivity : AppCompatActivity() {
             }
 
             // Check if the system language is English
-            val setLanguage: String = if (MyApplication.language == "en") {
+            val setLanguage: String = if (MyApplication.sharedPreferences.getString("language", "en") == "en") {
                 " Reply me in English."
             }  else {
                 " 请用中文回答。"

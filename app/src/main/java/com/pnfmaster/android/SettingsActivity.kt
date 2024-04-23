@@ -10,8 +10,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.pnfmaster.android.MyApplication.Companion.sharedPreferences
 import java.util.Locale
-import kotlin.system.exitProcess
 
 private const val TITLE_TAG = "settingsActivityTitle"
 
@@ -101,44 +101,54 @@ class SettingsActivity : AppCompatActivity(),
         }
     }
 
-    class MessagesFragment : PreferenceFragmentCompat() {
+    class BasicSettingFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.basic_setings_preferences, rootKey)
 
             val languagePreference = findPreference<ListPreference>("language")
-            if (MyApplication.language == "en") {
-                languagePreference?.setDefaultValue("en")
+
+            val curLanguage = sharedPreferences.getString("language", "en")
+            // Set the current value of the language preference
+            if (curLanguage == "en") {
+                languagePreference?.value = "en"
             } else {
-                languagePreference?.setDefaultValue("cn")
+                languagePreference?.value = "cn"
             }
 
             languagePreference?.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _, newValue ->
-
                     AlertDialog.Builder(requireContext()).apply {
                         setTitle(getString(R.string.Hint))
-                        setMessage("需要重新启动应用。是否继续？")
+                        setMessage(getString(R.string.if_restart_activity))
                         setNegativeButton(getString(R.string.No), null)
                         setPositiveButton(getString(R.string.Yes)) { _, _ ->
-                            val language: Locale
-                            when (newValue) {
+                            val newLocale: Locale = when (newValue) {
                                 "en" -> {
-                                    language = Locale.ENGLISH
-                                    MyApplication.language = "en"
+                                    sharedPreferences.edit().putString("language", "en").apply()
+                                    Locale.ENGLISH
                                 }
+
                                 "cn" -> {
-                                    language = Locale.SIMPLIFIED_CHINESE
-                                    MyApplication.language = "cn"
+                                    sharedPreferences.edit().putString("language", "cn").apply()
+                                    Locale.SIMPLIFIED_CHINESE
                                 }
-                                else -> language = Locale.ENGLISH
+
+                                else -> {
+                                    sharedPreferences.edit().putString("language", "en").apply()
+                                    Locale.ENGLISH
+                                }
                             }
-//                            (activity?.application as MyApplication).setLocale(language)
+
+                            Locale.setDefault(newLocale)
+                            val config = resources.configuration
+                            config.setLocale(newLocale)
+                            resources.updateConfiguration(config, resources.displayMetrics)
+
                             restartApp()
                         }
                         create()
                         show()
                     }
-
                     true
                 }
         }
@@ -151,7 +161,6 @@ class SettingsActivity : AppCompatActivity(),
             if (context is Activity) {
                 (context as Activity).finish()
             }
-            exitProcess(0)
         }
     }
 
