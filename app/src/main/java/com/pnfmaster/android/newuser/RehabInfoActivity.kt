@@ -13,6 +13,7 @@ import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityRehabInfoBinding
 import com.pnfmaster.android.utils.ActivityCollector
+import com.pnfmaster.android.utils.MyProgressDialog
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -52,11 +53,8 @@ class RehabInfoActivity : BaseActivity() {
             insertUserInfo(name, gender, age, contact)
             insertRehabInfo(diagnosisInfo, plan, progressRecord, goals)
 
-            // 创建并显示ProgressDialog
-            val progressDialog = ProgressDialog(this@RehabInfoActivity)
-            progressDialog.setMessage("正在加载...")
-            progressDialog.setCancelable(false)
-            progressDialog.show()
+            val pd = MyProgressDialog(this)
+            pd.show()
 
             // 存储至云端数据库
             runBlocking {
@@ -66,8 +64,7 @@ class RehabInfoActivity : BaseActivity() {
                     connect.insertRehabInfo(diagnosisInfo, plan, progressRecord, goals)
                 }.join() // 等待协程完成
 
-                // 关闭ProgressDialog
-                progressDialog.dismiss()
+                pd.dismiss()
 
                 val NEWUSER = 1
                 val nextIntent = Intent(this@RehabInfoActivity, LoginActivity::class.java)

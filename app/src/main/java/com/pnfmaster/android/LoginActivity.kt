@@ -2,7 +2,6 @@ package com.pnfmaster.android
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -21,6 +20,7 @@ import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.database.connect.DBNAME
 import com.pnfmaster.android.databinding.ActivityLoginBinding
 import com.pnfmaster.android.newuser.NewuserActivity
+import com.pnfmaster.android.utils.MyProgressDialog
 import com.pnfmaster.android.utils.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -125,11 +125,9 @@ class LoginActivity : BaseActivity() {
                 false
             }
 
-            // 创建并显示ProgressDialog
-            val progressDialog = ProgressDialog(this)
-            progressDialog.setMessage("正在加载...")
-            progressDialog.setCancelable(false)
-            progressDialog.show()
+            // 显示ProgressDialog
+            val pd = MyProgressDialog(this)
+            pd.show()
 
             // 先在本地数据库检索
             var registerFlag = isRegistered(account, psw)
@@ -148,7 +146,6 @@ class LoginActivity : BaseActivity() {
 
                 // 如果已注册并且用户信任该设备(勾选了记住密码),则存储至本地数据库
                 Log.d("LoginActivity", "isRemember: $isRemember")
-                // TODO：这里有bug，在本地数据库里没有，但网络数据库里有的账户在将云端数据保存到本地的时候会出问题。不知道修好了没，还需要测试。
                 if (registerFlag && isRemember) {
                     // 1 存储账户信息
                     fun insertUser(username: String, password: String) {
@@ -165,6 +162,7 @@ class LoginActivity : BaseActivity() {
                     runBlocking {
                         // 2 个人资料
                         launch {
+                            Log.d("LoginActivity", "----------- runBlocking - launch 1 start. -----------")
                             val infoList = withContext(Dispatchers.IO) {
                                 connect.queryUserInfo(MyApplication.userId)
                             }
@@ -188,9 +186,12 @@ class LoginActivity : BaseActivity() {
                                 db.insert("UserInfo", null, values)
                             }
                             insertUserInfo(name, age, gender, phone)
+                            Log.d("LoginActivity", "----------- runBlocking - launch 1 end. -----------")
                         }.join()
+
                         // 3 康复资料
                         launch {
+                            Log.d("LoginActivity", "----------- runBlocking - launch 2 start. -----------")
                             val rehabInfoList = withContext(Dispatchers.IO) {
                                 connect.queryRehabInfo(MyApplication.userId)
                             }
@@ -218,13 +219,14 @@ class LoginActivity : BaseActivity() {
                                 db.insert("RehabInfo", null, values)
                             }
                             insertRehabInfo(diagnosisInfo, treatPlan, progressRecord, goals)
+                            Log.d("LoginActivity", "----------- runBlocking - launch 2 end. -----------")
                         }.join()
                     }
                 }
             }
 
             // 关闭ProgressDialog
-            progressDialog.dismiss()
+            pd.dismiss()
 
             if (registerFlag) {
                 if (flag == 0) {

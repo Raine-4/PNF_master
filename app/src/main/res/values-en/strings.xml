@@ -33,7 +33,7 @@
     <string name="rehabHint2">Developing personalized rehabilitation treatment plans for patients, including physical therapy, rehabilitation training, medication, and rehabilitation aids.</string>
     <string name="rehabHint3">Recording various progress and improvement of patients during the rehabilitation process.</string>
     <string name="rehabHint4">Setting individualized rehabilitation goals for patients, including functional recovery, pain relief, and improvement of quality of life.</string>
-    <string name="loading">Loading</string>
+    <string name="loading">Loading…</string>
     <string name="noDeviceFound">No devices found</string>
     <string name="DeviceName">Device Name</string>
     <string name="MacAddress">MAC Address</string>

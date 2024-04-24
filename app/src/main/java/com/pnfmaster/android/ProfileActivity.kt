@@ -2,7 +2,6 @@ package com.pnfmaster.android
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -11,7 +10,7 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityProfileBinding
-import com.pnfmaster.android.utils.LoadingDialog
+import com.pnfmaster.android.utils.MyProgressDialog
 import com.pnfmaster.android.utils.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,28 +40,17 @@ class ProfileActivity : BaseActivity() {
         val userId = MyApplication.userId
 
         var infoList = listOf<Any>()
-        // ----------------------------------
-//        scope.launch {
-//            infoList = withContext(Dispatchers.IO) { connect.queryUserInfo(userId) }
-//        }
 
-        // 创建并显示ProgressDialog
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setMessage("正在加载...")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
-
+        val pd = MyProgressDialog(this)
+        pd.show()
         runBlocking {
             launch {
                 infoList = withContext(Dispatchers.IO) {
                     connect.queryUserInfo(userId)
                 }
-                // 关闭ProgressDialog
-                progressDialog.dismiss()
             }
         }
-
-        // ----------------------------------
+        pd.dismiss()
 
         val username = intent.getStringExtra("userAccount") //用户名
         val name = infoList[0] as String
@@ -111,11 +99,15 @@ class ProfileActivity : BaseActivity() {
                 val inputGender = if (genderId == R.id.radio_button_male) 1 else 0
                 val inputContact = contactEditText.text.toString()
 
-                // ----------------------------------
-                // TODO: 设置成dispatcher(IO)和progressDialog的形式
+                val pd1 = MyProgressDialog(this)
+                pd1.show()
                 try {
-                    scope.launch {
-                        connect.savePersonInfo(inputName, inputAge, inputGender, inputContact)
+                    runBlocking {
+                        launch {
+                            withContext(Dispatchers.IO) {
+                                connect.savePersonInfo(inputName, inputAge, inputGender, inputContact)
+                            }
+                        }
                     }
                     Thread.sleep(500)
                     getString(R.string.edit_success).Toast()
@@ -125,6 +117,7 @@ class ProfileActivity : BaseActivity() {
                     Log.e("profile", "dialogBuilder.setPositiveButton")
                 }
                 // ----------------------------------
+                pd1.dismiss()
                 dialog.dismiss()
             }
 
@@ -134,14 +127,18 @@ class ProfileActivity : BaseActivity() {
 
 
         // 查询健康信息
-
         var rehabInfoList = listOf<String>()
         // ----------------------------------
-        // TODO: 设置成dispatcher(IO)和progressDialog的形式
-        scope.launch {
-            rehabInfoList = connect.queryRehabInfo(userId)
+        val pd2 = MyProgressDialog(this)
+        pd2.show()
+        runBlocking {
+            launch {
+                withContext(Dispatchers.IO) {
+                    rehabInfoList = connect.queryRehabInfo(userId)
+                }
+            }
         }
-        LoadingDialog(this).block(500)
+        pd2.dismiss()
         // ----------------------------------
 
         val diagnosisInfo = assign(rehabInfoList[0])
@@ -199,20 +196,25 @@ class ProfileActivity : BaseActivity() {
             // 设置“保存”按钮，点击后保存内容并关闭对话框
             newBuilder.setPositiveButton(getString(R.string.save)) { newDialog, _ ->
                 val userInput = editText.text.toString()
+
+                val pd3 = MyProgressDialog(this)
+                pd3.show()
                 try {
-                    // TODO: 设置成dispatcher(IO)和progressDialog的形式
-                    // ----------------------------------
-                    scope.launch {
-                        connect.saveRehabInfo(userInput, columnName, MyApplication.userId)
+                    runBlocking {
+                        launch {
+                            withContext(Dispatchers.IO) {
+                                connect.saveRehabInfo(userInput, columnName, MyApplication.userId)
+                            }
+                        }
                     }
-                    Thread.sleep(1000)
-                    // ----------------------------------
                     getString(R.string.edit_success).Toast()
                     this.recreate() // 刷新页面
                 } catch (e: Exception) {
                     getString(R.string.edit_fail).Toast()
                     Log.e("profile", "private fun popUpDialog")
                 }
+                // 关闭ProgressDialog
+                pd3.dismiss()
 
                 newDialog.dismiss()
             }
