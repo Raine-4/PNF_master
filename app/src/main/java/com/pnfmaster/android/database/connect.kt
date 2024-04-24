@@ -107,7 +107,7 @@ object connect {
             return -1
         }
         val statement = connection.createStatement()
-        val sql = "UPDATE UserInfo SET name = '$name', age = '$age', gender = '$gender', phone = '$contact'\n"
+        val sql = "UPDATE UserInfo SET name = '$name', age = '$age', gender = '$gender', phone = '$contact' WHERE id = '${MyApplication.userId}'"
         val res = statement.executeUpdate(sql)
 
         statement.close()

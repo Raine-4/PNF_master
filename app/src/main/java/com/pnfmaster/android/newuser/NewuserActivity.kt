@@ -11,10 +11,12 @@ import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityNewuserBinding
 import com.pnfmaster.android.utils.ActivityCollector
-import com.pnfmaster.android.utils.LoadingDialog
+import com.pnfmaster.android.utils.MyProgressDialog
 import com.pnfmaster.android.utils.Toast
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class NewuserActivity : BaseActivity() {
     private lateinit var binding: ActivityNewuserBinding
@@ -67,20 +69,21 @@ class NewuserActivity : BaseActivity() {
             }
         }
 
-        // ----------------------------------
         var flag = false
         // TODO: 设置成dispatcher(IO)和progressDialog的形式
-        fun main() {
-            GlobalScope.launch {
-                flag = connect.isUsernameUsed(username)
+        val pd = MyProgressDialog(this)
+        pd.show()
+
+        runBlocking {
+            launch {
+                flag = withContext(Dispatchers.IO) {
+                    connect.isUsernameUsed(username)
+                }
             }
-            Thread.sleep(1000)
         }
-        val loadingDialog = LoadingDialog(this)
-        loadingDialog.show()
-        main()
-        loadingDialog.dismiss()
-        // ----------------------------------
+
+        pd.dismiss()
+
 
         if (flag) {
             getString(R.string.already_exist).Toast()

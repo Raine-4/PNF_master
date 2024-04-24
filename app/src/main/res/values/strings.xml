@@ -36,7 +36,7 @@
     <string name="rehabHint2">制定针对患者的康复治疗方案，包括物理治疗、康复训练、药物治疗、康复辅助器具使用等。</string>
     <string name="rehabHint3">记录患者在康复治疗过程中的各种进展情况和改善情况的记录。</string>
     <string name="rehabHint4">制定针对患者个体化的康复目标，包括恢复功能、减轻疼痛、提高生活质量等方面。</string>
-    <string name="loading">加载中</string>
+    <string name="loading">加载中…</string>
     <string name="noDeviceFound">当前无设备</string>
     <string name="DeviceName">设备名称</string>
     <string name="MacAddress">Mac地址</string>
