@@ -17,7 +17,7 @@ class TasksActivity : BaseActivity() {
         binding = ActivityTasksBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbarTasks)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.title = getString(R.string.my_param)
@@ -40,8 +40,8 @@ class TasksActivity : BaseActivity() {
         when (item.itemId) {
             android.R.id.home -> onBackPressedDispatcher.onBackPressed()
             R.id.action_add -> {
-                // TODO
-                "增加一组新参数".Toast()
+                val intent = Intent(this, AddParameterActivity::class.java)
+                startActivity(intent)
             }
         }
         return true

@@ -34,10 +34,11 @@
         android:layout_marginTop="10dp"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/InfoLayout1"
-        android:layout_width="330dp"
-        android:layout_height="185dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/userName"
-        android:layout_marginTop="25dp"
+        android:layout_margin="25dp"
+        android:padding="10dp"
         android:background="@drawable/edit_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -136,10 +137,11 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="330dp"
-        android:layout_height="210dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/InfoLayout1"
-        android:layout_marginTop="25dp"
+        android:layout_margin="25dp"
+        android:padding="10dp"
         android:background="@drawable/edit_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

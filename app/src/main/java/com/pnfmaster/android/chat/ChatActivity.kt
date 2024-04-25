@@ -29,7 +29,7 @@ class ChatActivity : BaseActivity() {
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
         rcChatlist = binding.rcChatlist
-        setSupportActionBar(binding.toolbarChat)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.title = getString(R.string.app_name)
@@ -82,7 +82,7 @@ class ChatActivity : BaseActivity() {
                 return@setOnClickListener
             }
 
-            // Check if the system language is English
+            // Set the language of AI's reply
             val setLanguage: String = if (MyApplication.sharedPreferences.getString("language", "en") == "en") {
                 " Reply me in English."
             }  else {
@@ -122,7 +122,7 @@ class ChatActivity : BaseActivity() {
                 mData.add(reply)
                 chatAdapter.update(mData)
 
-                // scroll to the end
+                // Scroll to the end
                 rcChatlist.scrollToPosition(mData.size - 1)
             }
 
