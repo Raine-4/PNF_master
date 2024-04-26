@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pnfmaster.android.AIAssistant
 import com.pnfmaster.android.BaseActivity
 import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.R
@@ -44,7 +45,7 @@ class ChatActivity : BaseActivity() {
 //        mData.add(loading1)
 //        chatAdapter.update(mData)
 
-        val initMsg = getString(R.string.initMsg)
+        // val initMsg = getString(R.string.initMsg)
 
         // Get answer from AI using Kotlin coroutine
 //        CoroutineScope(Dispatchers.Main).launch {
@@ -83,13 +84,13 @@ class ChatActivity : BaseActivity() {
             }
 
             // Set the language of AI's reply
-            val setLanguage: String = if (MyApplication.sharedPreferences.getString("language", "en") == "en") {
-                " Reply me in English."
-            }  else {
-                " 请用中文回答。"
-            }
+//            val setLanguage: String = if (MyApplication.sharedPreferences.getString("language", "en") == "en") {
+//                " Reply me in English."
+//            }  else {
+//                " 请用中文回答。"
+//            }
 
-            val userAsk = initMsg + input + setLanguage
+            val userAsk = input
 
             val newChatlist = Chatlist(getString(R.string.you), input)
             // Clear EditText
@@ -110,7 +111,7 @@ class ChatActivity : BaseActivity() {
                 val reply = withContext(Dispatchers.IO) {
                     try {
                         val ai = AIAssistant()
-                        Chatlist("PNF Master", ai.GetAnswer(userAsk))
+                        Chatlist("PNF Master", ai.GetAnswer(userAsk, getString(R.string.backgroundPrompt)))
                     } catch (e: Exception) {
                         Log.e("ChatActivity", e.toString())
                         Chatlist("PNF Master", "请重试/Please Retry.\n错误信息/Error Message: $e")

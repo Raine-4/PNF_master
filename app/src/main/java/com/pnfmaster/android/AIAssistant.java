@@ -1,4 +1,4 @@
-package com.pnfmaster.android.chat;
+package com.pnfmaster.android;
 
 import android.util.Log;
 
@@ -22,15 +22,15 @@ public class AIAssistant{
     // Store the dialog content.
     public JSONArray Dialogue_Content;
 
-    AIAssistant() { Dialogue_Content = new JSONArray(); }
+    public AIAssistant() { Dialogue_Content = new JSONArray(); }
 
     static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder()
-            .connectTimeout(5, TimeUnit.SECONDS) // 连接超时设置为5秒
-			.writeTimeout(15, TimeUnit.SECONDS) // 写入超时设置为15秒
-			.readTimeout(20, TimeUnit.SECONDS) // 读取超时设置为20秒
+            .connectTimeout(30, TimeUnit.SECONDS) // 连接超时设置为30秒
+			.writeTimeout(30, TimeUnit.SECONDS) // 写入超时设置为30秒
+			.readTimeout(30, TimeUnit.SECONDS) // 读取超时设置为30秒
             .build();
 
-    public String GetAnswer(String user_msg) throws IOException, JSONException {
+    public String GetAnswer(String user_msg, String background) throws IOException, JSONException {
 
         // 将JSONObject添加到JSONArray中
         JSONObject jsonObject = new JSONObject();
@@ -40,9 +40,11 @@ public class AIAssistant{
 
         MediaType mediaType = MediaType.parse("application/json");
 
-        RequestBody body = RequestBody.create(mediaType,  "{\"messages\":" +
-                Dialogue_Content.toString() +
-                ",\"disable_search\":false,\"enable_citation\":false}");
+        RequestBody body = RequestBody.create(mediaType,
+                "{" +
+                        "\"messages\":" + Dialogue_Content.toString() +
+                        ",\"system\": " + "\"" + background + "\""
+                + "}");
 
         Request request = new Request.Builder()
                 .url("https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=" +
@@ -52,17 +54,19 @@ public class AIAssistant{
                 .build();
         Response response = HTTP_CLIENT.newCall(request).execute();
 
+        String responseString = response.body().string(); // response body只能调用一次
+
+        Log.d("AIAssistant", "response: " + responseString);
         // 解析出ai的回答
-        JSONObject json_feedback = new JSONObject(response.body().string());
-        // 这里在开发的时候遇到了一个问题，注意response在上一行被取出里边的内容之后就自动关闭了，不能多次传参。
+        JSONObject json_feedback = new JSONObject(responseString);
         Log.d("AIAssistant", "json_feedback: " + json_feedback);
-        String re = json_feedback.getString("result");
+        String reply = json_feedback.getString("result");
         // 接下来把ai的回答加入到Dialogue_Content中
         JSONObject jsontmp = new JSONObject();
-        jsontmp.put("assistant", re);
+        jsontmp.put("assistant", reply);
         Dialogue_Content.put(jsontmp);
 
-        return re;
+        return reply;
     }
 
     /**
