@@ -221,12 +221,13 @@ class LoginActivity : BaseActivity() {
                             insertRehabInfo(diagnosisInfo, treatPlan, progressRecord, goals)
                             Log.d("LoginActivity", "----------- runBlocking - launch 2 end. -----------")
                         }.join()
+
+                        withContext(Dispatchers.Main) {
+                            pd.dismiss()
+                        }
                     }
                 }
             }
-
-            // 关闭ProgressDialog
-            pd.dismiss()
 
             if (registerFlag) {
                 if (flag == 0) {

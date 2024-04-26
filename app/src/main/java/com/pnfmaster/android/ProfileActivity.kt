@@ -22,8 +22,6 @@ import kotlinx.coroutines.withContext
 class ProfileActivity : BaseActivity() {
 
     private lateinit var binding : ActivityProfileBinding
-    private val job = Job()
-    private val scope = CoroutineScope(job)
 
     @SuppressLint("Range")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,9 +46,11 @@ class ProfileActivity : BaseActivity() {
                 infoList = withContext(Dispatchers.IO) {
                     connect.queryUserInfo(userId)
                 }
+                withContext(Dispatchers.Main) {
+                    pd.dismiss()
+                }
             }
         }
-        pd.dismiss()
 
         val username = intent.getStringExtra("userAccount") //用户名
         val name = infoList[0] as String

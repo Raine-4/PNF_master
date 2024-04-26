@@ -79,11 +79,11 @@ class NewuserActivity : BaseActivity() {
                 flag = withContext(Dispatchers.IO) {
                     connect.isUsernameUsed(username)
                 }
+                withContext(Dispatchers.Main) {
+                    pd.dismiss()
+                }
             }
         }
-
-        pd.dismiss()
-
 
         if (flag) {
             getString(R.string.already_exist).Toast()

@@ -1,6 +1,5 @@
 package com.pnfmaster.android.newuser
 
-import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -14,8 +13,10 @@ import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityRehabInfoBinding
 import com.pnfmaster.android.utils.ActivityCollector
 import com.pnfmaster.android.utils.MyProgressDialog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class RehabInfoActivity : BaseActivity() {
     private lateinit var binding: ActivityRehabInfoBinding
@@ -62,9 +63,10 @@ class RehabInfoActivity : BaseActivity() {
                     connect.insertUser(account, password)
                     connect.insertUserInfo(name!!, gender, age!!, contact!!)
                     connect.insertRehabInfo(diagnosisInfo, plan, progressRecord, goals)
+                    withContext(Dispatchers.Main) {
+                        pd.dismiss()
+                    }
                 }.join() // 等待协程完成
-
-                pd.dismiss()
 
                 val NEWUSER = 1
                 val nextIntent = Intent(this@RehabInfoActivity, LoginActivity::class.java)

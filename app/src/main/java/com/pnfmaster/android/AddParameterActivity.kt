@@ -28,7 +28,14 @@ class AddParameterActivity : BaseActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
-            it.title = getString(R.string.my_param)
+            it.title = getString(R.string.new_params)
+        }
+
+        binding.clear.setOnClickListener {
+            binding.forceUpperLimit.setText("")
+            binding.forceLowerLimit.setText("")
+            binding.motorPosition.setText("")
+            binding.trainingTime.setText("")
         }
 
         binding.generateParameters.setOnClickListener {
@@ -37,6 +44,7 @@ class AddParameterActivity : BaseActivity() {
             val user = UserBackground(this)
             user.init()
             // Step 2. Write the prompt and Send to the AI
+            // todo: 英文版的prompt还没改，改成和中文一样的
             val prompt: String = if (Locale.getDefault().language == "en") {
                 "1. This is my personal information:\n" +
                         "I am ${user.age()} years old. I am a ${user.gender()}. My diagnosis information is: ${user.diagnosisInfo()}. Currently, my treat plan is ${user.treatPlan()} and my progress is ${user.progressRecord()}. My goal is ${user.goals()}.\n" +
@@ -52,15 +60,14 @@ class AddParameterActivity : BaseActivity() {
                 "1.这是我的个人信息：\n" +
                 "我的年龄是 ${user.age()}。我的性别是 ${user.gender()}。我的诊断信息是：${user.diagnosisInfo()}。目前，我的治疗计划是 ${user.treatPlan()}，我的治疗进度是 ${user.progressRecord()}。我的目标是 ${user.goals()}.\n" +
                 "2.现在，假设您是一位经验丰富的专业康复理疗师。请根据我上面提供的个人信息给我一组参数（用力范围、运动结束位置和训练时间）。\n" +
-                "3.你的答案必须严格遵守以下格式：\"force lower limit,force upper limit,position,time\"，并且不包含任何其他文字。数组中的每个元素都应该是一个整数。\"position\"参数应该是介于0到10000之间的整数。时间参数的单位是\"秒\"" +
-                "你的回答中只能包含四个数字，不要包含任何其他文字。"
+                "3.你的答案必须严格遵守以下格式：\"force lower limit,force upper limit,position,time\"，其中\"force lower limit\"与\"force upper limit\"的单位是牛顿；\"position\"参数应该是介于0到10000之间的整数，无单位；时间参数的单位是\"秒\""
             }
 
             val pd = MyProgressDialog(this)
             pd.show()
 
-            var answer = ""
             CoroutineScope(Dispatchers.IO).launch{
+                var answer: String
                 try {
                     val ai = AIAssistant()
                     answer = ai.GetAnswer(prompt, "") as String
@@ -68,6 +75,10 @@ class AddParameterActivity : BaseActivity() {
                 } catch (e: Exception) {
                     answer = "ERROR"
                     Log.e("AddParameterActivity", e.toString())
+                }
+
+                withContext(Dispatchers.Main) {
+                    pd.dismiss()
                 }
 
                 // 切回主线程才能显示Dialog
@@ -100,7 +111,20 @@ class AddParameterActivity : BaseActivity() {
 //                    binding.chart.data = data
 //                    binding.chart.invalidate() // refresh chart
             }
-            pd.dismiss()
+        }
+
+        binding.saveParameters.setOnClickListener {
+             // Update chart data
+            val entries = ArrayList<Entry>()
+            val lowerLimit = binding.forceLowerLimit.text.toString().toInt()
+            val upperLimit = binding.forceUpperLimit.text.toString().toInt()
+            entries.add(Entry(0f, lowerLimit.toFloat())) // (0, lowerLimit)
+            entries.add(Entry(1f, upperLimit.toFloat())) // (1, upperLimit)
+
+            val dataSet = LineDataSet(entries, "Force")
+            val data = LineData(dataSet)
+            binding.chart.data = data
+            binding.chart.invalidate() // refresh chart
         }
     }
 
