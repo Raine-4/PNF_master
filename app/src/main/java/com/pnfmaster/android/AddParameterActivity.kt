@@ -12,6 +12,7 @@ import com.pnfmaster.android.MyApplication.Companion.userId
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityAddParameterBinding
 import com.pnfmaster.android.utils.MyProgressDialog
+import com.pnfmaster.android.utils.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +37,7 @@ class AddParameterActivity : BaseActivity() {
             binding.forceLowerLimit.setText("")
             binding.motorPosition.setText("")
             binding.trainingTime.setText("")
+            "已清空".Toast()
         }
 
         binding.generateParameters.setOnClickListener {
