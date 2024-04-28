@@ -340,7 +340,7 @@ class LoginActivity : BaseActivity() {
             }
         }
 
-        // 双击返回键退出应用
+        // Double Slide to Exit
         var doubleBackToExitPressedOnce = false
         onBackPressedDispatcher.addCallback(this) {
             pd.dismiss()
