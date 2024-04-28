@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuItem
 import com.pnfmaster.android.chat.ChatActivity
 import com.pnfmaster.android.databinding.ActivityTasksBinding
-import com.pnfmaster.android.utils.Toast
 
 class TasksActivity : BaseActivity() {
 
@@ -23,12 +22,11 @@ class TasksActivity : BaseActivity() {
             it.title = getString(R.string.my_param)
         }
 
-        // 打开AI聊天界面
+        // Open Chatting Activity
         binding.fab.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
             startActivity(intent)
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

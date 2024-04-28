@@ -55,7 +55,7 @@ class ControlActivity : BaseActivity() {
         navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navProfile -> jumpToActivity(this, "Profile")
-                R.id.navControl -> jumpToActivity(this, "Control")
+                R.id.navControl -> binding.drawerLayout.closeDrawers()
                 R.id.navTasks -> jumpToActivity(this, "Tasks")
                 R.id.navLogout -> jumpToActivity(this, "Logout")
             }
@@ -336,15 +336,6 @@ class ControlActivity : BaseActivity() {
                     startActivity(profileIntent)
                 }
             }
-            "Control" -> {
-                // 如果当前界面不在Control界面中，则跳转至Control界面
-                // TODO：目前MainActivity是作为开发者模式存在的，之后可能需要更改要跳转的Activity
-                if (javaClass.simpleName != ControlActivity::class.java.simpleName) {
-                    val intent = Intent(this, ControlActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-            }
             "Tasks" -> {
                 if (!judgeIfSkipped()){
                     val account = intent.getStringExtra("userAccount")
@@ -369,9 +360,7 @@ class ControlActivity : BaseActivity() {
                         .create()
                         .show()
                 } else {
-                    val logOutIntent = Intent(context, LoginActivity::class.java)
-                    startActivity(logOutIntent)
-                    finish()
+                    println(null) // inaccessible
                 }
             }
         }

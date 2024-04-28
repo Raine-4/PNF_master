@@ -167,9 +167,8 @@ class LoginActivity : BaseActivity() {
                     // Update UI in the main thread
                     withContext(Dispatchers.Main) {
                         Log.d("LoginActivity", "withContext(Dispatchers.Main)")
-
-                        // 如果已注册并且用户信任该设备(勾选了记住密码),则存储至本地数据库
                         Log.d("LoginActivity", "isRemember: $isRemember")
+                        // 如果已注册并且用户信任该设备(勾选了记住密码),则存储至本地数据库
                         if (registerFlag && isRemember) {
                             // 1 存储账户信息
                             fun insertUser(username: String, password: String) {
@@ -289,6 +288,7 @@ class LoginActivity : BaseActivity() {
                             startActivity(intent)
                             finish()
                         } else {
+                            pd.dismiss()
                             getString(R.string.wrong_name_psw).Toast()
                         }
                     }
@@ -317,7 +317,6 @@ class LoginActivity : BaseActivity() {
             }
         }
 
-        // 跳转至注册界面
         binding.newUserBtn.setOnClickListener {
             val intent = Intent(this, NewuserActivity::class.java)
             startActivity(intent)
@@ -344,6 +343,7 @@ class LoginActivity : BaseActivity() {
         var doubleBackToExitPressedOnce = false
         onBackPressedDispatcher.addCallback(this) {
             pd.dismiss()
+            Log.d("LoginActivity", "onBackPressed")
             if (doubleBackToExitPressedOnce) {
                 finish()
             } else {

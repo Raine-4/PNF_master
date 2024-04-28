@@ -114,9 +114,15 @@ class AddParameterActivity : BaseActivity() {
 
         binding.saveParameters.setOnClickListener {
              // Update chart data
+            val lowerLimitString = binding.forceLowerLimit.text.toString()
+            val upperLimitString = binding.forceUpperLimit.text.toString()
+            if (lowerLimitString == "" || upperLimitString == "") {
+                getString(R.string.please_input_params).Toast()
+                return@setOnClickListener
+            }
             val entries = ArrayList<Entry>()
-            val lowerLimit = binding.forceLowerLimit.text.toString().toInt()
-            val upperLimit = binding.forceUpperLimit.text.toString().toInt()
+            val lowerLimit = lowerLimitString.toInt()
+            val upperLimit = upperLimitString.toInt()
             entries.add(Entry(0f, lowerLimit.toFloat())) // (0, lowerLimit)
             entries.add(Entry(1f, upperLimit.toFloat())) // (1, upperLimit)
 

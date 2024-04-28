@@ -160,6 +160,7 @@
     <string name="empty_input_not_allowed">Input cannot be empty</string>
     <string name="if_restart_activity">After changing the language, you will return to the main interface. Continue?</string>
     <string name="new_params">New Parameters</string>
-    <string name="AI_is_thinking">PNF Master is thinking...</string>
+    <string name="AI_is_thinking">PNF Master is thinking…</string>
+    <string name="please_input_params">Please enter parameters first.</string>
 
 </resources>
