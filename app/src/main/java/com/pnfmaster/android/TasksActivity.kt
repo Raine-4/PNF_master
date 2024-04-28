@@ -33,8 +33,8 @@ class TasksActivity : BaseActivity() {
         val paramsList = ArrayList<ParamsGroup>()
         paramsAdapter = ParamsAdapter(paramsList)
         // TODO: 改成从数据库里读取数据
-        paramsList.add(ParamsGroup(20, 50, 8000, 30))
-        paramsList.add(ParamsGroup(25, 55, 8100, 35))
+        paramsList.add(ParamsGroup("Parameters Set 1",20, 50, 8000, 30))
+        paramsList.add(ParamsGroup("Parameters Set 2",25, 55, 8100, 35))
         paramsAdapter.update(paramsList)
 
         val layoutManager = LinearLayoutManager(this)

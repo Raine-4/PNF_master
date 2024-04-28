@@ -13,7 +13,7 @@ class ParamsAdapter(private var paramsList: List<ParamsGroup>) :
     RecyclerView.Adapter<ParamsAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val paramsTitle: View = view.findViewById(R.id.paramsTitle)
+        val paramsTitle: TextView = view.findViewById(R.id.paramsTitle)
         val lowerLimitValue: TextView = view.findViewById(R.id.lowerLimitValue)
         val upperLimitValue: TextView = view.findViewById(R.id.upperLimitValue)
         val positionValue: TextView = view.findViewById(R.id.positionValue)
@@ -32,6 +32,7 @@ class ParamsAdapter(private var paramsList: List<ParamsGroup>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val paramsGroup = paramsList[position]
+        holder.paramsTitle.text = paramsGroup.title
         holder.lowerLimitValue.text = paramsGroup.lowerLimit.toString()
         holder.upperLimitValue.text = paramsGroup.upperLimit.toString()
         holder.positionValue.text = paramsGroup.motorPosition.toString()

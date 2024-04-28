@@ -163,5 +163,9 @@
     <string name="please_input_params">Please enter parameters first.</string>
     <string name="saved">Saved</string>
     <string name="no_params">Click on the plus sign in the top right corner to create your first set of parameters</string>
+    <string name="LowerLimit_">"Force Lower Limit: "</string>
+    <string name="UpperLimit_">"Force Upper Limit: "</string>
+    <string name="MotorPosition_">"Motor Position: "</string>
+    <string name="TrainingTime_">"Training Time: "</string>
 
 </resources>

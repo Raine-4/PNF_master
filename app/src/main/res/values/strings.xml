@@ -168,4 +168,8 @@
     <string name="please_input_params">请先输入参数</string>
     <string name="saved">已保存</string>
     <string name="no_params">点击右上角，创建你的第一组参数吧</string>
+    <string name="LowerLimit_">力的下限：</string>
+    <string name="UpperLimit_">力的上限：</string>
+    <string name="MotorPosition_">电机位置：</string>
+    <string name="TrainingTime_">训练时长：</string>
 </resources>
