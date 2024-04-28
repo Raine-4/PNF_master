@@ -8,20 +8,30 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.lifecycle.lifecycleScope
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityProfileBinding
 import com.pnfmaster.android.utils.MyProgressDialog
 import com.pnfmaster.android.utils.Toast
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlin.properties.Delegates
 
 class ProfileActivity : BaseActivity() {
 
     private lateinit var binding : ActivityProfileBinding
+    private lateinit var pd : MyProgressDialog
+
+    private lateinit var name : String
+    private var age by Delegates.notNull<Int>()
+    private var gender by Delegates.notNull<Int>()
+    private lateinit var phone: String
+
+    private lateinit var diagnosisInfo: String
+    private lateinit var treatPlan: String
+    private lateinit var progressRecord: String
+    private lateinit var goals: String
 
     @SuppressLint("Range")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,32 +47,32 @@ class ProfileActivity : BaseActivity() {
 
         val userId = MyApplication.userId
 
-        var infoList = listOf<Any>()
+        var infoList: List<Any>
 
-        val pd = MyProgressDialog(this)
+        pd = MyProgressDialog(this)
         pd.show()
-        runBlocking {
-            launch {
-                infoList = withContext(Dispatchers.IO) {
-                    connect.queryUserInfo(userId)
-                }
-                withContext(Dispatchers.Main) {
-                    pd.dismiss()
-                }
+
+        lifecycleScope.launch {
+            Log.d("profile", "loading infoList...")
+            infoList = withContext(Dispatchers.IO) {
+                connect.queryUserInfo(userId)
+            }
+            withContext(Dispatchers.Main) {
+                Log.d("profile", "infoList loaded.")
+                val username = intent.getStringExtra("userAccount") //用户名
+                name = infoList[0] as String
+                age = infoList[1] as Int
+                gender = infoList[2] as Int
+                phone = infoList[3] as String
+
+                binding.userName.text = username
+                binding.USERNAME.text = name
+                binding.AGE.text = age.toString()
+                binding.GENDER.text = if (gender == 1) getString(R.string.male) else getString(R.string.female)
+                binding.CONTACT.text = if (phone != "") phone else getString(R.string.not_filled_yet)
+                pd.dismiss()
             }
         }
-
-        val username = intent.getStringExtra("userAccount") //用户名
-        val name = infoList[0] as String
-        val age = infoList[1] as Int
-        val gender = infoList[2] as Int
-        val phone = infoList[3] as String
-
-        binding.userName.text = username
-        binding.USERNAME.text = name
-        binding.AGE.text = age.toString()
-        binding.GENDER.text = if (gender == 1) getString(R.string.male) else getString(R.string.female)
-        binding.CONTACT.text = if (phone != "") phone else getString(R.string.not_filled_yet)
 
         binding.personInfo.setOnClickListener {
             // 使用LayoutInflater来加载自定义布局
@@ -99,25 +109,23 @@ class ProfileActivity : BaseActivity() {
                 val inputGender = if (genderId == R.id.radio_button_male) 1 else 0
                 val inputContact = contactEditText.text.toString()
 
-                val pd1 = MyProgressDialog(this)
-                pd1.show()
+                pd.show()
                 try {
-                    runBlocking {
-                        launch {
-                            withContext(Dispatchers.IO) {
-                                connect.savePersonInfo(inputName, inputAge, inputGender, inputContact)
-                            }
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            connect.savePersonInfo(inputName, inputAge, inputGender, inputContact)
+                        }
+                        withContext(Dispatchers.Main) {
+                            getString(R.string.edit_success).Toast()
+                            this@ProfileActivity.recreate()
+                            pd.dismiss()
                         }
                     }
-                    Thread.sleep(500)
-                    getString(R.string.edit_success).Toast()
-                    this.recreate()
                 } catch (e: Exception) {
                     getString(R.string.edit_fail).Toast()
                     Log.e("profile", "dialogBuilder.setPositiveButton")
                 }
                 // ----------------------------------
-                pd1.dismiss()
                 dialog.dismiss()
             }
 
@@ -127,24 +135,22 @@ class ProfileActivity : BaseActivity() {
 
 
         // 查询健康信息
-        var rehabInfoList = listOf<String>()
+        var rehabInfoList: List<String>
         // ----------------------------------
-        val pd2 = MyProgressDialog(this)
-        pd2.show()
-        runBlocking {
-            launch {
-                withContext(Dispatchers.IO) {
-                    rehabInfoList = connect.queryRehabInfo(userId)
-                }
+        pd.show()
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                rehabInfoList = connect.queryRehabInfo(userId)
+            }
+            withContext(Dispatchers.Main) {
+                pd.dismiss()
+                diagnosisInfo = assign(rehabInfoList[0])
+                treatPlan = assign(rehabInfoList[1])
+                progressRecord = assign(rehabInfoList[2])
+                goals = assign(rehabInfoList[3])
             }
         }
-        pd2.dismiss()
         // ----------------------------------
-
-        val diagnosisInfo = assign(rehabInfoList[0])
-        val treatPlan = assign(rehabInfoList[1])
-        val progressRecord = assign(rehabInfoList[2])
-        val goals = assign(rehabInfoList[3])
 
         binding.diagnosisInfo.setOnClickListener {
             popUpDialog(getString(R.string.diagnosisinfo), diagnosisInfo, "diagnosisinfo")
@@ -197,25 +203,22 @@ class ProfileActivity : BaseActivity() {
             newBuilder.setPositiveButton(getString(R.string.save)) { newDialog, _ ->
                 val userInput = editText.text.toString()
 
-                val pd3 = MyProgressDialog(this)
-                pd3.show()
+                pd.show()
                 try {
-                    runBlocking {
-                        launch {
-                            withContext(Dispatchers.IO) {
-                                connect.saveRehabInfo(userInput, columnName, MyApplication.userId)
-                            }
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            connect.saveRehabInfo(userInput, columnName, MyApplication.userId)
+                        }
+                        withContext(Dispatchers.Main) {
+                            pd.dismiss()
+                            getString(R.string.edit_success).Toast()
+                            this@ProfileActivity.recreate() // 刷新页面
                         }
                     }
-                    getString(R.string.edit_success).Toast()
-                    this.recreate() // 刷新页面
                 } catch (e: Exception) {
                     getString(R.string.edit_fail).Toast()
                     Log.e("profile", "private fun popUpDialog")
                 }
-                // 关闭ProgressDialog
-                pd3.dismiss()
-
                 newDialog.dismiss()
             }
             // 设置“取消”按钮，点击后不保存修改，直接关闭对话框

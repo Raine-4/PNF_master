@@ -3,7 +3,9 @@ package com.pnfmaster.android.newuser
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
+import androidx.lifecycle.lifecycleScope
 import com.pnfmaster.android.BaseActivity
 import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.R
@@ -14,8 +16,8 @@ import com.pnfmaster.android.utils.ActivityCollector
 import com.pnfmaster.android.utils.MyProgressDialog
 import com.pnfmaster.android.utils.Toast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class NewuserActivity : BaseActivity() {
@@ -70,39 +72,24 @@ class NewuserActivity : BaseActivity() {
         }
 
         var flag = false
-        // TODO: 设置成dispatcher(IO)和progressDialog的形式
+
         val pd = MyProgressDialog(this)
         pd.show()
 
-        runBlocking {
-            launch {
-                flag = withContext(Dispatchers.IO) {
-                    connect.isUsernameUsed(username)
-                }
-                withContext(Dispatchers.Main) {
-                    pd.dismiss()
-                }
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                flag = async { connect.isUsernameUsed(username) }.await()
+                Log.d("NewUserActivity", "isUsernameUsed: $flag")
+            }
+            withContext(Dispatchers.Main) {
+                pd.dismiss()
             }
         }
 
         if (flag) {
             getString(R.string.already_exist).Toast()
-            return false
         }
 
-        /* 使用本地数据库
-        val db = dbHelper.writableDatabase
-        val cursor = db.query("User", arrayOf("username"), null, null, null, null, null)
-        if (cursor.moveToFirst()) {
-            val curAccount = cursor.getString(cursor.getColumnIndex("username"))
-            if (curAccount == username) {
-                "用户名已存在。".Toast()
-                return false
-            }
-        }
-        cursor.close()
-        */
-
-        return true
+        return !flag
     }
 }

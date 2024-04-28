@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.lifecycle.lifecycleScope
 import com.pnfmaster.android.BaseActivity
 import com.pnfmaster.android.LoginActivity
 import com.pnfmaster.android.MyApplication
@@ -15,7 +16,6 @@ import com.pnfmaster.android.utils.ActivityCollector
 import com.pnfmaster.android.utils.MyProgressDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class RehabInfoActivity : BaseActivity() {
@@ -58,27 +58,25 @@ class RehabInfoActivity : BaseActivity() {
             pd.show()
 
             // 存储至云端数据库
-            runBlocking {
-                launch {
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
                     connect.insertUser(account, password)
                     connect.insertUserInfo(name!!, gender, age!!, contact!!)
                     connect.insertRehabInfo(diagnosisInfo, plan, progressRecord, goals)
-                    withContext(Dispatchers.Main) {
-                        pd.dismiss()
-                    }
-                }.join() // 等待协程完成
+                }
+                withContext(Dispatchers.Main) {
+                    pd.dismiss()
+                    val NEWUSER = 1
+                    val nextIntent = Intent(this@RehabInfoActivity, LoginActivity::class.java)
+                    nextIntent.putExtra("newAccount", account)
+                    nextIntent.putExtra("newPassword", password)
+                    nextIntent.putExtra("newUserFlag", NEWUSER)
+                    startActivity(nextIntent)
 
-                val NEWUSER = 1
-                val nextIntent = Intent(this@RehabInfoActivity, LoginActivity::class.java)
-                nextIntent.putExtra("newAccount", account)
-                nextIntent.putExtra("newPassword", password)
-                nextIntent.putExtra("newUserFlag", NEWUSER)
-                startActivity(nextIntent)
-
-                // 关闭全部注册activity
-                ActivityCollector.finishAll()
+                    // 关闭全部注册activity
+                    ActivityCollector.finishAll()
+                }
             }
-
         }
     }
 

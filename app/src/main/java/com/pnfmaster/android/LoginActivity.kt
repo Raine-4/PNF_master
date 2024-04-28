@@ -145,8 +145,8 @@ class LoginActivity : BaseActivity() {
             if (!isLocal) {
                 lifecycleScope.launch {
                     // Search in the IO thread
-                    withContext(Dispatchers.IO) {
-                        registerFlag = connect.isRegistered(account, psw)
+                    registerFlag = withContext(Dispatchers.IO) {
+                        connect.isRegistered(account, psw)
                     }
 
                     // Update UI in the main thread
@@ -174,7 +174,7 @@ class LoginActivity : BaseActivity() {
                             lifecycleScope.launch {
                                 Log.d(
                                     "LoginActivity",
-                                    "----------- lifecycleScope - launch 1 started. -----------"
+                                    "----------- lifecycleScope started. -----------"
                                 )
                                 // 2 个人资料
                                 withContext(Dispatchers.IO) personInfo@ {
@@ -253,7 +253,7 @@ class LoginActivity : BaseActivity() {
                                 withContext(Dispatchers.Main) {
                                     pd.dismiss()
                                 }
-                            } // lifecycleScope ended
+                            }
                         } else if (registerFlag) {
                             if (flag == 0) {
                                 // 如果勾选了“记住密码”选项
@@ -276,9 +276,29 @@ class LoginActivity : BaseActivity() {
                         } else {
                             getString(R.string.wrong_name_psw).Toast()
                         }
-                    }  // withContext Main ended
+                    }
                     Log.d("LoginActivity", "OnlineDB registerFlag: $registerFlag")
                 }
+            } else {
+                pd.dismiss()
+                if (flag == 0) {
+                    // 如果勾选了“记住密码”选项
+                    val editor = prefs.edit()
+                    if (binding.rememberPsw.isChecked) {
+                        editor.putBoolean("rememberPsw", true)
+                        editor.putString("account", account)
+                        editor.putString("password", psw)
+                    } else {
+                        editor.clear()
+                    }
+                    editor.apply()
+                }
+                MyApplication.isSkipped = false
+                val intent = Intent(this@LoginActivity, ControlActivity::class.java)
+                intent.putExtra("userAccount", account)
+                intent.putExtra("userId", MyApplication.userId)
+                startActivity(intent)
+                finish()
             }
         }
 
@@ -305,10 +325,12 @@ class LoginActivity : BaseActivity() {
             }
         }
 
+        // 双击返回键退出应用
         var doubleBackToExitPressedOnce = false
         onBackPressedDispatcher.addCallback(this) {
+            pd.dismiss()
             if (doubleBackToExitPressedOnce) {
-                finish() // 退出应用
+                finish()
             } else {
                 doubleBackToExitPressedOnce = true
                 Toast.makeText(this@LoginActivity,

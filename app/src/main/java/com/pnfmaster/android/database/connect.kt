@@ -11,6 +11,7 @@ import java.sql.SQLException
 object connect {
 
     const val DBNAME = "pnf_master"
+    private const val TAG = "connect.kt"
 
     @Throws(SQLException::class)
     fun setConnection(dbName: String): Connection? {
@@ -34,12 +35,12 @@ object connect {
             LoginActivity.isConnected = 1
         } catch (ex: SQLException) {
             ex.printStackTrace()
-            Log.e("connect", "SQLException")
+            Log.e(TAG, "SQLException")
             // 用于向主函数传参，连接失败
             LoginActivity.isConnected = 0
         } catch (ex: ClassNotFoundException) {
             ex.printStackTrace()
-            Log.e("connect", "ClassNotFoundException")
+            Log.e(TAG, "ClassNotFoundException")
             LoginActivity.isConnected = 0
         }
         return conn // 返回Connection型变量conn用于后续连接
@@ -51,7 +52,7 @@ object connect {
     fun insertUser(username: String, password: String): Int {
         val connection = setConnection(DBNAME)
         if (connection == null) {
-            Log.e("connect", "fun insertUser. Connection is null.")
+            Log.e(TAG, "fun insertUser. Connection is null.")
             return -1
         }
         val statement = connection.createStatement()
@@ -68,7 +69,7 @@ object connect {
     fun insertUserInfo(name: String, gender: Int, age: Int, phone: String): Int {
         val connection = setConnection(DBNAME)
         if (connection == null) {
-            Log.e("connect", "fun insertUserInfo. Connection is null.")
+            Log.e(TAG, "fun insertUserInfo. Connection is null.")
             return -1
         }
         val statement = connection.createStatement()
@@ -85,7 +86,7 @@ object connect {
     fun insertRehabInfo(diagnosisInfo: String, plan: String, progressRecord: String, goals: String): Int {
         val connection = setConnection(DBNAME)
         if (connection == null) {
-            Log.e("connect", "fun insertRehabInfo. Connection is null.")
+            Log.e(TAG, "fun insertRehabInfo. Connection is null.")
             return -1
         }
         val statement = connection.createStatement()
@@ -103,7 +104,7 @@ object connect {
     fun savePersonInfo(name: String, age: String, gender: Int, contact: String): Int {
         val connection = setConnection(DBNAME)
         if (connection == null) {
-            Log.e("connect", "fun savePersonInfo. Connection is null.")
+            Log.e(TAG, "fun savePersonInfo. Connection is null.")
             return -1
         }
         val statement = connection.createStatement()
@@ -151,7 +152,7 @@ object connect {
     fun isUsernameUsed(username: String): Boolean {
         val connection = setConnection(DBNAME)
         if (connection == null) {
-            Log.e("connect", "fun isUsernameUsed. Connection is null.")
+            Log.e(TAG, "fun isUsernameUsed. Connection is null.")
             return true
         }
         val statement = connection.createStatement()
@@ -169,7 +170,7 @@ object connect {
         try {
             val connection = setConnection(DBNAME)
             if (connection == null) {
-                Log.e("connect", "fun insertUser. Connection is null.")
+                Log.e(TAG, "fun insertUser. Connection is null.")
                 return true
             }
             // 执行查询
@@ -192,12 +193,15 @@ object connect {
     }
 
     fun queryUserInfo(id: Int): List<Any> {
+        Log.d(TAG, "queryUserInfo: Started.")
         val userInfo = mutableListOf("", -1, -1, "") // name, age, gender, phone
         val connection = setConnection(DBNAME)
+        Log.d(TAG, "queryUserInfo: Connection Built.")
         if (connection == null) {
-            Log.e("connect", "fun queryUserInfo. Connection is null.")
+            Log.e(TAG, "fun queryUserInfo. Connection is null.")
             return emptyList()
         }
+        Log.d(TAG, "queryUserInfo: Connection Not Null.")
         val statement = connection.createStatement()
         val resultSet = statement.executeQuery("SELECT * FROM userinfo WHERE id = '$id'")
 
@@ -208,9 +212,9 @@ object connect {
             userInfo.add(resultSet.getInt("gender"))
             userInfo.add(resultSet.getString("phone"))
         } else {
-            Log.e("connect", "fun queryUserInfo. No such id. id = $id")
+            Log.e(TAG, "fun queryUserInfo. No such id. id = $id")
         }
-
+        Log.d(TAG, "queryUserInfo: Inserted Successfully.")
         resultSet.close()
         statement.close()
         connection.close()
@@ -222,7 +226,7 @@ object connect {
         val rehabInfo = mutableListOf("", "", "", "")
         val connection = setConnection(DBNAME)
         if (connection == null) {
-            Log.e("connect", "fun queryRehabInfo. Connection is null.")
+            Log.e(TAG, "fun queryRehabInfo. Connection is null.")
             return emptyList()
         }
         val statement = connection.createStatement()
@@ -235,7 +239,7 @@ object connect {
             rehabInfo.add(resultSet.getString("progressrecord"))
             rehabInfo.add(resultSet.getString("goals"))
         } else {
-            Log.e("connect", "fun queryRehabInfo. No such id. id = $id")
+            Log.e(TAG, "fun queryRehabInfo. No such id. id = $id")
         }
 
         resultSet.close()
