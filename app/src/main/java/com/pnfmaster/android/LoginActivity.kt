@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.lifecycle.lifecycleScope
 import com.pnfmaster.android.MyApplication.Companion.sharedPreferences
 import com.pnfmaster.android.database.MyDatabaseHelper
 import com.pnfmaster.android.database.connect
@@ -24,7 +25,6 @@ import com.pnfmaster.android.utils.MyProgressDialog
 import com.pnfmaster.android.utils.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.sql.SQLException
 import java.util.Locale
@@ -32,13 +32,17 @@ import java.util.Locale
 class LoginActivity : BaseActivity() {
 
     private lateinit var binding : ActivityLoginBinding
+    private lateinit var pd : MyProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // get the current language from sharedPreferences
+        // Create progressDialog Instance
+        pd = MyProgressDialog(this)
+
+        // Get the current language from sharedPreferences
         val language = sharedPreferences.getString("language", "en") ?: "en"
         val currentLocale = if (language == "en") Locale.ENGLISH else Locale.CHINESE
 
@@ -112,7 +116,7 @@ class LoginActivity : BaseActivity() {
             }
         }
 
-        // 登录
+        // Login
         binding.loginInBtn.setOnClickListener {
             val account = binding.accountEdit.text.toString()
             val psw = binding.pswEdit.text.toString()
@@ -125,130 +129,234 @@ class LoginActivity : BaseActivity() {
                 false
             }
 
-            // 显示ProgressDialog
-            val pd = MyProgressDialog(this)
+            // Show ProgressDialog
             pd.show()
 
-            // 先在本地数据库检索
+            // First Search in Local Database
             var registerFlag = isRegistered(account, psw)
-            Log.d("LoginActivity", "LocalDB  registerFlag: $registerFlag")
 
-            // 如果本地数据库没有检索到, 再在网络数据库里检索.
-            if (!registerFlag) {
-                runBlocking {
-                    launch {
-                        registerFlag = withContext(Dispatchers.IO) {
-                            connect.isRegistered(account, psw)
-                        }
-                        Log.d("LoginActivity", "OnlineDB registerFlag: $registerFlag")
-                    }
-                }
-
-                // 如果已注册并且用户信任该设备(勾选了记住密码),则存储至本地数据库
-                Log.d("LoginActivity", "isRemember: $isRemember")
-                if (registerFlag && isRemember) {
-                    // 1 存储账户信息
-                    fun insertUser(username: String, password: String) {
-                        val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
-                        val db = dbHelper.writableDatabase
-                        val values = ContentValues().apply {
-                            put("username", username)
-                            put("password", password)
-                        }
-                        db.insert("User", null, values)
-                    }
-                    insertUser(account, psw)
-
-                    runBlocking {
-                        // 2 个人资料
-                        launch {
-                            Log.d("LoginActivity", "----------- runBlocking - launch 1 start. -----------")
-                            val infoList = withContext(Dispatchers.IO) {
-                                connect.queryUserInfo(MyApplication.userId)
-                            }
-                            if (isConnected == -1) {
-                                "2:连接错误,请重试.".Toast(Toast.LENGTH_LONG)
-                                return@launch
-                            }
-                            val name = infoList[0] as String
-                            val age = infoList[1] as Int
-                            val gender = infoList[2] as Int
-                            val phone = infoList[3] as String
-                            fun insertUserInfo(name: String?, gender: Int?, age: Int?, contact: String?) {
-                                val dbHelper = MyDatabaseHelper(this@LoginActivity, "user.db", MyApplication.DB_VERSION)
-                                val db = dbHelper.writableDatabase
-                                val values = ContentValues().apply {
-                                    put("name", name)
-                                    put("gender", gender)
-                                    put("age", age)
-                                    put("phone", contact)
-                                }
-                                db.insert("UserInfo", null, values)
-                            }
-                            insertUserInfo(name, age, gender, phone)
-                            Log.d("LoginActivity", "----------- runBlocking - launch 1 end. -----------")
-                        }.join()
-
-                        // 3 康复资料
-                        launch {
-                            Log.d("LoginActivity", "----------- runBlocking - launch 2 start. -----------")
-                            val rehabInfoList = withContext(Dispatchers.IO) {
-                                connect.queryRehabInfo(MyApplication.userId)
-                            }
-                            if (isConnected == -1) {
-                                "3:连接错误,请重试.".Toast(Toast.LENGTH_LONG)
-                                return@launch
-                            }
-                            fun assign(string: String):String {
-                                return if (string != getString(R.string.not_filled_yet) && string != "") string
-                                else getString(R.string.not_filled_yet)
-                            }
-                            val diagnosisInfo = assign(rehabInfoList[0])
-                            val treatPlan = assign(rehabInfoList[1])
-                            val progressRecord = assign(rehabInfoList[2])
-                            val goals = assign(rehabInfoList[3])
-                            fun insertRehabInfo(diagnosisInfo: String?, plan: String?, progressRecord: String?, goals: String?) {
-                                val dbHelper = MyDatabaseHelper(this@LoginActivity, "user.db", MyApplication.DB_VERSION)
-                                val db = dbHelper.writableDatabase
-                                val values = ContentValues().apply {
-                                    put("diagnosisInfo", diagnosisInfo)
-                                    put("treatPlan", plan)
-                                    put("progressRecord", progressRecord)
-                                    put("goals", goals)
-                                }
-                                db.insert("RehabInfo", null, values)
-                            }
-                            insertRehabInfo(diagnosisInfo, treatPlan, progressRecord, goals)
-                            Log.d("LoginActivity", "----------- runBlocking - launch 2 end. -----------")
-                        }.join()
-
-                        withContext(Dispatchers.Main) {
-                            pd.dismiss()
-                        }
-                    }
-                }
-            }
-
+            var isLocal = false
             if (registerFlag) {
-                if (flag == 0) {
-                    // 如果勾选了“记住密码”选项
-                    val editor = prefs.edit()
-                    if (binding.rememberPsw.isChecked) {
-                        editor.putBoolean("rememberPsw", true)
-                        editor.putString("account", account)
-                        editor.putString("password", psw)
-                    } else { editor.clear() }
-                    editor.apply()
-                }
-                MyApplication.isSkipped = false
-                val intent = Intent(this, ControlActivity::class.java)
-                intent.putExtra("userAccount", account)
-                intent.putExtra("userId", MyApplication.userId)
-                startActivity(intent)
-                finish()
-            } else {
-                getString(R.string.wrong_name_psw).Toast()
+                isLocal = true
             }
+            Log.d("LoginActivity", "LocalDB  isLocal: $isLocal")
+
+            // If not detected in local db, then search in Online Database
+            if (!isLocal) {
+                lifecycleScope.launch {
+                    // Search in the IO thread
+                    withContext(Dispatchers.IO) {
+                        registerFlag = connect.isRegistered(account, psw)
+                    }
+
+                    // Update UI in the main thread
+                    withContext(Dispatchers.Main) {
+                        Log.d("LoginActivity", "withContext(Dispatchers.Main)")
+
+                        // 如果已注册并且用户信任该设备(勾选了记住密码),则存储至本地数据库
+                        Log.d("LoginActivity", "isRemember: $isRemember")
+                        if (registerFlag && isRemember) {
+                            // 1 存储账户信息
+                            fun insertUser(username: String, password: String) {
+                                val dbHelper = MyDatabaseHelper(this@LoginActivity, "user.db", MyApplication.DB_VERSION)
+                                val db = dbHelper.writableDatabase
+                                val values = ContentValues().apply {
+                                    put("username", username)
+                                    put("password", password)
+                                }
+                                db.insert("User", null, values)
+                            }
+                            insertUser(account, psw)
+
+                            lifecycleScope.launch {
+                                Log.d("LoginActivity", "----------- lifecycleScope - launch 1 started. -----------")
+                                withContext(Dispatchers.IO) {
+                                    val infoList =connect.queryUserInfo(MyApplication.userId)
+                                    if (isConnected == -1) {
+                                        "2:连接错误,请重试.".Toast(Toast.LENGTH_LONG)
+                                        return@withContext
+                                    }
+                                    val name = infoList[0] as String
+                                    val age = infoList[1] as Int
+                                    val gender = infoList[2] as Int
+                                    val phone = infoList[3] as String
+                                    fun insertUserInfo(name: String?, gender: Int?, age: Int?, contact: String?) {
+                                        val dbHelper = MyDatabaseHelper(this@LoginActivity, "user.db", MyApplication.DB_VERSION)
+                                        val db = dbHelper.writableDatabase
+                                        val values = ContentValues().apply {
+                                            put("name", name)
+                                            put("gender", gender)
+                                            put("age", age)
+                                            put("phone", contact)
+                                        }
+                                        db.insert("UserInfo", null, values)
+                                    }
+                                    insertUserInfo(name, age, gender, phone)
+                                }
+
+                                // 3 康复资料
+                                withContext(Dispatchers.IO) {
+                                    val rehabInfoList = connect.queryRehabInfo(MyApplication.userId)
+                                    if (isConnected == -1) {
+                                        "3:连接错误,请重试.".Toast(Toast.LENGTH_LONG)
+                                        return@withContext
+                                    }
+                                    fun assign(string: String):String {
+                                        return if (string != getString(R.string.not_filled_yet) && string != "") string
+                                        else getString(R.string.not_filled_yet)
+                                    }
+                                    val diagnosisInfo = assign(rehabInfoList[0])
+                                    val treatPlan = assign(rehabInfoList[1])
+                                    val progressRecord = assign(rehabInfoList[2])
+                                    val goals = assign(rehabInfoList[3])
+                                    fun insertRehabInfo(diagnosisInfo: String?, plan: String?, progressRecord: String?, goals: String?) {
+                                        val dbHelper = MyDatabaseHelper(this@LoginActivity, "user.db", MyApplication.DB_VERSION)
+                                        val db = dbHelper.writableDatabase
+                                        val values = ContentValues().apply {
+                                            put("diagnosisInfo", diagnosisInfo)
+                                            put("treatPlan", plan)
+                                            put("progressRecord", progressRecord)
+                                            put("goals", goals)
+                                        }
+                                        db.insert("RehabInfo", null, values)
+                                    }
+                                    insertRehabInfo(diagnosisInfo, treatPlan, progressRecord, goals)
+                                    Log.d("LoginActivity", "----------- lifecycleScope ended. -----------")
+                                }
+                                withContext(Dispatchers.Main) {
+                                    pd.dismiss()
+                                }
+                            } // lifecycleScope ended
+                        } else if (registerFlag) {
+                            if (flag == 0) {
+                                // 如果勾选了“记住密码”选项
+                                val editor = prefs.edit()
+                                if (binding.rememberPsw.isChecked) {
+                                    editor.putBoolean("rememberPsw", true)
+                                    editor.putString("account", account)
+                                    editor.putString("password", psw)
+                                } else { editor.clear() }
+                                editor.apply()
+                            }
+                            MyApplication.isSkipped = false
+                            val intent = Intent(this@LoginActivity, ControlActivity::class.java)
+                            intent.putExtra("userAccount", account)
+                            intent.putExtra("userId", MyApplication.userId)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            getString(R.string.wrong_name_psw).Toast()
+                        }
+                    }  // withContext Main ended
+                    Log.d("LoginActivity", "OnlineDB registerFlag: $registerFlag")
+                }
+
+//                // 如果已注册并且用户信任该设备(勾选了记住密码),则存储至本地数据库
+//                Log.d("LoginActivity", "isRemember: $isRemember")
+//                if (registerFlag && isRemember) {
+//                    // 1 存储账户信息
+//                    pd.show()
+//                    fun insertUser(username: String, password: String) {
+//                        val dbHelper = MyDatabaseHelper(this, "user.db", MyApplication.DB_VERSION)
+//                        val db = dbHelper.writableDatabase
+//                        val values = ContentValues().apply {
+//                            put("username", username)
+//                            put("password", password)
+//                        }
+//                        db.insert("User", null, values)
+//                    }
+//                    insertUser(account, psw)
+//
+//                    runBlocking {
+//                        // 2 个人资料
+//                        launch {
+//                            Log.d("LoginActivity", "----------- runBlocking - launch 1 start. -----------")
+//                            val infoList = withContext(Dispatchers.IO) {
+//                                connect.queryUserInfo(MyApplication.userId)
+//                            }
+//                            if (isConnected == -1) {
+//                                "2:连接错误,请重试.".Toast(Toast.LENGTH_LONG)
+//                                return@launch
+//                            }
+//                            val name = infoList[0] as String
+//                            val age = infoList[1] as Int
+//                            val gender = infoList[2] as Int
+//                            val phone = infoList[3] as String
+//                            fun insertUserInfo(name: String?, gender: Int?, age: Int?, contact: String?) {
+//                                val dbHelper = MyDatabaseHelper(this@LoginActivity, "user.db", MyApplication.DB_VERSION)
+//                                val db = dbHelper.writableDatabase
+//                                val values = ContentValues().apply {
+//                                    put("name", name)
+//                                    put("gender", gender)
+//                                    put("age", age)
+//                                    put("phone", contact)
+//                                }
+//                                db.insert("UserInfo", null, values)
+//                            }
+//                            insertUserInfo(name, age, gender, phone)
+//                            Log.d("LoginActivity", "----------- runBlocking - launch 1 end. -----------")
+//                        }.join()
+//
+//                        // 3 康复资料
+//                        launch {
+//                            Log.d("LoginActivity", "----------- runBlocking - launch 2 start. -----------")
+//                            val rehabInfoList = withContext(Dispatchers.IO) {
+//                                connect.queryRehabInfo(MyApplication.userId)
+//                            }
+//                            if (isConnected == -1) {
+//                                "3:连接错误,请重试.".Toast(Toast.LENGTH_LONG)
+//                                return@launch
+//                            }
+//                            fun assign(string: String):String {
+//                                return if (string != getString(R.string.not_filled_yet) && string != "") string
+//                                else getString(R.string.not_filled_yet)
+//                            }
+//                            val diagnosisInfo = assign(rehabInfoList[0])
+//                            val treatPlan = assign(rehabInfoList[1])
+//                            val progressRecord = assign(rehabInfoList[2])
+//                            val goals = assign(rehabInfoList[3])
+//                            fun insertRehabInfo(diagnosisInfo: String?, plan: String?, progressRecord: String?, goals: String?) {
+//                                val dbHelper = MyDatabaseHelper(this@LoginActivity, "user.db", MyApplication.DB_VERSION)
+//                                val db = dbHelper.writableDatabase
+//                                val values = ContentValues().apply {
+//                                    put("diagnosisInfo", diagnosisInfo)
+//                                    put("treatPlan", plan)
+//                                    put("progressRecord", progressRecord)
+//                                    put("goals", goals)
+//                                }
+//                                db.insert("RehabInfo", null, values)
+//                            }
+//                            insertRehabInfo(diagnosisInfo, treatPlan, progressRecord, goals)
+//                            Log.d("LoginActivity", "----------- runBlocking - launch 2 end. -----------")
+//                        }.join()
+//
+//                        withContext(Dispatchers.Main) {
+//                            pd.dismiss()
+//                        }
+//                    }
+//                }
+            }
+
+//            if (registerFlag) {
+//                if (flag == 0) {
+//                    // 如果勾选了“记住密码”选项
+//                    val editor = prefs.edit()
+//                    if (binding.rememberPsw.isChecked) {
+//                        editor.putBoolean("rememberPsw", true)
+//                        editor.putString("account", account)
+//                        editor.putString("password", psw)
+//                    } else { editor.clear() }
+//                    editor.apply()
+//                }
+//                MyApplication.isSkipped = false
+//                val intent = Intent(this, ControlActivity::class.java)
+//                intent.putExtra("userAccount", account)
+//                intent.putExtra("userId", MyApplication.userId)
+//                startActivity(intent)
+//                finish()
+//            } else {
+//                getString(R.string.wrong_name_psw).Toast()
+//            }
         }
 
         // 跳转至注册界面
@@ -287,7 +395,11 @@ class LoginActivity : BaseActivity() {
                 Handler(Looper.getMainLooper()).postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
             }
         }
+    }
 
+    override fun onPause() {
+        super.onPause()
+        pd.dismiss()
     }
 
     /**

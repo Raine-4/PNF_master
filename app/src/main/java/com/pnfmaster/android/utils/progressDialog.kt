@@ -10,7 +10,7 @@ class MyProgressDialog(private val context: Context) {
     private val progressDialog = ProgressDialog(context)
 
     fun show() {
-        Log.d("MyProgressDialog", "show")
+        Log.d("MyProgressDialog", "showed")
         progressDialog.setMessage(context.getString(R.string.loading))
         progressDialog.setCancelable(false)
         progressDialog.show()
@@ -19,6 +19,7 @@ class MyProgressDialog(private val context: Context) {
     fun dismiss() {
         if (progressDialog.isShowing) {
             progressDialog.dismiss()
+            Log.d("MyProgressDialog", "dismissed")
         }
     }
 
