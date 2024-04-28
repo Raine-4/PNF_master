@@ -132,14 +132,29 @@ class LoginActivity : BaseActivity() {
             // Show ProgressDialog
             pd.show()
 
+            /**
+             * 原来的设想是先在本地数据库中搜索，加快登录速度。但是因为以下原因还是舍弃了这个特性：
+             * 1. 首先最大的问题是本地数据库中的userId和云端是不一样的，ProfileActivity目前使用的还是云端数据库
+             * 2. 本地数据库中的数据是不会更新的，如果用户在云端修改了个人资料，本地数据库中的数据不会更新
+             * 3. 这个特性本身的意义也不是很大，因为登录的时候也不会有太大的延迟并且登录后使用的功能还是需要联网。
+             *
+             * 舍弃之后的代码中，isLocal是永远为false的，所以不会执行本地数据库的搜索。如果需要重新启用这个特性，
+             * 只需将下列代码取消注释，并将注释下方的两行代码删除即可。
+             * 恢复特性需要：
+             * 1. 在ProfileActivity中实现一遍本地数据库读取；
+             * 2. 此时，用户更新之后的个人资料不光要保存在本地，还需要同时保存在云端；同时还需要每次记得更新云端数据到本地
+             * 3. 为了实现以上的操作，势必要同时使用本地userId和云端userId。很容易混乱。
+             */
             // First Search in Local Database
-            var registerFlag = isRegistered(account, psw)
+//            var registerFlag = isRegistered(account, psw)
 
-            var isLocal = false
-            if (registerFlag) {
-                isLocal = true
-            }
-            Log.d("LoginActivity", "LocalDB  isLocal: $isLocal")
+//            var isLocal = false
+//            if (registerFlag) {
+//                isLocal = true
+//            }
+//            Log.d("LoginActivity", "LocalDB  isLocal: $isLocal")
+            var registerFlag: Boolean
+            val isLocal = false
 
             // If not detected in local db, then search in Online Database
             if (!isLocal) {

@@ -37,6 +37,7 @@
     <filter-actions connection-id="ea5f7c88-6330-4774-a718-3e62a764442e" dataset="user.RehabInfo" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="ea5f7c88-6330-4774-a718-3e62a764442e" dataset="user.UserInfo" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="ea5f7c88-6330-4774-a718-3e62a764442e" dataset="user.User" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="ea5f7c88-6330-4774-a718-3e62a764442e" dataset="user.sqlite_sequence" active-filter-id="" />
     <filter-actions connection-id="ea5f7c88-6330-4774-a718-3e62a764442e" dataset="user.android_metadata" active-filter-id="" />
     <filter-actions connection-id="b62b2c1a-8168-42c4-9ce9-44b38f0d8b52" dataset="main.User" active-filter-id="EMPTY_FILTER" />
   </component>
