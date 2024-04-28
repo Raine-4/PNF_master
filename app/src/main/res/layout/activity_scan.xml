@@ -54,7 +54,7 @@
     <!--未扫描到设备时显示-->
     <include
         android:id="@+id/empty_lay"
-        layout="@layout/lay_empty"
+        layout="@layout/lay_no_device"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"

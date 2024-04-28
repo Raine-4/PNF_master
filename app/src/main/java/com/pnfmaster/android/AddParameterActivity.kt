@@ -13,6 +13,7 @@ import com.pnfmaster.android.MyApplication.Companion.userId
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityAddParameterBinding
 import com.pnfmaster.android.utils.CustomProgressDialog
+import com.pnfmaster.android.utils.MyProgressDialog
 import com.pnfmaster.android.utils.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -120,9 +121,14 @@ class AddParameterActivity : BaseActivity() {
                 getString(R.string.please_input_params).Toast()
                 return@setOnClickListener
             }
+
+            // Draw a figure
             val entries = ArrayList<Entry>()
             val lowerLimit = lowerLimitString.toInt()
             val upperLimit = upperLimitString.toInt()
+            val position = binding.motorPosition.text.toString().toInt()
+            val time = binding.trainingTime.text.toString().toInt()
+
             entries.add(Entry(0f, lowerLimit.toFloat())) // (0, lowerLimit)
             entries.add(Entry(1f, upperLimit.toFloat())) // (1, upperLimit)
 
@@ -130,6 +136,19 @@ class AddParameterActivity : BaseActivity() {
             val data = LineData(dataSet)
             binding.chart.data = data
             binding.chart.invalidate() // refresh chart
+
+            val pd = MyProgressDialog(this)
+            pd.show()
+            // Save to database
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    connect.insertParams(lowerLimit, upperLimit, position, time)
+                }
+                withContext(Dispatchers.Main) {
+                    pd.dismiss()
+                    getString(R.string.saved).Toast()
+                }
+            }
         }
     }
 

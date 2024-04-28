@@ -151,7 +151,6 @@
     <string name="torque">力矩</string>
     <string name="enable">启动电机</string>
     <string name="disable">停止电机</string>
-    <string name="my_param">我的参数</string>
     <string name="add">加</string>
     <string name="chat_with_AI">点击此处与人工智能交流。</string>
     <string name="what_do_you_want_to_know">您想知道什么？</string>
@@ -167,4 +166,6 @@
     <string name="new_params">新的参数</string>
     <string name="AI_is_thinking">PNF Master正在思考中...</string>
     <string name="please_input_params">请先输入参数</string>
+    <string name="saved">已保存</string>
+    <string name="no_params">点击右上角，创建你的第一组参数吧</string>
 </resources>

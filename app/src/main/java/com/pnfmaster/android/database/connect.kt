@@ -99,6 +99,22 @@ object connect {
         return res
     }
 
+    fun insertParams(lowerLimit: Int, upperLimit: Int, position: Int, time: Int): Int {
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e(TAG, "fun insertParams. Connection is null.")
+            return -1
+        }
+        val statement = connection.createStatement()
+        val sql = "INSERT INTO RehabInfo (userId, lowerlimit, upperlimit, position, time) VALUES ('${MyApplication.userId}', '$lowerLimit', '$upperLimit', '$position', '$time')"
+
+        val res = statement.executeUpdate(sql)
+
+        statement.close()
+        connection.close()
+        return res
+    }
+
     // --------------------------------UPDATE--------------------------------
 
     fun savePersonInfo(name: String, age: String, gender: Int, contact: String): Int {
