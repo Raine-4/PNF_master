@@ -142,7 +142,7 @@ class AddParameterActivity : BaseActivity() {
             // Save to database
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    connect.insertParams(lowerLimit, upperLimit, position, time)
+                    connect.insertParams(lowerLimit, upperLimit, position, time, "我的参数")
                 }
                 withContext(Dispatchers.Main) {
                     pd.dismiss()

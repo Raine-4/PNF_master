@@ -167,5 +167,6 @@
     <string name="UpperLimit_">"Force Upper Limit: "</string>
     <string name="MotorPosition_">"Motor Position: "</string>
     <string name="TrainingTime_">"Training Time: "</string>
+    <string name="my_param">My Parameters</string>
 
 </resources>

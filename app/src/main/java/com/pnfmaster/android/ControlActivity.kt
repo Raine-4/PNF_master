@@ -43,16 +43,15 @@ class ControlActivity : BaseActivity() {
         setContentView(binding.root)
 
         // 设置ActionBar
-        setSupportActionBar(binding.toolbarControl)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeAsUpIndicator(R.drawable.ic_menu)
             it.title = getString(R.string.Control)
         }
 
-        val navView = binding.navView
-        navView.setCheckedItem(R.id.navControl)
-        navView.setNavigationItemSelectedListener { item ->
+        binding.navView.setCheckedItem(R.id.navControl)
+        binding.navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navProfile -> jumpToActivity(this, "Profile")
                 R.id.navControl -> binding.drawerLayout.closeDrawers()
@@ -264,6 +263,11 @@ class ControlActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar, menu)
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.navView.setCheckedItem(R.id.navControl)
     }
 
     @SuppressLint("MissingPermission", "SetTextI18n")

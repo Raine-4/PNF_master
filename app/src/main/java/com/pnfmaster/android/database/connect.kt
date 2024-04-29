@@ -3,6 +3,7 @@ package com.pnfmaster.android.database
 import android.util.Log
 import com.pnfmaster.android.LoginActivity
 import com.pnfmaster.android.MyApplication
+import com.pnfmaster.android.ParamsGroup
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.PreparedStatement
@@ -99,14 +100,14 @@ object connect {
         return res
     }
 
-    fun insertParams(lowerLimit: Int, upperLimit: Int, position: Int, time: Int): Int {
+    fun insertParams(lowerLimit: Int, upperLimit: Int, position: Int, time: Int, title: String): Int {
         val connection = setConnection(DBNAME)
         if (connection == null) {
             Log.e(TAG, "fun insertParams. Connection is null.")
             return -1
         }
         val statement = connection.createStatement()
-        val sql = "INSERT INTO RehabInfo (userId, lowerlimit, upperlimit, position, time) VALUES ('${MyApplication.userId}', '$lowerLimit', '$upperLimit', '$position', '$time')"
+        val sql = "INSERT INTO userparams (userId, lowerlimit, upperlimit, position, time, title) VALUES ('${MyApplication.userId}', '$lowerLimit', '$upperLimit', '$position', '$time', '$title')"
 
         val res = statement.executeUpdate(sql)
 
@@ -159,8 +160,6 @@ object connect {
 
         return res
     }
-
-
 
     // --------------------------------QUERY--------------------------------
 
@@ -263,6 +262,34 @@ object connect {
         connection.close()
 
         return rehabInfo
+    }
+
+    fun queryParams(): List<ParamsGroup> {
+        val paramsList = mutableListOf<ParamsGroup>()
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e(TAG, "fun queryParams. Connection is null.")
+            return emptyList()
+        }
+        val statement = connection.createStatement()
+        val resultSet = statement.executeQuery("SELECT * FROM userparams WHERE userid = '${MyApplication.userId}'")
+
+        while (resultSet.next()) {
+            val title = resultSet.getString("title")
+            val lowerLimit = resultSet.getInt("lowerlimit")
+            val upperLimit = resultSet.getInt("upperlimit")
+            val position = resultSet.getInt("position")
+            val time = resultSet.getInt("time")
+
+            val paramsGroup = ParamsGroup(title, lowerLimit, upperLimit, position, time)
+            paramsList.add(paramsGroup)
+            Log.d(TAG, "paramsList: $paramsList")
+        }
+
+        resultSet.close()
+        statement.close()
+        connection.close()
+        return paramsList
     }
 }
 
