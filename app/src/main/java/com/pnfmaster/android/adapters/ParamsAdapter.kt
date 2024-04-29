@@ -11,7 +11,7 @@ import com.pnfmaster.android.AddParameterActivity
 import com.pnfmaster.android.ParamsGroup
 import com.pnfmaster.android.R
 
-class ParamsAdapter(private var paramsList: List<ParamsGroup>) :
+class ParamsAdapter(var paramsList: MutableList<ParamsGroup>) :
     RecyclerView.Adapter<ParamsAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -52,7 +52,7 @@ class ParamsAdapter(private var paramsList: List<ParamsGroup>) :
     override fun getItemCount() = paramsList.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun update(newData: List<ParamsGroup>) {
+    fun update(newData: MutableList<ParamsGroup>) {
         paramsList = newData
         notifyDataSetChanged()
     }

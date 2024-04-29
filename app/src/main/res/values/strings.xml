@@ -173,4 +173,6 @@
     <string name="MotorPosition_">电机位置：</string>
     <string name="TrainingTime_">训练时长：</string>
     <string name="my_param">我的参数</string>
+    <string name="are_you_sure_you_want_to_delete_this_parameter">确定删除这组参数吗？</string>
+    <string name="delete">删除</string>
 </resources>

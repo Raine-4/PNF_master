@@ -116,6 +116,23 @@ object connect {
         return res
     }
 
+    // --------------------------------DELETE--------------------------------
+
+    fun deleteParams(paramsGroupId: Int): Int {
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e(TAG, "fun deleteParams. Connection is null.")
+            return -1
+        }
+        val statement = connection.createStatement()
+        val sql = "DELETE FROM userparams WHERE id = $paramsGroupId AND userId = '${MyApplication.userId}'"
+        val res = statement.executeUpdate(sql)
+
+        statement.close()
+        connection.close()
+        return res
+    }
+
     // --------------------------------UPDATE--------------------------------
 
     fun savePersonInfo(name: String, age: String, gender: Int, contact: String): Int {
@@ -282,12 +299,12 @@ object connect {
         return rehabInfo
     }
 
-    fun queryParams(): List<ParamsGroup> {
+    fun queryParams(): MutableList<ParamsGroup> {
         val paramsList = mutableListOf<ParamsGroup>()
         val connection = setConnection(DBNAME)
         if (connection == null) {
             Log.e(TAG, "fun queryParams. Connection is null.")
-            return emptyList()
+            return mutableListOf()
         }
         val statement = connection.createStatement()
         val resultSet = statement.executeQuery("SELECT * FROM userparams WHERE userid = '${MyApplication.userId}'")
