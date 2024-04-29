@@ -9,11 +9,36 @@
         android:id="@+id/toolbar"
         android:background="@color/teal_200"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/parameter_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="参数名称："
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/parameter_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="我的参数"
+            android:background="@color/半透明"
+            android:textSize="16sp"
+            android:padding="10dp" />
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/parameter_title_layout"
         android:orientation="horizontal"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
@@ -61,7 +86,7 @@
         android:id="@+id/motor_position"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="电机位置(请输入0-10000的整数值)"
+        android:hint="电机位置（请输入0-10000的整数值）"
         android:background="@color/半透明"
         android:padding="10dp"
         android:layout_margin="10dp"
@@ -71,7 +96,7 @@
         android:id="@+id/training_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="训练时间"
+        android:hint="训练时间（单位为秒）"
         android:background="@color/半透明"
         android:padding="10dp"
         android:layout_margin="10dp"

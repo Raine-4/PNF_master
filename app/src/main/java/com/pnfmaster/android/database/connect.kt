@@ -161,6 +161,21 @@ object connect {
         return res
     }
 
+    fun saveParams(title: String, lowerLimit: Int, upperLimit: Int, position: Int, time: Int): Int {
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e(TAG, "fun saveParams. Connection is null.")
+            return -1
+        }
+        val statement = connection.createStatement()
+        val sql = "UPDATE userparams SET lowerlimit = '$lowerLimit', upperlimit = '$upperLimit', position = '$position', time = '$time', title = '$title' WHERE userId = '${MyApplication.userId}'"
+        val res = statement.executeUpdate(sql)
+
+        statement.close()
+        connection.close()
+        return res
+    }
+
     // --------------------------------QUERY--------------------------------
 
     // 检查注册时用户名是否已被使用，已被使用会返回True

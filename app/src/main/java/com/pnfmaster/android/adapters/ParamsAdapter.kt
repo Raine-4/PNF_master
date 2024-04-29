@@ -1,11 +1,13 @@
 package com.pnfmaster.android.adapters
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.pnfmaster.android.AddParameterActivity
 import com.pnfmaster.android.ParamsGroup
 import com.pnfmaster.android.R
 
@@ -25,7 +27,9 @@ class ParamsAdapter(private var paramsList: List<ParamsGroup>) :
             .inflate(R.layout.item_params_rv, parent, false)
         val viewHolder = ViewHolder(view)
         viewHolder.paramsTitle.setOnClickListener {
-            // TODO: 设置点击事件
+            val intent = Intent(parent.context, AddParameterActivity::class.java)
+            intent.putExtra("flag","EDIT")
+            parent.context.startActivity(intent)
         }
         return viewHolder
     }

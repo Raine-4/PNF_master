@@ -163,7 +163,7 @@
     <string name="thinking">正在思考中…</string>
     <string name="empty_input_not_allowed">输入不能为空</string>
     <string name="if_restart_activity">更改语言后将返回主界面。是否继续？</string>
-    <string name="new_params">新的参数</string>
+    <string name="edit_params">编辑参数</string>
     <string name="AI_is_thinking">PNF Master正在思考中...</string>
     <string name="please_input_params">请先输入参数</string>
     <string name="saved">已保存</string>

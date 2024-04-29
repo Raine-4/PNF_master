@@ -29,7 +29,7 @@ class AddParameterActivity : BaseActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
-            it.title = getString(R.string.new_params)
+            it.title = getString(R.string.edit_params)
         }
 
         binding.clear.setOnClickListener {
@@ -124,6 +124,7 @@ class AddParameterActivity : BaseActivity() {
 
             // Draw a figure
             val entries = ArrayList<Entry>()
+            val title = binding.parameterTitle.text.toString()
             val lowerLimit = lowerLimitString.toInt()
             val upperLimit = upperLimitString.toInt()
             val position = binding.motorPosition.text.toString().toInt()
@@ -139,15 +140,32 @@ class AddParameterActivity : BaseActivity() {
 
             val pd = MyProgressDialog(this)
             pd.show()
-            // Save to database
-            lifecycleScope.launch {
-                withContext(Dispatchers.IO) {
-                    connect.insertParams(lowerLimit, upperLimit, position, time, "我的参数")
+
+            val flag = intent.getStringExtra("flag")
+            if (flag == "EDIT") {
+                // Update to database
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        connect.saveParams(title, lowerLimit, upperLimit, position, time)
+                    }
+                    withContext(Dispatchers.Main) {
+                        pd.dismiss()
+                        getString(R.string.saved).Toast()
+                    }
                 }
-                withContext(Dispatchers.Main) {
-                    pd.dismiss()
-                    getString(R.string.saved).Toast()
+                return@setOnClickListener
+            } else {
+                // Save to database
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        connect.insertParams(lowerLimit, upperLimit, position, time, title)
+                    }
+                    withContext(Dispatchers.Main) {
+                        pd.dismiss()
+                        getString(R.string.saved).Toast()
+                    }
                 }
+                return@setOnClickListener
             }
         }
     }
