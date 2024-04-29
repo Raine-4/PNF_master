@@ -161,14 +161,17 @@ object connect {
         return res
     }
 
-    fun saveParams(title: String, lowerLimit: Int, upperLimit: Int, position: Int, time: Int): Int {
+    fun saveParams(title: String, lowerLimit: Int, upperLimit: Int, position: Int, time: Int, id: Int): Int {
         val connection = setConnection(DBNAME)
         if (connection == null) {
             Log.e(TAG, "fun saveParams. Connection is null.")
             return -1
+        } else if (id == -1) {
+            Log.e(TAG, "fun saveParams. id is -1.")
+            return -1
         }
         val statement = connection.createStatement()
-        val sql = "UPDATE userparams SET lowerlimit = '$lowerLimit', upperlimit = '$upperLimit', position = '$position', time = '$time', title = '$title' WHERE userId = '${MyApplication.userId}'"
+        val sql = "UPDATE userparams SET lowerlimit = '$lowerLimit', upperlimit = '$upperLimit', position = '$position', time = '$time', title = '$title' WHERE id = '$id' AND userId = '${MyApplication.userId}'"
         val res = statement.executeUpdate(sql)
 
         statement.close()
@@ -290,13 +293,14 @@ object connect {
         val resultSet = statement.executeQuery("SELECT * FROM userparams WHERE userid = '${MyApplication.userId}'")
 
         while (resultSet.next()) {
+            val paramId = resultSet.getInt("id")
             val title = resultSet.getString("title")
             val lowerLimit = resultSet.getInt("lowerlimit")
             val upperLimit = resultSet.getInt("upperlimit")
             val position = resultSet.getInt("position")
             val time = resultSet.getInt("time")
 
-            val paramsGroup = ParamsGroup(title, lowerLimit, upperLimit, position, time)
+            val paramsGroup = ParamsGroup(paramId, title, lowerLimit, upperLimit, position, time)
             paramsList.add(paramsGroup)
             Log.d(TAG, "paramsList: $paramsList")
         }

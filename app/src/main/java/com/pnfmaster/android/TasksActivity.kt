@@ -37,48 +37,49 @@ class TasksActivity : BaseActivity() {
 
         // Create empty data list and adapter
         val paramsList = ArrayList<ParamsGroup>()
-        paramsAdapter = ParamsAdapter(paramsList)
-
-        val emptyLayout = findViewById<View>(R.id.no_params_layout)
-
-        lifecycleScope.launch {
-            val paramsGroupList = withContext(Dispatchers.IO) {
-                connect.queryParams()
-            }
-            withContext(Dispatchers.Main) {
-                if (paramsGroupList.isNotEmpty()) {
-                    // Close the empty layout
-                    Log.d("TasksActivity", "Parameters found")
-                    emptyLayout.visibility = View.INVISIBLE
-                } else {
-                    // Show the empty layout
-                    emptyLayout.visibility = View.VISIBLE
-                    Log.d("TasksActivity", "No parameters found")
-                }
-                paramsAdapter.update(paramsGroupList)
-            }
-        }
-
-//        模拟添加数据的操作
-//        paramsList.add(ParamsGroup("Parameters Set 1",20, 50, 8000, 30))
-//        paramsList.add(ParamsGroup("Parameters Set 2",25, 55, 8100, 35))
-//        paramsAdapter.update(paramsList)
-
-        val layoutManager = LinearLayoutManager(this)
-        rvParams.adapter = paramsAdapter
-        rvParams.layoutManager = layoutManager
+        initParamsAdapter(paramsList)
 
         // Open Chatting Activity
         binding.fab.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
             startActivity(intent)
         }
+    }
 
+    private fun initParamsAdapter(paramsList: List<ParamsGroup>) {
+        lifecycleScope.launch {
+            val paramsGroupList = withContext(Dispatchers.IO) {
+                Log.d("TasksActivity", "正在查询参数...first")
+                connect.queryParams()
+            }
+            withContext(Dispatchers.Main) {
+                Log.d("TasksActivity", "开始初始化适配器")
+                // 先用空列表初始化适配器
+                paramsAdapter = ParamsAdapter(paramsList)
+                // 开关Empty layout
+                val emptyLayout = findViewById<View>(R.id.no_params_layout)
+                if (paramsGroupList.isNotEmpty()) {
+                    emptyLayout.visibility = View.INVISIBLE
+                    Log.d("TasksActivity", "Parameters found")
+                } else {
+                    emptyLayout.visibility = View.VISIBLE
+                    Log.d("TasksActivity", "No parameters found")
+                }
+                // 用查询到的数据更新适配器
+                paramsAdapter.update(paramsGroupList)
+
+                val layoutManager = LinearLayoutManager(this@TasksActivity)
+                rvParams.adapter = paramsAdapter
+                rvParams.layoutManager = layoutManager
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        loadData()
+        if (::paramsAdapter.isInitialized) {
+            loadData()
+        }
     }
 
     private fun loadData() {

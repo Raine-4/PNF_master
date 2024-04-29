@@ -19,9 +19,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import kotlin.properties.Delegates
 
 class AddParameterActivity : BaseActivity() {
     private lateinit var binding : ActivityAddParameterBinding
+    private var paramsId by Delegates.notNull<Int>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddParameterBinding.inflate(layoutInflater)
@@ -30,6 +32,21 @@ class AddParameterActivity : BaseActivity() {
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.title = getString(R.string.edit_params)
+        }
+
+        paramsId = intent.getIntExtra("paramsId", -1)
+
+        if (intent.getStringExtra("flag") == "EDIT") {
+            val title = intent.getStringExtra("title")
+            val ll = intent.getIntExtra("lowerlimit", -1).toString()
+            val ul = intent.getIntExtra("upperlimit", -1).toString()
+            val pos = intent.getIntExtra("position", -1).toString()
+            val t = intent.getIntExtra("time", -1).toString()
+            binding.parameterTitle.setText(title)
+            binding.forceLowerLimit.setText(ll)
+            binding.forceUpperLimit.setText(ul)
+            binding.motorPosition.setText(pos)
+            binding.trainingTime.setText(t)
         }
 
         binding.clear.setOnClickListener {
@@ -48,6 +65,7 @@ class AddParameterActivity : BaseActivity() {
             // Wait until the user information is loaded
             while (user.isRunning) {
                 Thread.sleep(1)
+                Log.d("AddParameterActivity", "Waiting for loading the user information..")
             }
             val myPd = CustomProgressDialog(this, getString(R.string.AI_is_thinking))
             myPd.show()
@@ -146,7 +164,7 @@ class AddParameterActivity : BaseActivity() {
                 // Update to database
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
-                        connect.saveParams(title, lowerLimit, upperLimit, position, time)
+                        connect.saveParams(title, lowerLimit, upperLimit, position, time, paramsId)
                     }
                     withContext(Dispatchers.Main) {
                         pd.dismiss()
