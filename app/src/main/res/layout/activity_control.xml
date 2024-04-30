@@ -5,56 +5,63 @@
     android:layout_height="match_parent"
     android:id="@+id/drawerLayout"
     android:background="@drawable/bg">
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:id="@+id/toolbar"
             android:background="@color/teal_200"
             app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/curDeviceHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
             android:text="@string/currentDevice"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            android:layout_marginTop="15dp"
-            android:layout_marginStart="10dp"/>
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
         <TextView
             android:id="@+id/curDevice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="@string/None"
             android:textSize="18sp"
-            android:layout_marginStart="10dp"
-            app:layout_constraintLeft_toRightOf="@id/curDeviceHint"
-            app:layout_constraintBaseline_toBaselineOf="@id/curDeviceHint"/>
+            app:layout_constraintBaseline_toBaselineOf="@id/curDeviceHint"
+            app:layout_constraintLeft_toRightOf="@id/curDeviceHint" />
 
         <TextView
             android:id="@+id/curParamsHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
             android:text="@string/current_params"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/curDeviceHint"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp" />
+            app:layout_constraintTop_toBottomOf="@id/curDeviceHint" />
+
         <TextView
             android:id="@+id/curParams"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="@string/None"
             android:textSize="18sp"
-            android:layout_marginStart="10dp"
-            app:layout_constraintLeft_toRightOf="@id/curParamsHint"
-            app:layout_constraintBaseline_toBaselineOf="@id/curParamsHint" />
+            android:maxLines="100"
+            android:ellipsize="end"
+            app:layout_constraintBaseline_toBaselineOf="@id/curParamsHint"
+            app:layout_constraintLeft_toRightOf="@id/curParamsHint" />
 
         <ScrollView
             android:id="@+id/scrollView"
@@ -65,6 +72,7 @@
             android:backgroundTint="@color/半透明"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/curParams">
+
             <TextView
                 android:id="@+id/receiveText"
                 android:layout_width="match_parent"
@@ -80,10 +88,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
             android:gravity="center_horizontal"
-            app:layout_constraintTop_toBottomOf="@id/init_layout"
-            android:layout_marginTop="20dp">
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/init_layout">
+
             <Button
                 android:id="@+id/enableBtn"
                 style="@style/common_button1"
@@ -91,6 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
                 android:text="@string/enable" />
+
             <Button
                 android:id="@+id/disableBtn"
                 style="@style/common_button1"
@@ -103,23 +113,25 @@
             android:id="@+id/init_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
             android:gravity="center_horizontal"
-            app:layout_constraintTop_toBottomOf="@id/scrollView"
-            android:layout_marginTop="20dp">
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/scrollView">
+
             <Button
                 android:id="@+id/StartBtn"
+                style="@style/common_button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/build_connection"
-                style="@style/common_button1"
-                android:layout_marginEnd="40dp"/>
+                android:layout_marginEnd="40dp"
+                android:text="@string/build_connection" />
+
             <Button
                 android:id="@+id/ChangeParamsBtn"
+                style="@style/common_button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/change_params"
-                style="@style/common_button1" />
+                android:text="@string/change_params" />
         </LinearLayout>
 
         <TextView
@@ -127,17 +139,18 @@
             android:layout_height="wrap_content"
             android:text="@string/Introduction"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="@string/chat_with_AI"
             android:src="@drawable/ic_ai"
-            android:contentDescription="@string/chat_with_AI" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView

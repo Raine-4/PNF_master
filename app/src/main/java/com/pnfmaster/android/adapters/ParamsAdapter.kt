@@ -21,6 +21,7 @@ import com.pnfmaster.android.R
 class ParamsAdapter(var paramsList: MutableList<ParamsGroup>) :
     RecyclerView.Adapter<ParamsAdapter.ViewHolder>() {
 
+    private var selectedPosition = -1
     /**
      * ViewHolder for the ParamsGroup items.
      * @property paramsTitle TextView The title of the ParamsGroup.
@@ -52,13 +53,21 @@ class ParamsAdapter(var paramsList: MutableList<ParamsGroup>) :
     /**
      * Binds a ViewHolder to a ParamsGroup item.
      */
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val paramsGroup = paramsList[position]
         holder.paramsTitle.text = paramsGroup.title
         holder.lowerLimitValue.text = paramsGroup.lowerLimit.toString()
         holder.upperLimitValue.text = paramsGroup.upperLimit.toString()
         holder.positionValue.text = paramsGroup.motorPosition.toString()
         holder.timeValue.text = paramsGroup.trainingTime.toString()
+
+        // 遍历一遍所有的radioButton
+        if (selectedPosition == position) {
+            holder.radioButton.setImageResource(R.drawable.ic_radio_button_checked)
+        } else {
+            holder.radioButton.setImageResource(R.drawable.ic_radio_button_unchecked)
+        }
 
         // Set onClickListener for the title, which starts AddParameterActivity with the ParamsGroup's details.
         holder.paramsTitle.setOnClickListener {
@@ -77,6 +86,9 @@ class ParamsAdapter(var paramsList: MutableList<ParamsGroup>) :
         holder.radioButton.setOnClickListener {
             holder.radioButton.setImageResource(R.drawable.ic_radio_button_checked)
             MyApplication.id = paramsGroup.id
+            selectedPosition = position
+            notifyDataSetChanged()
+
             val sharedPreferences = holder.itemView.context.getSharedPreferences("RadioBtnState", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putInt("selectedRadioButton", paramsGroup.id)

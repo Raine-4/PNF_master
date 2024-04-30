@@ -57,9 +57,11 @@ class ProfileActivity : BaseActivity() {
             infoList = withContext(Dispatchers.IO) {
                 connect.queryUserInfo(userId)
             }
+            val username = withContext(Dispatchers.IO) {
+                connect.queryUsername(userId)
+            }
             withContext(Dispatchers.Main) {
                 Log.d("profile", "infoList loaded.")
-                val username = intent.getStringExtra("userAccount") //用户名
                 name = infoList[0] as String
                 age = infoList[1] as Int
                 gender = infoList[2] as Int

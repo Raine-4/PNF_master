@@ -75,11 +75,16 @@ class ControlActivity : BaseActivity() {
         }
 
         val navHeaderView = binding.navView.getHeaderView(0)
-        val userAccount = intent.getStringExtra("userAccount")
-        val tvUserName = navHeaderView.findViewById<TextView>(R.id.userName)
-        // 如果不是未登录状态，则在nav_header中显示用户名
-        if (!MyApplication.isSkipped) {
-            tvUserName.text = userAccount
+
+        lifecycleScope.launch {
+            val userAccount = withContext(Dispatchers.IO) {
+                connect.queryUsername(MyApplication.userId)
+            }
+            val tvUserName = navHeaderView.findViewById<TextView>(R.id.userName)
+            // 如果不是未登录状态，则在nav_header中显示用户名
+            if (!MyApplication.isSkipped) {
+                tvUserName.text = userAccount
+            }
         }
 
         val handler = object : Handler(Looper.getMainLooper()) {
@@ -262,8 +267,8 @@ class ControlActivity : BaseActivity() {
                     curPosition = paramsGroup.motorPosition
                     curTime = paramsGroup.trainingTime
                     val text =
-                        if (Locale.getDefault().language == "en") "Force: $curLowerLimit ~ $curUpperLimit N; Position: $curPosition; Training Time: $curTime s"
-                        else " 力：$curLowerLimit ~ $curUpperLimit 牛; 位置：$curPosition;\n 训练时间：$curTime 秒"
+                        if (Locale.getDefault().language == "en") " Force: $curLowerLimit ~ $curUpperLimit N\n Position: $curPosition; Time: $curTime s"
+                        else " 【$curTitle】力: $curLowerLimit ~ $curUpperLimit 牛\n 位置: $curPosition;训练时间: $curTime 秒"
                     binding.curParams.text = text
                 }
             }

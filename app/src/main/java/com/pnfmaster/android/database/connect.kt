@@ -242,6 +242,29 @@ object connect {
         return false
     }
 
+    fun queryUsername(id: Int): String {
+        val connection = setConnection(DBNAME)
+        if (connection == null) {
+            Log.e(TAG, "fun queryUsername. Connection is null.")
+            return "ERROR"
+        }
+        val statement = connection.createStatement()
+        val resultSet = statement.executeQuery("SELECT username FROM user WHERE id = '$id'")
+
+        var username = ""
+        if (resultSet.first()) {
+            username = resultSet.getString("username")
+        } else {
+            Log.e(TAG, "fun queryUsername. No such id. id = $id")
+        }
+
+        resultSet.close()
+        statement.close()
+        connection.close()
+
+        return username
+    }
+
     fun queryUserInfo(id: Int): List<Any> {
         Log.d(TAG, "queryUserInfo: Started.")
         val userInfo = mutableListOf("", -1, -1, "") // name, age, gender, phone

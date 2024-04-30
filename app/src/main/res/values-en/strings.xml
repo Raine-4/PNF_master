@@ -170,8 +170,8 @@
     <string name="my_param">My Parameters</string>
     <string name="are_you_sure_you_want_to_delete_this_parameter">Are you sure you want to delete this parameter?</string>
     <string name="delete">Delete</string>
-    <string name="build_connection">Build Connection</string>
-    <string name="change_params">Change Params</string>
-    <string name="current_params">Current Parameters</string>
+    <string name="build_connection">Connect</string>
+    <string name="change_params">Parameters</string>
+    <string name="current_params">Parameters</string>
 
 </resources>
