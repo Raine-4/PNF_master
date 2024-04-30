@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +15,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.addCallback
@@ -162,10 +165,16 @@ class ControlActivity : BaseActivity() {
                         binding.StartBtn.text = getString(R.string.start)
                     }
                 }
-
+                setBtnState(binding.enableBtn, true)
+                setBtnState(binding.disableBtn, true)
             }
+            // 测试
+//            setBtnState(binding.enableBtn, true)
+//            setBtnState(binding.disableBtn, true)
         }
 
+        // 初始状态不可点击
+        setBtnState(binding.enableBtn, false)
         // 启动电机
         binding.enableBtn.setOnClickListener {
             if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
@@ -182,6 +191,7 @@ class ControlActivity : BaseActivity() {
             }
         }
 
+        setBtnState(binding.disableBtn, false)
         // 停止电机
         binding.disableBtn.setOnClickListener {
             if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
@@ -242,6 +252,19 @@ class ControlActivity : BaseActivity() {
                 .create()
                 .show()
         }
+    }
+
+    private fun setBtnState(button: Button, state: Boolean) {
+        button.isEnabled = state
+
+        val shapeDrawable = GradientDrawable()
+        shapeDrawable.shape = GradientDrawable.RECTANGLE
+        val dpValue = 10
+        val pxValue = (dpValue * Resources.getSystem().displayMetrics.density).toInt()
+        shapeDrawable.cornerRadius = pxValue.toFloat()
+        shapeDrawable.setColor(if (state) getColor(R.color.teal_200) else getColor(R.color.gray))
+
+        button.background = shapeDrawable
     }
 
     private fun setParams(): ParamsGroup {
@@ -341,9 +364,11 @@ class ControlActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         binding.navView.setCheckedItem(R.id.navControl)
-        Log.d("ControlActivity", "onResume: Before setParams.")
-        setParams()
-        Log.d("ControlActivity", "onResume: After setParams.")
+        setParams() // 设置当前参数
+        if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
+            setBtnState(binding.enableBtn, false)
+            setBtnState(binding.disableBtn, false)
+        }
     }
 
     @SuppressLint("MissingPermission", "SetTextI18n")

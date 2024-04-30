@@ -92,21 +92,19 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@id/init_layout">
-
             <Button
                 android:id="@+id/enableBtn"
                 style="@style/common_button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
-                android:text="@string/enable" />
-
+                android:text="@string/enable"/>
             <Button
                 android:id="@+id/disableBtn"
                 style="@style/common_button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/disable" />
+                android:text="@string/disable"/>
         </LinearLayout>
 
         <LinearLayout

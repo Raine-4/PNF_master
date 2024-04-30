@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.PNF_Master" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -19,6 +19,15 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">@dimen/sp16</item>
         <item name="android:background">@drawable/bg_ripple_common_button1</item>
+        <item name="android:layout_height">@dimen/dp_50</item>
+        <item name="android:layout_width">@dimen/dp_100</item>
+    </style>
+
+    <style name="disabled_button">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">@dimen/sp16</item>
+        <item name="android:background">@drawable/bg_ripple_disabled_button</item>
         <item name="android:layout_height">@dimen/dp_50</item>
         <item name="android:layout_width">@dimen/dp_100</item>
     </style>
