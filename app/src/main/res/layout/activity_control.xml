@@ -1,11 +1,9 @@
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawerLayout"
-    tools:ignore="HardcodedText"
     android:background="@drawable/bg">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_height="match_parent"
@@ -17,11 +15,12 @@
             android:background="@color/teal_200"
             app:layout_constraintTop_toTopOf="parent" />
         <TextView
-            android:id="@+id/hintTextView"
+            android:id="@+id/curDeviceHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/currentDevice"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             android:layout_marginTop="15dp"
@@ -33,67 +32,57 @@
             android:text="@string/None"
             android:textSize="18sp"
             android:layout_marginStart="10dp"
-            app:layout_constraintLeft_toRightOf="@id/hintTextView"
-            app:layout_constraintBaseline_toBaselineOf="@id/hintTextView"/>
-        <EditText
-            android:id="@+id/inputEditText"
-            android:background="@drawable/edit_background"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="50dp"
-            android:padding="10dp"
-            app:layout_constraintTop_toBottomOf="@id/scrollView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:hint="@string/EnterHere"
-            android:autofillHints="no"
-            android:textSize="18sp"
-            tools:ignore="TextFields" />
-<!--        <Spinner
-            android:id="@+id/spinner"
+            app:layout_constraintLeft_toRightOf="@id/curDeviceHint"
+            app:layout_constraintBaseline_toBaselineOf="@id/curDeviceHint"/>
+
+        <TextView
+            android:id="@+id/curParamsHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:entries="@array/mode"
-            app:layout_constraintTop_toBottomOf="@id/inputEditText"
+            android:text="@string/current_params"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="20dp"
-            android:popupBackground="@drawable/shape_for_custom_spinner"
-            android:background="@drawable/selector_for_custom_spinner"/>-->
+            app:layout_constraintTop_toBottomOf="@id/curDeviceHint"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp" />
+        <TextView
+            android:id="@+id/curParams"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/None"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintLeft_toRightOf="@id/curParamsHint"
+            app:layout_constraintBaseline_toBaselineOf="@id/curParamsHint" />
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/txt_radius_border"
+            android:backgroundTint="@color/半透明"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/curParams">
+            <TextView
+                android:id="@+id/receiveText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text=""
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/curDevice" />
+        </ScrollView>
 
         <LinearLayout
-            android:id="@+id/nayufeng"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_horizontal"
-            app:layout_constraintTop_toBottomOf="@id/inputEditText"
-            android:layout_marginTop="20dp">
-            <Button
-                android:id="@+id/StartBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/start"
-                style="@style/common_button1"
-                android:layout_marginEnd="40dp"/>
-            <Button
-                android:id="@+id/SendBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/send"
-                style="@style/common_button1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            app:layout_constraintTop_toBottomOf="@id/nayufeng"
+            app:layout_constraintTop_toBottomOf="@id/init_layout"
             android:layout_marginTop="20dp">
             <Button
                 android:id="@+id/enableBtn"
@@ -110,27 +99,28 @@
                 android:text="@string/disable" />
         </LinearLayout>
 
-        <ScrollView
-            android:id="@+id/scrollView"
+        <LinearLayout
+            android:id="@+id/init_layout"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/curDevice"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/txt_radius_border">
-            <TextView
-                android:id="@+id/receiveText"
-                android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            app:layout_constraintTop_toBottomOf="@id/scrollView"
+            android:layout_marginTop="20dp">
+            <Button
+                android:id="@+id/StartBtn"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/curDevice"
-                android:layout_marginTop="10dp"/>
-        </ScrollView>
+                android:text="@string/build_connection"
+                style="@style/common_button1"
+                android:layout_marginEnd="40dp"/>
+            <Button
+                android:id="@+id/ChangeParamsBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/change_params"
+                style="@style/common_button1" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -139,7 +129,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_ai"
+            android:contentDescription="@string/chat_with_AI" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
         android:layout_width="match_parent"

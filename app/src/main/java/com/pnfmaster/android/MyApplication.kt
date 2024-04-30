@@ -19,6 +19,7 @@ class MyApplication: Application() {
         var DB_VERSION: Int = 1
         var isSkipped = false
         var userId: Int = -1
+        var id: Int = -1 // ParamsGroup id
         lateinit var sharedPreferences: SharedPreferences
     }
 

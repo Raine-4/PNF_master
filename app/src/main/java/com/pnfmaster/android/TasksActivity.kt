@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pnfmaster.android.adapters.ParamsAdapter
-import com.pnfmaster.android.chat.ChatActivity
 import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityTasksBinding
 import kotlinx.coroutines.Dispatchers
@@ -137,12 +136,6 @@ class TasksActivity : BaseActivity() {
         // 将 ItemTouchHelper 附加到 RecyclerView
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(rvParams)
-
-        // Open Chatting Activity
-        binding.fab.setOnClickListener {
-            val intent = Intent(this, ChatActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     private fun initParamsAdapter(paramsList: MutableList<ParamsGroup>) {

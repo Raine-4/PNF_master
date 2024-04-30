@@ -17,12 +17,20 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.lifecycleScope
 import com.pnfmaster.android.BtConnection.BluetoothCommunication
 import com.pnfmaster.android.BtConnection.BluetoothScanActivity
+import com.pnfmaster.android.MyApplication.Companion.context
+import com.pnfmaster.android.chat.ChatActivity
+import com.pnfmaster.android.database.connect
 import com.pnfmaster.android.databinding.ActivityControlBinding
 import com.pnfmaster.android.utils.Toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.nio.charset.Charset
 import java.util.Calendar
+import java.util.Locale
 
 /* 一次清理缓存之后这里就不能再引用了，非常奇怪。
  * 编译器不会报错，但是运行时却显示Unresolved reference: MSG_READ
@@ -36,6 +44,11 @@ class ControlActivity : BaseActivity() {
 
     private lateinit var binding: ActivityControlBinding
 
+    private lateinit var curTitle: String
+    private var curLowerLimit: Int = -1
+    private var curUpperLimit: Int = -1
+    private var curPosition: Int = -1
+    private var curTime: Int = -1
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +118,8 @@ class ControlActivity : BaseActivity() {
                         "错误：连接异常。".Toast()
                     }
                     1 -> {
-                        val content = "<font color='blue'>[$curTime]" + getString(R.string.msgSend) + "${binding.inputEditText.text}</font>\n"
+//                        val content = "<font color='blue'>[$curTime]" + getString(R.string.msgSend) + "${binding.inputEditText.text}</font>\n"
+                        val content = "指令已发送"
                         binding.receiveText.append(Html.fromHtml(content, 1))
                         binding.receiveText.append("\n")
                     }
@@ -122,12 +136,10 @@ class ControlActivity : BaseActivity() {
             if (MyApplication.bluetoothDevice != null)  MyApplication.bluetoothDevice!!.name
             else " ${getString(R.string.None)}"
 
-        // 点击启动之后开始运行线程，可以读取信息了。
+        // 连接电机
         binding.StartBtn.setOnClickListener {
             if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 Log.e(TAG, "MainActivity:StartBtn.\n" +
-//                        "device is $device \n" +
-//                        "socket is $socket \n" +
                         "MyApplication.bluetoothDevice is ${MyApplication.bluetoothDevice} \n " +
                         "MyApplication.bluetoothSocket is ${MyApplication.bluetoothSocket}")
                 getString(R.string.fail_no_connection).Toast()
@@ -149,7 +161,7 @@ class ControlActivity : BaseActivity() {
             }
         }
 
-        // 电机使能
+        // 启动电机
         binding.enableBtn.setOnClickListener {
             if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 getString(R.string.fail_no_connection).Toast()
@@ -165,7 +177,7 @@ class ControlActivity : BaseActivity() {
             }
         }
 
-        // 停止使能
+        // 停止电机
         binding.disableBtn.setOnClickListener {
             if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 getString(R.string.fail_no_connection).Toast()
@@ -180,19 +192,36 @@ class ControlActivity : BaseActivity() {
             }
         }
 
-        // 点击发送按钮调用write(bytes: ByteArray)方法
-        binding.SendBtn.setOnClickListener {
-            if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
-                getString(R.string.fail_no_connection).Toast()
-                 Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
-                         "device: ${MyApplication.bluetoothDevice}\n" +
-                         "socket: ${MyApplication.bluetoothSocket}")
-            } else {
-                val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
-                val hexString = binding.inputEditText.text.toString()  // 十六进制字符串
-                val bytes = hexString.hexStringToByteArray() // 将十六进制字符串转换为字节数组
-                connectedThread.write(bytes)
-            }
+//        // 点击发送按钮调用write(bytes: ByteArray)方法
+//        binding.SendBtn.setOnClickListener {
+//            if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
+//                getString(R.string.fail_no_connection).Toast()
+//                 Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
+//                         "device: ${MyApplication.bluetoothDevice}\n" +
+//                         "socket: ${MyApplication.bluetoothSocket}")
+//            } else {
+//                val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
+//                val hexString = binding.inputEditText.text.toString()  // 十六进制字符串
+//                val bytes = hexString.hexStringToByteArray() // 将十六进制字符串转换为字节数组
+//                connectedThread.write(bytes)
+//            }
+//        }
+
+        binding.ChangeParamsBtn.setOnClickListener {
+            val intent = Intent(this, TasksActivity::class.java)
+//            intent.putExtra("flag", "EDIT")
+//            intent.putExtra("title", curTitle)
+//            intent.putExtra("lowerlimit", curLowerLimit)
+//            intent.putExtra("upperlimit", curUpperLimit)
+//            intent.putExtra("position", curPosition)
+//            intent.putExtra("time", curTime)
+            startActivity(intent)
+        }
+
+        // Open Chatting Activity
+        binding.fab.setOnClickListener {
+            val intent = Intent(this, ChatActivity::class.java)
+            startActivity(intent)
         }
 
         onBackPressedDispatcher.addCallback(this) {
@@ -208,7 +237,46 @@ class ControlActivity : BaseActivity() {
                 .create()
                 .show()
         }
+    }
 
+    private fun setParams(): ParamsGroup {
+        Log.d("ControlActivity", "MyApplicaion.id = ${MyApplication.id}")
+        var paramsGroup = ParamsGroup(-1, "", -1, -1, -1, -1)
+        lifecycleScope.launch {
+            Log.d("ControlActivity", "lifecycleScope.launch")
+            // 如果id为-1，则尝试从SharedPreferences中获取id
+            if (MyApplication.id == -1) {
+                val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                MyApplication.id = sharedPreferences.getInt("MyApplicationId", -1) // 返回保存的id，如果没有找到则返回-1
+            }
+            paramsGroup = withContext(Dispatchers.IO) {
+                connect.queryParamsWithId(MyApplication.id)
+            }
+            Log.d("ControlActivity", "query ended.")
+            withContext(Dispatchers.Main) {
+                if (MyApplication.id != -1) {
+                    saveIdToPreferences(this@ControlActivity, MyApplication.id)
+                    curTitle = paramsGroup.title
+                    curLowerLimit = paramsGroup.lowerLimit
+                    curUpperLimit = paramsGroup.upperLimit
+                    curPosition = paramsGroup.motorPosition
+                    curTime = paramsGroup.trainingTime
+                    val text =
+                        if (Locale.getDefault().language == "en") "Force: $curLowerLimit ~ $curUpperLimit N; Position: $curPosition; Training Time: $curTime s"
+                        else " 力：$curLowerLimit ~ $curUpperLimit 牛; 位置：$curPosition;\n 训练时间：$curTime 秒"
+                    binding.curParams.text = text
+                }
+            }
+            Log.d("ControlActivity", "set ended.")
+        }
+        return paramsGroup
+    }
+
+    private fun saveIdToPreferences(context: Context, id: Int) {
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("MyApplicationId", id)
+        editor.apply()
     }
 
     private fun String.hexStringToByteArray(): ByteArray {
@@ -268,6 +336,9 @@ class ControlActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         binding.navView.setCheckedItem(R.id.navControl)
+        Log.d("ControlActivity", "onResume: Before setParams.")
+        setParams()
+        Log.d("ControlActivity", "onResume: After setParams.")
     }
 
     @SuppressLint("MissingPermission", "SetTextI18n")

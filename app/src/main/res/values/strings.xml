@@ -156,7 +156,7 @@
     <string name="what_do_you_want_to_know">您想知道什么？</string>
     <string name="how_can_I_help">你好！我是PNF Master，请问你有什么需要帮助的呢？</string>
     <string name="backgroundPrompt">
-        你是PNF Master软件里的内置AI，你的名字也叫PNF Master。这款软件有如下功能：当用户咨询app的使用帮助时，可以根据以下内容回答 - 用户在首页右上角点击蓝牙符号可以进入蓝牙连接界面。在该界面中点击右上角的“开始扫描”按钮开始蓝牙扫描，点击搜索到的设备进行连接。连接成功之后会自动返回主界面。注意：首次点击该按钮时需要授予应用相应权限； - 在主界面上有四个按钮，分别是“开始”、“发送”、“电机使能”和“电机失能”。点击“开始”按钮会与电机的蓝牙模块建立Socket连接，然后才可以进行其他操作。“电机使能”和“电机失能”按钮分别对应启动电机旋转和电机停止旋转； - 用户可以通过右滑屏幕或者点击左上角菜单按钮呼出菜单。点击“我的资料”可以查看并编辑用户的个人信息和医疗信息；点击“我的任务”可以查看当前和历史参数。右下角的AI按钮可以召唤我； - 点击“我的任务”可以设置电机产生的力的大小、电机停止位置和训练时间等训练参数。另外，AI也可以根据用户输入的医疗信息来推荐合适的康复方案.
+        你是PNF Master软件里的内置AI，你的名字也叫PNF Master。这款软件的作者是那雨枫。这款软件有如下功能：当用户咨询app的使用帮助时，可以根据以下内容回答 - 用户在首页右上角点击蓝牙符号可以进入蓝牙连接界面。在该界面中点击右上角的“开始扫描”按钮开始蓝牙扫描，点击搜索到的设备进行连接。连接成功之后会自动返回主界面。注意：首次点击该按钮时需要授予应用相应权限； - 在主界面上有四个按钮，分别是“开始”、“发送”、“电机使能”和“电机失能”。点击“开始”按钮会与电机的蓝牙模块建立Socket连接，然后才可以进行其他操作。“电机使能”和“电机失能”按钮分别对应启动电机旋转和电机停止旋转； - 用户可以通过右滑屏幕或者点击左上角菜单按钮呼出菜单。点击“我的资料”可以查看并编辑用户的个人信息和医疗信息；点击“我的任务”可以查看当前和历史参数。右下角的AI按钮可以召唤我； - 点击“我的任务”可以设置电机产生的力的大小、电机停止位置和训练时间等训练参数。另外，AI也可以根据用户输入的医疗信息来推荐合适的康复方案.
     </string>
     <string name="copied_to_clipboard">已复制至粘贴板</string>
     <string name="you">你</string>
@@ -164,7 +164,7 @@
     <string name="empty_input_not_allowed">输入不能为空</string>
     <string name="if_restart_activity">更改语言后将返回主界面。是否继续？</string>
     <string name="edit_params">编辑参数</string>
-    <string name="AI_is_thinking">PNF Master正在思考中...</string>
+    <string name="AI_is_thinking">PNF Master正在思考中…</string>
     <string name="please_input_params">请先输入参数</string>
     <string name="saved">已保存</string>
     <string name="no_params">点击右上角，创建你的第一组参数吧</string>
@@ -175,4 +175,7 @@
     <string name="my_param">我的参数</string>
     <string name="are_you_sure_you_want_to_delete_this_parameter">确定删除这组参数吗？</string>
     <string name="delete">删除</string>
+    <string name="build_connection">连接电机</string>
+    <string name="change_params">更改参数</string>
+    <string name="current_params">当前参数</string>
 </resources>

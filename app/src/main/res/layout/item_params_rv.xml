@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/InfoLayout1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,7 +22,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:drawableStartCompat="@drawable/arrow_right"
-        android:drawablePadding="5dp"/>
+        android:drawablePadding="5dp"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/lowerLimit"
@@ -97,4 +99,15 @@
         android:layout_marginTop="5dp"
         app:layout_constraintStart_toEndOf="@id/time"
         app:layout_constraintBaseline_toBaselineOf="@id/time"/>
+
+    <ImageView
+        android:id="@+id/radioButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_radio_button_unchecked"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:importantForAccessibility="no" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

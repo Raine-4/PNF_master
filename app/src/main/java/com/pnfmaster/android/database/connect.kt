@@ -327,6 +327,39 @@ object connect {
         connection.close()
         return paramsList
     }
+
+    /**
+     * 查询指定id的参数组
+     *
+     * @param id 参数组id
+     * @return 返回查询到的参数组
+     */
+    fun queryParamsWithId(id: Int): ParamsGroup {
+        val connection = setConnection(DBNAME)
+        var paramsGroup = ParamsGroup(-1, "", -1, -1, -1, -1)
+        if (connection == null) {
+            Log.e(TAG, "fun queryParams. Connection is null.")
+            return paramsGroup
+        }
+        val statement = connection.createStatement()
+        val resultSet = statement.executeQuery("SELECT * FROM userparams WHERE userid = '${MyApplication.userId}' AND id = '$id'")
+
+        if (resultSet.first()) {
+            val title = resultSet.getString("title")
+            val lowerLimit = resultSet.getInt("lowerlimit")
+            val upperLimit = resultSet.getInt("upperlimit")
+            val position = resultSet.getInt("position")
+            val time = resultSet.getInt("time")
+
+            paramsGroup = ParamsGroup(id, title, lowerLimit, upperLimit, position, time)
+            Log.d(TAG, "paramsGroup: $paramsGroup")
+        }
+
+        resultSet.close()
+        statement.close()
+        connection.close()
+        return paramsGroup
+    }
 }
 
 
