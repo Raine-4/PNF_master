@@ -6,9 +6,9 @@
         “PNF Master”是一款安卓应用，它通过蓝牙连接，可以对下肢康复机器人进行远程控制。
         本应用支持对电机速度、循环次数、运转模式等参数进行调节，以满足不同康复需求。\n\n
         2. 操作指南\n
-        用户可以通过应用界面右上角的转换按钮轻松切换当前控制的电机；在右上角的更多菜单项中，用户可以将康复数据保存到云端，方便用户进行长期监测和分析；
-        还可以通过本应用删除已保存的数据，并自定义设置应用的一些选项，以获得更好的使用体验。
-        PNF Master 提供了简便的康复机器人控制功能，为用户提供了更便捷、高效的康复体验。
+        首先，用户需要点击右上角的蓝牙按钮连接设备。之后在操控页面点击连接电机按钮并选择电机参数，点击启动电机即可开始训练。\n
+        用户可以通过右滑屏幕或者点击左上角菜单按钮呼出菜单。点击“我的资料”可以查看并编辑用户的个人信息和医疗信息；点击“我的参数”可以查看当前和历史参数，并且可以添加自定义参数或AI推荐参数。\n
+        如果有更多问题，点击操控页面右下角的AI按钮来询问PNF Master哦。
     </string>
     <string name="userName">测试用户</string>
     <string name="currentDevice">当前设备</string>
@@ -27,7 +27,7 @@
     <string name="poem">科技织梦，康复成诗。</string>
     <string name="Profile">我的资料</string>
     <string name="Control">操控页面</string>
-    <string name="Tasks">我的任务</string>
+    <string name="Tasks">我的参数</string>
     <string name="Logout">退出登录</string>
     <string name="defaultUserName">未登录用户</string>
     <string name="unknown_value">未知</string>

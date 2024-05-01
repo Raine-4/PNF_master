@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pnfmaster.android.AIAssistant
 import com.pnfmaster.android.BaseActivity
-import com.pnfmaster.android.MyApplication
 import com.pnfmaster.android.R
 import com.pnfmaster.android.databinding.ActivityChatBinding
 import kotlinx.coroutines.CoroutineScope
@@ -40,30 +39,6 @@ class ChatActivity : BaseActivity() {
         // Initialize adapter
         chatAdapter = ChatlistAdapter(this, mData)
 
-//        // Add a loading message
-//        val loading1 = Chatlist("PNF Master", "正在初始化...")
-//        mData.add(loading1)
-//        chatAdapter.update(mData)
-
-        // val initMsg = getString(R.string.initMsg)
-
-        // Get answer from AI using Kotlin coroutine
-//        CoroutineScope(Dispatchers.Main).launch {
-//            val reply = withContext(Dispatchers.IO) {
-//                try {
-//                    Chatlist("PNF Master", AIAssistant().GetAnswer(initMsg))
-//                } catch (e: Exception) {
-//                    Log.e("ChatActivity", e.toString())
-//                    Chatlist("PNF Master", "Error: $e")
-//                }
-//            }
-//            // Remove the loading message
-//            mData.removeAt(mData.size-1)
-//
-//            mData.add(reply)
-//            chatAdapter.update(mData)
-//        }
-
         mData.add(Chatlist("PNF Master", getString(R.string.how_can_I_help)))
         chatAdapter.update(mData)
 
@@ -82,15 +57,6 @@ class ChatActivity : BaseActivity() {
                 Toast.makeText(this, getString(R.string.empty_input_not_allowed), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            // Set the language of AI's reply
-//            val setLanguage: String = if (MyApplication.sharedPreferences.getString("language", "en") == "en") {
-//                " Reply me in English."
-//            }  else {
-//                " 请用中文回答。"
-//            }
-
-            val userAsk = input
 
             val newChatlist = Chatlist(getString(R.string.you), input)
             // Clear EditText
@@ -111,7 +77,7 @@ class ChatActivity : BaseActivity() {
                 val reply = withContext(Dispatchers.IO) {
                     try {
                         val ai = AIAssistant()
-                        Chatlist("PNF Master", ai.GetAnswer(userAsk, getString(R.string.backgroundPrompt)))
+                        Chatlist("PNF Master", ai.GetAnswer(input, getString(R.string.backgroundPrompt)))
                     } catch (e: Exception) {
                         Log.e("ChatActivity", e.toString())
                         Chatlist("PNF Master", "请重试/Please Retry.\n错误信息/Error Message: $e")
@@ -131,7 +97,7 @@ class ChatActivity : BaseActivity() {
             inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
 
         }
-    } // onCrete
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

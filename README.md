@@ -4,7 +4,6 @@
 
 - [简体中文](#简体中文)
 - [English](#english)
-- [繁體中文](#繁體中文)
 
 ---
 
@@ -14,40 +13,22 @@
 
 ## 1  应用介绍
 
-北航（现在已经没了的）国通学院机械专业的个人毕业设计。团队毕设是制作一个基于PNF疗法的下肢康复机器人，我个人负责的部分是开发一个Android应用，基本功能是能通过蓝牙控制机器人（上的电机）实现患者自主康复训练。拓展功能计划包括云端存储用户数据，同一账户可以在不同设备上登录，以获得相同的个人资料。而个人资料可以作为程序为患者定制个性化康复计划的依据，这个功能之后可能会接入一个AI的API来实现。
+北航（现在已经没了的）国际通用工程学院机械专业的个人毕业设计。团队毕设是制作一个基于PNF疗法的下肢肌肉疲劳预防机器人，我个人负责的部分是开发一个Android应用。
+**基础功能**：通过蓝牙控制机器人（上的电机）实现患者自主训练。
+**拓展功能**：拓展功能必须注册账号才可以使用。内置名为“PNF Master”的人工智能助手，可以根据用户输入的个人资料来智能推荐训练参数并生成训练曲线。所有数据根据用户账号在不同设备同步，不保存在本地。
 
-## 2 开发日志
+## 2 用户使用帮助
 
-### 2.1 需要联网使用的功能
+1. **基础功能**：首先，用户需要点击右上角的蓝牙按钮连接设备。之后在操控页面点击连接电机按钮并选择电机参数，点击启动电机即可开始训练。
+2. **拓展功能**：用户可以通过右滑屏幕或者点击左上角菜单按钮呼出菜单。点击“我的资料”可以查看并编辑用户的个人信息和医疗信息；点击“我的参数”可以查看当前和历史参数，并且可以添加自定义参数或AI推荐参数。如果有更多问题，点击操控页面右下角的AI按钮来询问PNF Master哦。
 
-1. LoginActivity：点击登录按钮之后需要等待一秒钟；
-2. NewUserActivity：点击下一步时需要检测用户名是否已存在，需要等待一秒；
-3. RehabInfoActivity：上传至数据库；
-4. ProfileActivity：打开的时候需要调取数据库的信息；
+## 3 开发者帮助
 
-### 2.2 更新日志
-
-小标题为更新日期。
-
-#### - 24/4/01 更新
-
-- 目前存在的问题：
-
-1. 当用户以未登录状态进入后，再点击退出登录。此时再登录会变成“未登录用户”。
-2. 打开蓝牙时需要请求 android.permission.BLUETOOTH_SCAN permission。现在只能手动打开.
-3. 每次打开软件都需要重新连接蓝牙
-
-- 准备添加的功能
-
-1. 制作用户界面：包含绘图和操作按钮
-2. 重写帮助内容
-3. 编写设置页面
-
-- 可能添加的功能
-
-1. 定时发送通知，提示用还未完成今天的任务（当然也可以在设置里关闭）
-2. 可以通过点击头像来更换头像，头像需要存储至云端数据库
-3. 云端数据和本地数据库并存.这样就可以仅第一次打开较为耗时，之后打开直接从本地数据库读取，速度会快非常多。
+1. **开发语言**：Kotlin + java (只有AIAssistant.java是用java写的)
+2. **编译器**：Android Studio Iguana
+3. **AI接口**：调用的是百度的文心一言。在调接口的`AIAssistant.java`中，修改`getAccessToken()`的`body`变量中的`BuildConfig.API_KEY`和`BuildConfig.SECRET_KEY`参数即可换成你自己的接口；修改`GetAnswer()`方法的`body`变量的`system`参数可以修改AI的人设。
+4. **数据库**：Mysql。使用腾讯云的学生优惠数据库；数据库管理软件使用Navicat。源代码中所有数据库操作都在connect.kt文件中，每个功能对应一个方法，并且已经按照增删改查分类好了。
+5. **其他**：因为应用比较简单（作者从零开始只学了几个月），所以没有加入MVVM等框架。另外Fragment用的也比较少，因此有很多Activity，但是逻辑其实很清楚。如果有什么问题，欢迎随时来骚扰作者。
 
 ---
 ### English
@@ -55,79 +36,19 @@
 
 ## 1 Introduction
 
-A graduation project in Mechanical Engineering at Beihang University. The project is part of a team project to create a lower limb rehabilitation robot based on the Proprioceptive Neuromuscular Facilitation (PNF) therapy. My specific responsibility is to build an Android app that allows patients to control the robot's motors via Bluetooth, enabling autonomous rehabilitation training. In addition to the basic functionality, the app may be implemented some advanced features such as cloud storage for user data. Users will be able to log in to the same account from different devices, ensuring consistent access to their personal profiles. These profiles will serve as the basis for customizing personalized rehabilitation plans for patients. Furthermore, the idea of integrating an AI component to enhance the system's capabilities in the future is being considered.
+A graduation project in Mechanical Engineering at Beihang University. The project is part of a team project to create a lower limb muscle fatigue prevention robot based on Proprioceptive Neuromuscular Facilitation (PNF) therapy. My personal responsibility is to develop an Android application.
+**Basic Features**：Control the robot (and its motors) via Bluetooth to enable patients to train autonomously.
+**Extended Features**：Extended features require account registration. Includes an AI assistant named "PNF Master" that intelligently recommends training parameters and generates training curves based on user input personal data. All data is synchronized across different devices based on user accounts and is not saved locally.
 
-## 2 Developing Log
+## 2 Guide for Users
 
-### 2.1 Funcations that Need Internet
+1. **Basic Features**：Firstly, users need to click the Bluetooth button in the top right corner to connect to the device. Then, on the control page, click the 'Connect Motor' button and select motor parameters, then click 'Start Motor' to begin training.
+2. **Extended Features**：Users can swipe right on the screen or click the menu button in the top left corner to bring up the menu. Clicking "My Profile" allows users to view and edit their personal and medical information; clicking "My Parameters" allows users to view current and historical parameters, and can add custom parameters or AI-recommended parameters. For further assistance, click the AI button in the bottom right corner of the control page to ask PNF Master.
 
-1. LoginActivity: 1 sec is needed after clicking Login button；
-2. NewUserActivity：check whether the username is already existed；
-3. RehabInfoActivity：upload info onto the database；
-4. ProfileActivity：fetch the database information；
+## 3 Guide for Developers
 
-### 2.2 Updating Log
-
-Subtitle is the updating date.
-
-#### - April 1st Updates
-
-- Current Issues：
-
-1. When a user enters as an unlogged-in user, click Log Out. When the user logs in again, it will become "Unlogged in user".
-2. android.permission.BLUETOOTH_SCAN permission is needed when opening BluetoothScanningActivity for the first time. Only manully open the bluetooth is possible now.
-3. Every time users open the app, they need to reconnect bluetooth.
-
-- Features to be added
-
-1. User Interface：including drawings and buttons for one-click operations.
-2. Rewrite the help content.
-3. Write the setting page.
-
-- Possible Features
-
-1. Send notifications to remind users that they haven't finished today's tasks yet (can be turned off in the settings of course)
-2. Users can change the avatar by clicking on the avatar, the avatar needs to be stored in the cloud database.
-3. Cloud and local databases are stored together. So that only the first time to open the more time-consuming, and then open directly from the local database to read, the speed will be much faster.
-
-
----
-### 繁體中文
----
-
-## 1 應用介紹
-
-北航（現在已經沒了的）國通學院機械專業的個人畢業設計。團隊畢設是製作一個基於PNF療法的下肢康復機器人，我個人負責的部分是開發一個Android應用程式，基本功能是能通過藍牙控制機器人（上的電機）實現患者自主康復訓練。拓展功能計劃包括雲端存儲用戶數據，同一賬戶可以在不同設備上登錄，以獲得相同的個人資料。而個人資料可以作為程序為患者定制個性化康復計劃的依據，這個功能之後可能會接入一個AI的API來實現。
-
-## 2 開發日誌
-
-### 2.1 需要聯網使用的功能
-
-1. LoginActivity：點擊登錄按鈕之後需要等待一秒鐘；
-2. NewUserActivity：點擊下一步時需要檢測用戶名是否已存在，需要等待一秒；
-3. RehabInfoActivity：上傳至數據庫；
-4. ProfileActivity：打開的時候需要調取數據庫的訊息；
-
-### 2.2 更新日誌
-
-小標題為更新日期。
-
-#### - 24/4/01 更新
-
-- 目前存在的問題：
-
-1. 當用戶以未登錄狀態進入後，再點擊退出登錄。此時再登錄會變成“未登錄用戶”。
-2. 打開藍牙時需要請求 android.permission.BLUETOOTH_SCAN permission。現在只能手動打開。
-3. 每次打開軟體都需要重新連接藍牙。
-
-- 準備添加的功能：
-
-1. 製作用戶界面：包含繪圖和操作按鈕。
-2. 重寫幫助內容。
-3. 編寫設置頁面。
-
-- 可能添加的功能：
-
-1. 定時發送通知，提示用戶還未完成今天的任務（當然也可以在設置裡關閉）。
-2. 可以透過點擊大頭貼來更換，大頭貼需要存儲至雲端數據庫。
-3. 雲端數據和本地數據庫並存。這樣就可以僅第一次打開較為耗時，之後打開直接從本地數據庫讀取，速度會快非常多。
+1. **Programming Language**：Kotlin + java (only AIAssistant.java is written in Java)
+2. **Compiler**：Android Studio Iguana
+3. **AI API**：Utilizes Baidu's ERINE Bot. In the `AIAssistant.java` file where the interface is called, modify the `BuildConfig.API_KEY` and `BuildConfig.SECRET_KEY` parameters in the `getAccessToken()` method's `body` variable with your own API key and secret key; modify the `system` parameter in the `GetAnswer()` method's `body` variable to change the AI persona.
+4. **Database**：MySQL. Utilizes Tencent Cloud's student discount database; Navicat is used for database management. All database operations in the source code are in the `connect.kt` file, with each functionality corresponding to a method, categorized by CRUD operations.
+5. **Others**：Because the application is relatively simple (the author only studied for a few months from scratch), frameworks like MVVM are not included. Additionally, Fragments are also used sparingly, resulting in many Activities, but the logic is clear. If there are any questions, feel free to harass the author at any time."

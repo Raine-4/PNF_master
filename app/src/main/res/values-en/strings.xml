@@ -24,7 +24,7 @@
     <string name="poem">Welcome to use PNF Master.</string>
     <string name="Profile">My Profile</string>
     <string name="Control">Control</string>
-    <string name="Tasks">My Tasks</string>
+    <string name="Tasks">My Parameters</string>
     <string name="Logout">Logout</string>
     <string name="defaultUserName">Not logged in</string>
     <string name="unknown_value">Unknown</string>
