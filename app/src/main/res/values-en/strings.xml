@@ -173,5 +173,6 @@
     <string name="build_connection">Connect</string>
     <string name="change_params">Parameters</string>
     <string name="current_params">Parameters</string>
+    <string name="AI_suggestion">PNF Master\'s Suggestion</string>
 
 </resources>

@@ -102,32 +102,43 @@ class AddParameterActivity : BaseActivity() {
                     AlertDialog.Builder(this@AddParameterActivity)
                         .setTitle("PNF Master的建议")
                         .setMessage(answer)
-                        .setPositiveButton(getString(R.string.Yes)) { dialog, _ -> dialog.dismiss() }
+                        .setPositiveButton(getString(R.string.Yes)) { dialog, _ ->
+                            // Extract parameters from the answer
+                            val regex = Regex("\\d+")
+                            val matches = regex.findAll(answer)
+                            val params = matches.map { it.value }.toList()
+
+                            val lowerLimit = params[0]
+                            val upperLimit = params[1]
+                            val motorPosition = params[2]
+                            val trainingTime = params[3]
+
+                            try {
+                                // Update EditTexts
+                                binding.parameterTitle.setText(getString(R.string.AI_suggestion))
+                                binding.forceLowerLimit.setText(lowerLimit)
+                                binding.forceUpperLimit.setText(upperLimit)
+                                binding.motorPosition.setText(motorPosition)
+                                binding.trainingTime.setText(trainingTime)
+
+                                // Update chart data
+                                val entries = ArrayList<Entry>()
+                                entries.add(Entry(0f, lowerLimit.toFloat()))
+                                entries.add(Entry(1f, upperLimit.toFloat()))
+
+                                val dataSet = LineDataSet(entries, "Force")
+                                val data = LineData(dataSet)
+                                binding.chart.data = data
+                                binding.chart.invalidate() // refresh chart
+                            } catch (e: Exception) {
+                                Log.d("AddParameterActivity", "params: $params")
+                                Log.e("AddParameterActivity", e.toString())
+                                "加载失败！".Toast()
+                            }
+                        }
+                        .setNegativeButton(getString(R.string.No)) { dialog, _ -> dialog.dismiss() }
                         .show()
                 }
-
-                // todo: 让AI直接将参数填充到聊天框中。
-
-//                    val params = answer.split(",")
-//                    val lowerLimit = params[0]
-//                    val upperLimit = params[1]
-//                    val motorPosition = params[2]
-//                    val trainingTime = params[3]
-//                    // Update EditTexts
-//                    binding.forceUpperLimit.setText(upperLimit)
-//                    binding.forceLowerLimit.setText(lowerLimit)
-//                    binding.motorPosition.setText(motorPosition)
-//                    binding.trainingTime.setText(trainingTime)
-//
-//                    // Update chart data
-//                    val entries = ArrayList<Entry>()
-//                    entries.add(Entry(0f, lowerLimit.toFloat()))
-//                    entries.add(Entry(1f, upperLimit.toFloat()))
-//
-//                    val dataSet = LineDataSet(entries, "Force")
-//                    val data = LineData(dataSet)
-//                    binding.chart.data = data
-//                    binding.chart.invalidate() // refresh chart
             }
         }
 

@@ -178,4 +178,5 @@
     <string name="build_connection">连接电机</string>
     <string name="change_params">更改参数</string>
     <string name="current_params">当前参数</string>
+    <string name="AI_suggestion">PNF Master的建议参数</string>
 </resources>

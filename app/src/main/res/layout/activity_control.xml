@@ -147,6 +147,7 @@
             android:layout_margin="16dp"
             android:contentDescription="@string/chat_with_AI"
             android:src="@drawable/ic_ai"
+            android:backgroundTint="@color/teal_200"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
