@@ -65,7 +65,6 @@ class AddParameterActivity : BaseActivity() {
             // Wait until the user information is loaded
             while (user.isRunning) {
                 Thread.sleep(1)
-                Log.d("AddParameterActivity", "Waiting for loading the user information..")
             }
             val myPd = CustomProgressDialog(this, getString(R.string.AI_is_thinking))
             myPd.show()
@@ -100,20 +99,29 @@ class AddParameterActivity : BaseActivity() {
                 withContext(Dispatchers.Main) {
                     myPd.dismiss()
                     AlertDialog.Builder(this@AddParameterActivity)
-                        .setTitle("PNF Master的建议")
+                        .setTitle(getString(R.string.AI_suggestion))
                         .setMessage(answer)
                         .setPositiveButton(getString(R.string.Yes)) { dialog, _ ->
                             // Extract parameters from the answer
-                            val regex = Regex("\\d+")
+                            val regex =
+                                if (Locale.getDefault().language == "en") Regex("(?<=: )\\d+")
+                                else Regex("(?<=：)\\d+")
                             val matches = regex.findAll(answer)
-                            val params = matches.map { it.value }.toList()
+                            val threeParams = matches.map { it.value }.toList()
 
-                            val lowerLimit = params[0]
-                            val upperLimit = params[1]
-                            val motorPosition = params[2]
-                            val trainingTime = params[3]
+                            val regexSecond = Regex("\\d+(?=秒)")
+                            val matchSecond = regexSecond.findAll(answer)
+                            val secondParams = matchSecond.map { it.value }.toList()
+
+                            val params = threeParams + secondParams
+
+                            Log.d("AddParameterActivity", "params: $params")
 
                             try {
+                                val lowerLimit = params[0]
+                                val upperLimit = params[1]
+                                val motorPosition = params[2]
+                                val trainingTime = params[3]
                                 // Update EditTexts
                                 binding.parameterTitle.setText(getString(R.string.AI_suggestion))
                                 binding.forceLowerLimit.setText(lowerLimit)
@@ -133,7 +141,7 @@ class AddParameterActivity : BaseActivity() {
                             } catch (e: Exception) {
                                 Log.d("AddParameterActivity", "params: $params")
                                 Log.e("AddParameterActivity", e.toString())
-                                "加载失败！".Toast()
+                                getString(R.string.load_failed_retry_or_input_manually).Toast()
                             }
                         }
                         .setNegativeButton(getString(R.string.No)) { dialog, _ -> dialog.dismiss() }
@@ -146,21 +154,38 @@ class AddParameterActivity : BaseActivity() {
              // Update chart data
             val lowerLimitString = binding.forceLowerLimit.text.toString()
             val upperLimitString = binding.forceUpperLimit.text.toString()
+            val positionString = binding.motorPosition.text.toString()
+            val timeString = binding.trainingTime.text.toString()
+
             if (lowerLimitString == "" || upperLimitString == "") {
                 getString(R.string.please_input_params).Toast()
+                return@setOnClickListener
+            } else if (!isInt(lowerLimitString) || !isInt(upperLimitString)
+                || !isInt(positionString) || !isInt(timeString)) {
+                // Check if the inputs are all integer
+                getString(R.string.please_input_valid_params).Toast()
+                return@setOnClickListener
+            }
+
+            val title = binding.parameterTitle.text.toString()
+            val lowerLimitFloat = lowerLimitString.toFloat()
+            val upperLimitFloat = upperLimitString.toFloat()
+
+            val lowerLimit = lowerLimitFloat.toInt()
+            val upperLimit = upperLimitFloat.toInt()
+            val position = positionString.toInt()
+            val time = timeString.toInt()
+
+            // Check if the parameters are valid
+            if (lowerLimit >= upperLimit) {
+                getString(R.string.lower_limit_cannot_be_larger_than_upper_limit).Toast()
                 return@setOnClickListener
             }
 
             // Draw a figure
             val entries = ArrayList<Entry>()
-            val title = binding.parameterTitle.text.toString()
-            val lowerLimit = lowerLimitString.toInt()
-            val upperLimit = upperLimitString.toInt()
-            val position = binding.motorPosition.text.toString().toInt()
-            val time = binding.trainingTime.text.toString().toInt()
-
-            entries.add(Entry(0f, lowerLimit.toFloat())) // (0, lowerLimit)
-            entries.add(Entry(1f, upperLimit.toFloat())) // (1, upperLimit)
+            entries.add(Entry(0f, lowerLimitFloat)) // (0, lowerLimit)
+            entries.add(Entry(1f, upperLimitFloat)) // (1, upperLimit)
 
             val dataSet = LineDataSet(entries, "Force")
             val data = LineData(dataSet)
@@ -197,6 +222,10 @@ class AddParameterActivity : BaseActivity() {
                 return@setOnClickListener
             }
         }
+    }
+
+    private fun isInt(string: String): Boolean {
+        return string.toIntOrNull() != null
     }
 
     inner class UserBackground(private val context: Context) {

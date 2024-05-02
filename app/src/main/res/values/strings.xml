@@ -179,4 +179,17 @@
     <string name="change_params">更改参数</string>
     <string name="current_params">当前参数</string>
     <string name="AI_suggestion">PNF Master的建议参数</string>
+    <string name="Params_Name_">参数名称：</string>
+    <string name="my_params">我的参数</string>
+    <string name="force_range_">力的范围：</string>
+    <string name="min">最小值</string>
+    <string name="max">最大值</string>
+    <string name="clear">清空</string>
+    <string name="motor_pos_range">电机位置（请输入0–10000的整数值）</string>
+    <string name="training_time_sec">训练时间（单位为秒）</string>
+    <string name="generate_params">生成推荐参数</string>
+    <string name="save_params">保存参数</string>
+    <string name="lower_limit_cannot_be_larger_than_upper_limit">力的下限不能大于上限，请重新输入</string>
+    <string name="please_input_valid_params">请输入整数</string>
+    <string name="load_failed_retry_or_input_manually">加载失败！请重试或手动输入</string>
 </resources>

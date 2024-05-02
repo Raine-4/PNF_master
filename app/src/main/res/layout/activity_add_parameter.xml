@@ -1,6 +1,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <androidx.appcompat.widget.Toolbar
@@ -21,14 +22,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="参数名称："
+            android:text="@string/Params_Name_"
             android:textSize="16sp"
             android:textStyle="bold"/>
         <EditText
             android:id="@+id/parameter_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="我的参数"
+            android:hint="@string/my_params"
             android:background="@color/半透明"
             android:textSize="16sp"
             android:padding="10dp" />
@@ -46,7 +47,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="力的范围："
+            android:text="@string/force_range_"
             android:textSize="16sp"
             android:textStyle="bold" />
         <EditText
@@ -54,20 +55,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/半透明"
-            android:hint="最小值"
+            android:hint="@string/min"
             android:textSize="16sp"
             android:padding="10dp"
             android:gravity="center"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" — " />
+            android:text=" — "
+            tools:ignore="HardcodedText" />
         <EditText
             android:id="@+id/forceUpperLimit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/半透明"
-            android:hint="最大值"
+            android:hint="@string/max"
             android:textSize="16sp"
             android:padding="10dp"
             android:gravity="center"/>
@@ -79,14 +81,14 @@
             android:id="@+id/clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="清空" />
+            android:text="@string/clear" />
     </LinearLayout>
 
     <EditText
         android:id="@+id/motor_position"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="电机位置（请输入0-10000的整数值）"
+        android:hint="@string/motor_pos_range"
         android:background="@color/半透明"
         android:padding="10dp"
         android:layout_margin="10dp"
@@ -96,7 +98,7 @@
         android:id="@+id/training_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="训练时间（单位为秒）"
+        android:hint="@string/training_time_sec"
         android:background="@color/半透明"
         android:padding="10dp"
         android:layout_margin="10dp"
@@ -105,7 +107,7 @@
         android:id="@+id/generate_parameters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="生成推荐参数"
+        android:text="@string/generate_params"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/training_time"
         app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +117,7 @@
         android:id="@+id/save_parameters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="保存参数"
+        android:text="@string/save_params"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/generate_parameters"
         app:layout_constraintStart_toStartOf="parent"

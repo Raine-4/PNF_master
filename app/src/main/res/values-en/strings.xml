@@ -174,5 +174,18 @@
     <string name="change_params">Parameters</string>
     <string name="current_params">Parameters</string>
     <string name="AI_suggestion">PNF Master\'s Suggestion</string>
+    <string name="Params_Name_">Params Name: </string>
+    <string name="my_params">My Parameters</string>
+    <string name="force_range_">"Force Range: "</string>
+    <string name="min">MIN</string>
+    <string name="max">MAX</string>
+    <string name="clear">Clear</string>
+    <string name="motor_pos_range">Motor Position (an integer from 0 - 10000)</string>
+    <string name="training_time_sec">Training Time (in second)</string>
+    <string name="generate_params">Generate Parameters with AI</string>
+    <string name="save_params">Save Parameters</string>
+    <string name="lower_limit_cannot_be_larger_than_upper_limit">Force lower limit larger than upper limit.</string>
+    <string name="please_input_valid_params">Inputs should be integers.</string>
+    <string name="load_failed_retry_or_input_manually">Load failed. Retry or input manually.</string>
 
 </resources>
