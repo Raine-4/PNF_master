@@ -25,7 +25,7 @@
 ## 3 开发者帮助
 
 1. **开发语言**：Kotlin + java (只有AIAssistant.java是用java写的)
-2. **编译器**：Android Studio Iguana
+2. **IDE**：Android Studio Iguana
 3. **AI接口**：调用的是百度的文心一言。在调接口的`AIAssistant.java`中，修改`getAccessToken()`的`body`变量中的`BuildConfig.API_KEY`和`BuildConfig.SECRET_KEY`参数即可换成你自己的接口；修改`GetAnswer()`方法的`body`变量的`system`参数可以修改AI的人设。
 4. **数据库**：Mysql。使用腾讯云的学生优惠数据库；数据库管理软件使用Navicat。源代码中所有数据库操作都在connect.kt文件中，每个功能对应一个方法，并且已经按照增删改查分类好了。
 5. **其他**：因为应用比较简单（作者从零开始只学了几个月），所以没有加入MVVM等框架。另外Fragment用的也比较少，因此有很多Activity，但是逻辑其实很清楚。如果有什么问题，欢迎随时来骚扰作者。
@@ -48,7 +48,7 @@ A graduation project in Mechanical Engineering at Beihang University. The projec
 ## 3 Guide for Developers
 
 1. **Programming Language**：Kotlin + java (only AIAssistant.java is written in Java)
-2. **Compiler**：Android Studio Iguana
+2. **IDE**：Android Studio Iguana
 3. **AI API**：Utilizes Baidu's ERINE Bot. In the `AIAssistant.java` file where the interface is called, modify the `BuildConfig.API_KEY` and `BuildConfig.SECRET_KEY` parameters in the `getAccessToken()` method's `body` variable with your own API key and secret key; modify the `system` parameter in the `GetAnswer()` method's `body` variable to change the AI persona.
 4. **Database**：MySQL. Utilizes Tencent Cloud's student discount database; Navicat is used for database management. All database operations in the source code are in the `connect.kt` file, with each functionality corresponding to a method, categorized by CRUD operations.
 5. **Others**：Because the application is relatively simple (the author only studied for a few months from scratch), frameworks like MVVM are not included. Additionally, Fragments are also used sparingly, resulting in many Activities, but the logic is clear. If there are any questions, feel free to harass the author at any time."
