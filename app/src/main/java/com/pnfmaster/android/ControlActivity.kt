@@ -160,17 +160,16 @@ class ControlActivity : BaseActivity() {
                     if (binding.StartBtn.text == getString(R.string.start)) {
                         connectedThread.start()
                         binding.StartBtn.text = getString(R.string.Close)
+                        setBtnState(binding.enableBtn, true)
+                        setBtnState(binding.disableBtn, true)
                     } else {
                         connectedThread.cancel()
                         binding.StartBtn.text = getString(R.string.start)
+                        setBtnState(binding.enableBtn, false)
+                        setBtnState(binding.disableBtn, false)
                     }
                 }
-                setBtnState(binding.enableBtn, true)
-                setBtnState(binding.disableBtn, true)
             }
-            // 测试
-//            setBtnState(binding.enableBtn, true)
-//            setBtnState(binding.disableBtn, true)
         }
 
         // 初始状态不可点击
