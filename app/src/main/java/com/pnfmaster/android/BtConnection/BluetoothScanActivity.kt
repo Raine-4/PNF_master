@@ -265,9 +265,10 @@ class BluetoothScanActivity : BaseActivity(), OnItemClickListener {
         }
 
         val pairedDevices = mBluetoothAdapter.bondedDevices
-        val targetDeviceName = getString(R.string.TargetDeviceName)
+        // Add devices here.
+        val targetDeviceName = listOf("YANK.CAO", "")
         for (pairedDevice in pairedDevices) {
-            if (pairedDevice.name == targetDeviceName) {
+            if (pairedDevice.name in targetDeviceName) {
                 val uuid = UUID.fromString(getString(R.string.UUID))
                 val socket = pairedDevice?.createRfcommSocketToServiceRecord(uuid)
                 if (pairedDevice != null && socket != null) {
@@ -285,10 +286,7 @@ class BluetoothScanActivity : BaseActivity(), OnItemClickListener {
                     }
 
                     // TEST
-                    "fun onItemClick".Toast()
-                    /*val backIntent = Intent(this, ControlActivity::class.java)
-                    startActivity(backIntent)
-                    finish()*/
+                    // "fun onItemClick".Toast()
                     onBackPressedDispatcher.onBackPressed()
 
                 } else {

@@ -22,7 +22,6 @@
     <string name="next">下一个</string>
     <string name="previous">上一个</string>
     <string name="UUID" translatable="false">00001101-0000-1000-8000-00805f9b34fb</string>
-    <string name="TargetDeviceName" translatable="false">YANK.CAO</string>
     <string name="welcome_register">欢迎注册PNF Master</string>
     <string name="poem">科技织梦，康复成诗。</string>
     <string name="Profile">我的资料</string>
