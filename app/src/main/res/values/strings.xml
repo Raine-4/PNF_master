@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">PNF Master</string>
-    <string name="Introduction">作者: 那雨枫. 版本: v0.1.1</string>
+    <string name="Introduction">作者: 那雨枫</string>
     <string name="usage">
         1. 应用介绍\n
         “PNF Master”是一款安卓应用，它通过蓝牙连接，可以对下肢康复机器人进行远程控制。
@@ -85,7 +85,7 @@
     <string name="None">无</string>
     <string name="EnterHere">在此输入内容</string>
     <string name="send">发送</string>
-    <string name="start">启动</string>
+    <string name="startTraining">开始训练</string>
     <string name="SearchBtDevices">搜索蓝牙设备</string>
     <string name="Help">使用帮助</string>
     <string name="DeveloperMode">调试模式</string>
@@ -104,7 +104,7 @@
     <string name="msgSend">发送消息：</string>
     <string name="msgRcv">收到消息：</string>
     <string name="fail_no_connection">启动失败：尚未连接设备</string>
-    <string name="Close">关闭</string>
+    <string name="endTraining">结束训练</string>
     <string name="break_connection">断开连接</string>
     <string name="intro">用法介绍</string>
     <string name="developerMode">确认进入调式模式？</string>
@@ -148,8 +148,8 @@
     <string name="velocity">速度</string>
     <string name="current">电流</string>
     <string name="torque">力矩</string>
-    <string name="enable">启动电机</string>
-    <string name="disable">停止电机</string>
+    <string name="startStretching">开始拉伸</string>
+    <string name="hold">维持静止</string>
     <string name="add">加</string>
     <string name="chat_with_AI">点击此处与人工智能交流。</string>
     <string name="what_do_you_want_to_know">您想知道什么？</string>
@@ -191,4 +191,11 @@
     <string name="lower_limit_cannot_be_larger_than_upper_limit">力的下限不能大于上限，请重新输入</string>
     <string name="please_input_valid_params">请输入整数</string>
     <string name="load_failed_retry_or_input_manually">加载失败！请重试或手动输入</string>
+    <string name="change_show_mode">切换显示模式</string>
+    <string name="powerOn">电机开机</string>
+    <string name="forceStop">电机急停</string>
+    <string name="relax">开始放松</string>
+    <string name="reStretching">再次拉伸</string>
+    <string name="login_to_see_params">请登陆后查看参数</string>
+    <string name="no_params_selected">尚未选择参数</string>
 </resources>

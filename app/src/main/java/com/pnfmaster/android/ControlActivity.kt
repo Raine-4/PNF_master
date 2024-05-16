@@ -19,8 +19,12 @@ import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.pnfmaster.android.BtConnection.BluetoothCommunication
 import com.pnfmaster.android.BtConnection.BluetoothScanActivity
 import com.pnfmaster.android.MyApplication.Companion.context
@@ -105,6 +109,7 @@ class ControlActivity : BaseActivity() {
                         val buffer = msg.obj as ByteArray
                         // 将buffer数组内的字节转换成字符串
                         val receivedData = String(buffer, Charset.forName("GBK"))
+                        // 删除receivedData中的空格和无法解码字符
                         val filteredData = receivedData.filter { !it.isWhitespace() && it.code != 0xFFFD }
                         val content = "<font color='red'>[$curTime]收到消息：$filteredData</font>"
                         binding.receiveText.append(Html.fromHtml(content, 0))
@@ -115,6 +120,18 @@ class ControlActivity : BaseActivity() {
                         scrollView.post {
                             scrollView.fullScroll(View.FOCUS_DOWN)
                         }
+
+                        // TODO：更新曲线
+//                        val entries = ArrayList<Entry>()
+//                        entries.add(Entry(0f, lowerLimitFloat)) // 点击启动之后开始计时
+//
+//                        val dataSet = LineDataSet(entries, "Force")
+//                        val data = LineData(dataSet)
+//                        binding.lineChart.data = data
+//
+//                        binding.lineChart.notifyDataSetChanged()
+//                        binding.lineChart.invalidate() // refresh chart
+
                     }
                     // 处理连接中的错误信息
                     2 -> {
@@ -125,6 +142,7 @@ class ControlActivity : BaseActivity() {
                         }
                         "错误：连接异常。".Toast()
                     }
+                    // 处理发送出的数据
                     1 -> {
 //                        val content = "<font color='blue'>[$curTime]" + getString(R.string.msgSend) + "${binding.inputEditText.text}</font>\n"
                         val content = "指令已发送"
@@ -145,7 +163,7 @@ class ControlActivity : BaseActivity() {
             else " ${getString(R.string.None)}"
 
         // 连接电机
-        binding.StartBtn.setOnClickListener {
+        binding.connectBtn.setOnClickListener {
             if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 Log.e(TAG, "MainActivity:StartBtn.\n" +
                         "MyApplication.bluetoothDevice is ${MyApplication.bluetoothDevice} \n " +
@@ -157,25 +175,41 @@ class ControlActivity : BaseActivity() {
                             "device is ${MyApplication.bluetoothDevice}\n" +
                             "socket is $it")
                     val connectedThread = btComm.ConnectedThread(it!!)
-                    if (binding.StartBtn.text == getString(R.string.start)) {
+                    if (binding.connectBtn.text == getString(R.string.startTraining)) {
                         connectedThread.start()
-                        binding.StartBtn.text = getString(R.string.Close)
-                        setBtnState(binding.enableBtn, true)
-                        setBtnState(binding.disableBtn, true)
+                        binding.connectBtn.text = getString(R.string.endTraining)
+                        setBtnState(binding.powerOnBtn, true)
+                        setBtnState(binding.stopBtn, true)
+                        setBtnState(binding.startStretchingBtn, true)
+                        setBtnState(binding.holdBtn, true)
+                        setBtnState(binding.relaxBtn, true)
+                        setBtnState(binding.reStretchBtn, true)
                     } else {
                         connectedThread.cancel()
-                        binding.StartBtn.text = getString(R.string.start)
-                        setBtnState(binding.enableBtn, false)
-                        setBtnState(binding.disableBtn, false)
+                        binding.connectBtn.text = getString(R.string.startTraining)
+                        setBtnState(binding.powerOnBtn, false)
+                        setBtnState(binding.stopBtn, false)
+                        setBtnState(binding.startStretchingBtn, false)
+                        setBtnState(binding.holdBtn, false)
+                        setBtnState(binding.relaxBtn, false)
+                        setBtnState(binding.reStretchBtn, false)
                     }
                 }
             }
         }
 
+        // 更改参数
+        binding.ChangeParamsBtn.setOnClickListener {
+            if (!judgeIfSkipped()) {
+                val intent = Intent(this, TasksActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
         // 初始状态不可点击
-        setBtnState(binding.enableBtn, false)
-        // 启动电机
-        binding.enableBtn.setOnClickListener {
+        setBtnState(binding.powerOnBtn, false)
+        // 电机开机
+        binding.powerOnBtn.setOnClickListener {
             if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 getString(R.string.fail_no_connection).Toast()
                 Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
@@ -183,16 +217,15 @@ class ControlActivity : BaseActivity() {
                         "socket: ${MyApplication.bluetoothSocket}")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
-//                val hexString = "B5E7BBFACAB9C4DC0d0a"  // 电机使能
-                val hexString = "CEBBD6C3C4ACC8CF0d0a" // 位置默认
+                val hexString = "AA550407320000000000000000000D0A" // 电机开机
                 val bytes = hexString.hexStringToByteArray() // 将十六进制字符串转换为字节数组
                 connectedThread.write(bytes)
             }
         }
 
-        setBtnState(binding.disableBtn, false)
-        // 停止电机
-        binding.disableBtn.setOnClickListener {
+        setBtnState(binding.holdBtn, false)
+        // 电机急停
+        binding.stopBtn.setOnClickListener {
             if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 getString(R.string.fail_no_connection).Toast()
                 Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
@@ -200,7 +233,74 @@ class ControlActivity : BaseActivity() {
                         "socket: ${MyApplication.bluetoothSocket}")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
-                val hexString = "CDA3D6B9CAB9C4DC0d0a"
+                val hexString = "666f635430"
+                val bytes = hexString.hexStringToByteArray()
+                connectedThread.write(bytes)
+            }
+        }
+
+        setBtnState(binding.startStretchingBtn, false)
+        // 开始拉伸
+        binding.startStretchingBtn.setOnClickListener {
+            if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
+                getString(R.string.fail_no_connection).Toast()
+                Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
+                        "device: ${MyApplication.bluetoothDevice}\n" +
+                        "socket: ${MyApplication.bluetoothSocket}")
+            } else {
+                val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
+                val hexString = "666F635433"
+                val bytes = hexString.hexStringToByteArray()
+                connectedThread.write(bytes)
+            }
+        }
+
+        setBtnState(binding.holdBtn, false)
+        // 维持静止
+        binding.holdBtn.setOnClickListener {
+            if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
+                getString(R.string.fail_no_connection).Toast()
+                Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
+                        "device: ${MyApplication.bluetoothDevice}\n" +
+                        "socket: ${MyApplication.bluetoothSocket}")
+            } else {
+                val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
+                val hexString = "666F6353"
+                val bytes = hexString.hexStringToByteArray()
+                connectedThread.write(bytes)
+            }
+        }
+
+        setBtnState(binding.relaxBtn, false)
+        // 开始放松
+        binding.relaxBtn.setOnClickListener {
+            if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
+                getString(R.string.fail_no_connection).Toast()
+                Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
+                        "device: ${MyApplication.bluetoothDevice}\n" +
+                        "socket: ${MyApplication.bluetoothSocket}")
+            } else {
+                val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
+                val hexString1 = "666F6333"
+                val bytes1 = hexString1.hexStringToByteArray()
+                val hexString2 = "666F6347"
+                val bytes2 = hexString2.hexStringToByteArray()
+                connectedThread.write(bytes1)
+                connectedThread.write(bytes2)
+            }
+        }
+
+        setBtnState(binding.reStretchBtn, false)
+        // 再次拉伸
+        binding.reStretchBtn.setOnClickListener {
+            if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
+                getString(R.string.fail_no_connection).Toast()
+                Log.e(TAG,"Main: StartBtn. Device or socket is null.\n" +
+                        "device: ${MyApplication.bluetoothDevice}\n" +
+                        "socket: ${MyApplication.bluetoothSocket}")
+            } else {
+                val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
+                val hexString = "666F6335"
                 val bytes = hexString.hexStringToByteArray()
                 connectedThread.write(bytes)
             }
@@ -220,17 +320,6 @@ class ControlActivity : BaseActivity() {
 //                connectedThread.write(bytes)
 //            }
 //        }
-
-        binding.ChangeParamsBtn.setOnClickListener {
-            val intent = Intent(this, TasksActivity::class.java)
-//            intent.putExtra("flag", "EDIT")
-//            intent.putExtra("title", curTitle)
-//            intent.putExtra("lowerlimit", curLowerLimit)
-//            intent.putExtra("upperlimit", curUpperLimit)
-//            intent.putExtra("position", curPosition)
-//            intent.putExtra("time", curTime)
-            startActivity(intent)
-        }
 
         // Open Chatting Activity
         binding.fab.setOnClickListener {
@@ -261,13 +350,16 @@ class ControlActivity : BaseActivity() {
         val dpValue = 10
         val pxValue = (dpValue * Resources.getSystem().displayMetrics.density).toInt()
         shapeDrawable.cornerRadius = pxValue.toFloat()
-        shapeDrawable.setColor(if (state) getColor(R.color.teal_200) else getColor(R.color.gray))
-
+        if (button.id == R.id.stopBtn) {
+            shapeDrawable.setColor(if (state) getColor(R.color.red) else getColor(R.color.gray))
+        } else {
+            shapeDrawable.setColor(if (state) getColor(R.color.teal_200) else getColor(R.color.gray))
+        }
         button.background = shapeDrawable
     }
 
     private fun setParams(): ParamsGroup {
-        Log.d("ControlActivity", "MyApplicaion.id = ${MyApplication.id}")
+        Log.d("ControlActivity", "MyApplication.id = ${MyApplication.id}")
         var paramsGroup = ParamsGroup(-1, "", -1, -1, -1, -1)
         lifecycleScope.launch {
             Log.d("ControlActivity", "lifecycleScope.launch")
@@ -291,7 +383,15 @@ class ControlActivity : BaseActivity() {
                     val text =
                         if (Locale.getDefault().language == "en") " Force: $curLowerLimit ~ $curUpperLimit N\n Position: $curPosition; Time: $curTime s"
                         else " 【$curTitle】力: $curLowerLimit ~ $curUpperLimit 牛\n 位置: $curPosition;训练时间: $curTime 秒"
-                    binding.curParams.text = text
+
+                    if (MyApplication.isSkipped) {
+                        binding.curParams.text = getString(R.string.login_to_see_params)
+                    } else if (curLowerLimit == -1) {
+                        binding.curParams.text = getString(R.string.no_params_selected)
+                    } else {
+                        binding.curParams.text = text
+                    }
+
                 }
             }
             Log.d("ControlActivity", "set ended.")
@@ -329,31 +429,6 @@ class ControlActivity : BaseActivity() {
         return hexString
     }*/
 
-    /*// 为了能让toolbar显示用户的名字，需要用userId在数据库里查一下
-    @SuppressLint("Range")
-    private fun getRealName(id: Int): String {
-        if (id == -1) {
-            return getString(R.string.defaultUserName)
-        }
-
-        // ----------------------------------
-        var infoList = listOf<Any>()
-        fun main() {
-            GlobalScope.launch {
-                infoList = connect.queryUserInfo(MyApplication.userId)
-                Log.d("profile", "private fun getRealName： infolist = $infoList")
-            }
-            Thread.sleep(1000)
-        }
-        val loadingDialog = LoadingDialog(this)
-        loadingDialog.show()
-        main()
-        loadingDialog.dismiss()
-        // ----------------------------------
-
-        return infoList[0] as String
-    }*/
-
     // 右上角三个按钮的点击事件
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar, menu)
@@ -365,17 +440,22 @@ class ControlActivity : BaseActivity() {
         binding.navView.setCheckedItem(R.id.navControl)
         setParams() // 设置当前参数
         if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
-            setBtnState(binding.enableBtn, false)
-            setBtnState(binding.disableBtn, false)
+            setBtnState(binding.powerOnBtn, false)
+            setBtnState(binding.stopBtn, false)
+            setBtnState(binding.startStretchingBtn, false)
+            setBtnState(binding.holdBtn, false)
+            setBtnState(binding.relaxBtn, false)
+            setBtnState(binding.reStretchBtn, false)
         }
     }
 
     @SuppressLint("MissingPermission", "SetTextI18n")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            // 打开左滑菜单
+            // 打开左侧菜单
             android.R.id.home -> binding.drawerLayout.openDrawer(GravityCompat.START)
-            // 右上角按钮
+
+            // 打开蓝牙搜索界面
             R.id.bluetooth -> {
                 val device = MyApplication.bluetoothDevice
                 Log.d(TAG, "Main: 调用MyApplication.bluetoothDevice = $device")
@@ -400,23 +480,22 @@ class ControlActivity : BaseActivity() {
                 }
             }
 
+            // 在文字模式和图像模式之间切换
+            R.id.changeMode -> {
+                if (binding.scrollView.visibility == View.VISIBLE) {
+                    binding.scrollView.visibility = View.INVISIBLE
+                    binding.lineChart.visibility = View.VISIBLE
+                } else {
+                    binding.scrollView.visibility = View.VISIBLE
+                    binding.lineChart.visibility = View.INVISIBLE
+                }
+            }
+
             R.id.help -> {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle(getString(R.string.intro))
                     .setMessage(R.string.usage)
                     .setPositiveButton(getString(R.string.Yes)) { _, _ -> }
-                    .create()
-                    .show()
-            }
-
-            R.id.developerMode -> {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle(getString(R.string.Hint))
-                    .setMessage(getString(R.string.developerMode))
-                    .setPositiveButton(getString(R.string.Yes)) { _, _ ->
-                        // TODO: 跳转至 Developer Mode
-                    }
-                    .setNegativeButton(getString(R.string.No),null)
                     .create()
                     .show()
             }
@@ -450,8 +529,8 @@ class ControlActivity : BaseActivity() {
                     startActivity(tasksIntent)
                 }
             }
-            "Logout" -> { // 返回登录菜单
-                if (!judgeIfSkipped()) {
+            "Logout" -> {
+                if (!MyApplication.isSkipped) {
                     val builder = AlertDialog.Builder(this)
                     builder.setTitle(getString(R.string.Hint))
                         .setMessage(getString(R.string.logout))
@@ -464,7 +543,9 @@ class ControlActivity : BaseActivity() {
                         .create()
                         .show()
                 } else {
-                    println(null) // inaccessible
+                    val logOutIntent = Intent(context, LoginActivity::class.java)
+                    startActivity(logOutIntent)
+                    finish()
                 }
             }
         }

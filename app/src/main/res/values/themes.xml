@@ -23,6 +23,15 @@
         <item name="android:layout_width">@dimen/dp_100</item>
     </style>
 
+    <style name="red_button" parent="common_button1">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">@dimen/sp16</item>
+        <item name="android:background">@drawable/red_button</item>
+        <item name="android:layout_height">@dimen/dp_50</item>
+        <item name="android:layout_width">@dimen/dp_100</item>
+    </style>
+
     <style name="disabled_button">
         <item name="android:gravity">center</item>
         <item name="android:textColor">#FFFFFF</item>
@@ -43,11 +52,6 @@
         <!--设置menu在 ... 下方-->
         <item name="overlapAnchor">false</item>
     </style>
-    ————————————————
-
-    版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。
-
-    原文链接：https://blog.csdn.net/weixin_44819566/article/details/114404236
 
     <style name="common_button2">
         <item name="android:gravity">center</item>

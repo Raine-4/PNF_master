@@ -7,12 +7,13 @@
         app:showAsAction="ifRoom"
         android:title="@string/SearchBtDevices" />
     <item
+        android:id="@+id/changeMode"
+        android:icon="@drawable/ic_change_mode"
+        app:showAsAction="never"
+        android:title="@string/change_show_mode"/>
+    <item
         android:id="@+id/help"
         android:title="@string/Help"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/developerMode"
-        android:title="@string/DeveloperMode"
         app:showAsAction="never"/>
     <item
         android:id="@+id/settings"

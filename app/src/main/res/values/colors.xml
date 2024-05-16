@@ -25,4 +25,5 @@
     <color name="barchart_color2">#ffd996</color>
     <color name="gray">#989898</color>
     <color name="orange">#FF5722</color>
+    <color name="red">#FF0000</color>
 </resources>

@@ -101,7 +101,7 @@ class AddParameterActivity : BaseActivity() {
                     AlertDialog.Builder(this@AddParameterActivity)
                         .setTitle(getString(R.string.AI_suggestion))
                         .setMessage(answer)
-                        .setPositiveButton(getString(R.string.Yes)) { dialog, _ ->
+                        .setPositiveButton(getString(R.string.Yes)) { _, _ ->
                             // Extract parameters from the answer
                             val regex =
                                 if (Locale.getDefault().language == "en") Regex("(?<=: )\\d+")
@@ -167,7 +167,7 @@ class AddParameterActivity : BaseActivity() {
                 return@setOnClickListener
             }
 
-            val title = binding.parameterTitle.text.toString()
+            var title = binding.parameterTitle.text.toString()
             val lowerLimitFloat = lowerLimitString.toFloat()
             val upperLimitFloat = upperLimitString.toFloat()
 
@@ -197,6 +197,10 @@ class AddParameterActivity : BaseActivity() {
 
             val flag = intent.getStringExtra("flag")
             if (flag == "EDIT") {
+                if (title == "") {
+                    Log.d("AddParameterActivity", "Title: $title")
+                    title = getString(R.string.my_params)
+                }
                 // Update to database
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
@@ -209,6 +213,10 @@ class AddParameterActivity : BaseActivity() {
                 }
                 return@setOnClickListener
             } else {
+                if (title == "") {
+                    Log.d("AddParameterActivity", "Title: $title")
+                    title = getString(R.string.my_params)
+                }
                 // Save to database
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {

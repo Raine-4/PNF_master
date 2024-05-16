@@ -266,7 +266,7 @@ class BluetoothScanActivity : BaseActivity(), OnItemClickListener {
 
         val pairedDevices = mBluetoothAdapter.bondedDevices
         // Add devices here.
-        val targetDeviceName = listOf("YANK.CAO", "")
+        val targetDeviceName = listOf("YANK.CAO", "FSC-BT836")
         for (pairedDevice in pairedDevices) {
             if (pairedDevice.name in targetDeviceName) {
                 val uuid = UUID.fromString(getString(R.string.UUID))
