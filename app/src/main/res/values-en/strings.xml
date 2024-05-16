@@ -113,7 +113,7 @@
     <string name="editUserInfo">Modify Info</string>
     <string name="edit_success">Modification Successful</string>
     <string name="edit_fail">Modification Failed!</string>
-    <string name="edit">Edit </string>
+    <string name="edit">Edit</string>
     <string name="NewUser">New User</string>
     <string name="input_username_psw">Please enter your username and password</string>
     <string name="not_the_same">The password does not match the confirmation password!</string>

@@ -86,25 +86,25 @@ class ProfileActivity : BaseActivity() {
             val femaleButton = dialogView.findViewById<RadioButton>(R.id.radio_button_female)
             val contactEditText = dialogView.findViewById<EditText>(R.id.contact_edit_text)
 
-            // 显示原数据
+            // Display Origin Data
             nameEditText.setText(name)
             ageEditText.setText(age.toString())
             contactEditText.setText(phone)
             if (gender == 1) maleButton.isChecked = true else femaleButton.isChecked = true
 
-            // 创建AlertDialog.Builder对象
+            // Create AlertDialog.Builder Object
             val dialogBuilder = AlertDialog.Builder(this)
             dialogBuilder.setTitle(getString(R.string.editUserInfo))
             dialogBuilder.setView(dialogView)
 
-            // 设置“取消”按钮
+            // Set Cancel Button
             dialogBuilder.setNegativeButton(getString(R.string.No)) { dialog, _ ->
                 dialog.dismiss()
             }
 
-            // 设置“保存”按钮
+            // Set Save Button
             dialogBuilder.setPositiveButton(getString(R.string.save)) { dialog, _ ->
-                // 获取用户输入的数据
+                // Get the data entered by the user
                 val inputName = nameEditText.text.toString()
                 val inputAge = ageEditText.text.toString()
                 val genderId = genderRadioGroup.checkedRadioButtonId
@@ -198,7 +198,7 @@ class ProfileActivity : BaseActivity() {
 
             // 创建一个新的AlertDialog.Builder来替换原来的对话框
             val newBuilder = AlertDialog.Builder(this).apply{
-                setTitle(getString(R.string.edit) + title)
+                setTitle(getString(R.string.edit) + " " + title)
                 setView(dialogView)
             }
             // 设置“保存”按钮，点击后保存内容并关闭对话框
