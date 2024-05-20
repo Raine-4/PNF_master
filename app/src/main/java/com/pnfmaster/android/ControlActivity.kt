@@ -19,7 +19,6 @@ import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
 import com.github.mikephil.charting.data.Entry
@@ -38,14 +37,9 @@ import kotlinx.coroutines.withContext
 import java.nio.charset.Charset
 import java.util.Calendar
 import java.util.Locale
-
-/* 一次清理缓存之后这里就不能再引用了，非常奇怪。
- * 编译器不会报错，但是运行时却显示Unresolved reference: MSG_READ
- * 现在只能暂时用真值(0,1,2)来代替。
- */
-//import com.pnfmaster.android.BtConnection.MSG_READ
-//import com.pnfmaster.android.BtConnection.MSG_TOAST
-//import com.pnfmaster.android.BtConnection.MSG_WRITE
+import com.pnfmaster.android.BtConnection.MSG_READ
+import com.pnfmaster.android.BtConnection.MSG_TOAST
+import com.pnfmaster.android.BtConnection.MSG_WRITE
 
 class ControlActivity : BaseActivity() {
 
@@ -104,14 +98,14 @@ class ControlActivity : BaseActivity() {
 
                 when (msg.what) {
                     // 处理从蓝牙设备读取的数据
-                    0 -> {
+                    MSG_READ -> {
                         // val bytes = msg.arg1
                         val buffer = msg.obj as ByteArray
                         // 将buffer数组内的字节转换成字符串
                         val receivedData = String(buffer, Charset.forName("GBK"))
                         // 删除receivedData中的空格和无法解码字符
                         val filteredData = receivedData.filter { !it.isWhitespace() && it.code != 0xFFFD }
-                        val content = "<font color='red'>[$curTime]收到消息：$filteredData</font>"
+                        val content = "<font color='red'>[$curTime]"+ getString(R.string.msgRcv) +"$filteredData</font>"
                         binding.receiveText.append(Html.fromHtml(content, 0))
                         binding.receiveText.append("\n")
 
@@ -134,7 +128,7 @@ class ControlActivity : BaseActivity() {
 
                     }
                     // 处理连接中的错误信息
-                    2 -> {
+                    MSG_TOAST -> {
                         val bundle = msg.data
                         val toastMessage = bundle.getString("toast")
                         if (toastMessage != null) {
@@ -143,9 +137,10 @@ class ControlActivity : BaseActivity() {
                         "错误：连接异常。".Toast()
                     }
                     // 处理发送出的数据
-                    1 -> {
-//                        val content = "<font color='blue'>[$curTime]" + getString(R.string.msgSend) + "${binding.inputEditText.text}</font>\n"
-                        val content = "指令已发送"
+                    MSG_WRITE -> {
+                        val buffer = msg.obj as ByteArray
+                        val sentData = String(buffer, Charset.forName("GBK"))
+                        val content = "[$curTime]" + getString(R.string.msgSend) + sentData
                         binding.receiveText.append(Html.fromHtml(content, 1))
                         binding.receiveText.append("\n")
                     }
@@ -165,34 +160,43 @@ class ControlActivity : BaseActivity() {
         // 连接电机
         binding.connectBtn.setOnClickListener {
             if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
-                Log.e(TAG, "MainActivity:StartBtn.\n" +
-                        "MyApplication.bluetoothDevice is ${MyApplication.bluetoothDevice} \n " +
-                        "MyApplication.bluetoothSocket is ${MyApplication.bluetoothSocket}")
+                Log.e(
+                    TAG, "MainActivity:StartBtn.\n" +
+                            "MyApplication.bluetoothDevice is ${MyApplication.bluetoothDevice} \n " +
+                            "MyApplication.bluetoothSocket is ${MyApplication.bluetoothSocket}"
+                )
                 getString(R.string.fail_no_connection).Toast()
             } else {
-                MyApplication.bluetoothSocket.let {
-                    Log.d(TAG, "Both device and socket are not null.\n" +
-                            "device is ${MyApplication.bluetoothDevice}\n" +
-                            "socket is $it")
-                    val connectedThread = btComm.ConnectedThread(it!!)
-                    if (binding.connectBtn.text == getString(R.string.startTraining)) {
-                        connectedThread.start()
-                        binding.connectBtn.text = getString(R.string.endTraining)
-                        setBtnState(binding.powerOnBtn, true)
-                        setBtnState(binding.stopBtn, true)
-                        setBtnState(binding.startStretchingBtn, true)
-                        setBtnState(binding.holdBtn, true)
-                        setBtnState(binding.relaxBtn, true)
-                        setBtnState(binding.reStretchBtn, true)
-                    } else {
-                        connectedThread.cancel()
-                        binding.connectBtn.text = getString(R.string.startTraining)
-                        setBtnState(binding.powerOnBtn, false)
-                        setBtnState(binding.stopBtn, false)
-                        setBtnState(binding.startStretchingBtn, false)
-                        setBtnState(binding.holdBtn, false)
-                        setBtnState(binding.relaxBtn, false)
-                        setBtnState(binding.reStretchBtn, false)
+                if (binding.connectBtn.text == getString(R.string.build_connection)) {
+                    getString(R.string.connect_success).Toast()
+                    binding.connectBtn.text = getString(R.string.startTraining)
+                } else {
+                    MyApplication.bluetoothSocket.let {
+                        Log.d(
+                            TAG, "Both device and socket are not null.\n" +
+                                    "device is ${MyApplication.bluetoothDevice}\n" +
+                                    "socket is $it"
+                        )
+                        val connectedThread = btComm.ConnectedThread(it!!)
+                        if (binding.connectBtn.text == getString(R.string.startTraining)) {
+                            connectedThread.start()
+                            binding.connectBtn.text = getString(R.string.endTraining)
+                            setBtnState(binding.powerOnBtn, true)
+                            setBtnState(binding.stopBtn, true)
+                            setBtnState(binding.startStretchingBtn, true)
+                            setBtnState(binding.holdBtn, true)
+                            setBtnState(binding.relaxBtn, true)
+                            setBtnState(binding.reStretchBtn, true)
+                        } else {
+                            connectedThread.cancel()
+                            binding.connectBtn.text = getString(R.string.startTraining)
+                            setBtnState(binding.powerOnBtn, false)
+                            setBtnState(binding.stopBtn, false)
+                            setBtnState(binding.startStretchingBtn, false)
+                            setBtnState(binding.holdBtn, false)
+                            setBtnState(binding.relaxBtn, false)
+                            setBtnState(binding.reStretchBtn, false)
+                        }
                     }
                 }
             }
@@ -435,6 +439,7 @@ class ControlActivity : BaseActivity() {
         return true
     }
 
+    @SuppressLint("MissingPermission")
     override fun onResume() {
         super.onResume()
         binding.navView.setCheckedItem(R.id.navControl)
@@ -447,6 +452,9 @@ class ControlActivity : BaseActivity() {
             setBtnState(binding.relaxBtn, false)
             setBtnState(binding.reStretchBtn, false)
         }
+        binding.curDevice.text =
+            if (MyApplication.bluetoothDevice != null)  MyApplication.bluetoothDevice!!.name
+            else " ${getString(R.string.None)}"
     }
 
     @SuppressLint("MissingPermission", "SetTextI18n")

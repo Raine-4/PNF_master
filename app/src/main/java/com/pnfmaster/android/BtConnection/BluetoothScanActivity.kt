@@ -35,6 +35,7 @@ class BluetoothScanActivity : BaseActivity(), OnItemClickListener {
     private val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
     private val TAG = "ScanActivity"
     private var mAdapter: btDeviceAdapter? = null
+    private var isRegistered = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,7 @@ class BluetoothScanActivity : BaseActivity(), OnItemClickListener {
         intentFilter.addAction(BluetoothDevice.ACTION_FOUND) // 发现新的蓝牙设备
         intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED) // 配对完成
         registerReceiver(mBluetoothReceiver, intentFilter)
+        isRegistered = true
 
         binding.tvScanStatus.setOnClickListener {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
@@ -307,11 +309,17 @@ class BluetoothScanActivity : BaseActivity(), OnItemClickListener {
         ) {
             requestPermissions(this,
                 arrayOf(Manifest.permission.BLUETOOTH_CONNECT), 2)
-            unregisterReceiver(mBluetoothReceiver)
+            if (isRegistered) {
+                unregisterReceiver(mBluetoothReceiver)
+                isRegistered = false
+            }
             return
         }
         if (mBluetoothAdapter.isDiscovering) mBluetoothAdapter.cancelDiscovery()
-        unregisterReceiver(mBluetoothReceiver) // 取消注册接收蓝牙广播通知
+        if (isRegistered) {
+            unregisterReceiver(mBluetoothReceiver)
+            isRegistered = false
+        }
     }
 
     override fun onRequestPermissionsResult(

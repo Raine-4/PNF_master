@@ -194,5 +194,7 @@
     <string name="relax">Relaxing</string>
     <string name="reStretching">Re-stretch</string>
     <string name="no_params_selected">No params selected yet</string>
+    <string name="connect_success">Connect Success</string>
+    <string name="more_thinking">This question is a little bit diffcult. Please wait for another second...</string>
 
 </resources>
