@@ -19,12 +19,8 @@ import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import com.pnfmaster.android.BtConnection.BluetoothCommunication
 import com.pnfmaster.android.BtConnection.BluetoothScanActivity
 import com.pnfmaster.android.MyApplication.Companion.context
@@ -206,9 +202,9 @@ class ControlActivity : BaseActivity() {
             }
         }
 
-        // 初始状态不可点击
+        // Not clickable initially
         setBtnState(binding.powerOnBtn, false)
-        // 电机开机
+        // Turn on the motor
         binding.powerOnBtn.setOnClickListener {
             if (MyApplication.bluetoothDevice == null || MyApplication.bluetoothSocket == null) {
                 getString(R.string.fail_no_connection).Toast()
@@ -217,8 +213,9 @@ class ControlActivity : BaseActivity() {
                         "socket: ${MyApplication.bluetoothSocket}")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
-                val hexString = "AA550407320000000000000000000D0A" // 电机开机
-                val bytes = hexString.hexStringToByteArray() // 将十六进制字符串转换为字节数组
+                val hexString = "AA550407320000000000000000000D0A"
+                // Converting hexadecimal strings to byte arrays
+                val bytes = hexString.hexStringToByteArray()
                 connectedThread.write(bytes)
             }
         }
@@ -249,7 +246,7 @@ class ControlActivity : BaseActivity() {
                         "socket: ${MyApplication.bluetoothSocket}")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
-                val hexString = "666F635433"
+                val hexString = "666F635431"
                 val bytes = hexString.hexStringToByteArray()
                 connectedThread.write(bytes)
             }
@@ -281,12 +278,12 @@ class ControlActivity : BaseActivity() {
                         "socket: ${MyApplication.bluetoothSocket}")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
-                val hexString1 = "666F6333"
+                val hexString1 = "666F63542D33"
                 val bytes1 = hexString1.hexStringToByteArray()
-                val hexString2 = "666F6347"
-                val bytes2 = hexString2.hexStringToByteArray()
+                //val hexString2 = "666F6347"
+                //val bytes2 = hexString2.hexStringToByteArray()
                 connectedThread.write(bytes1)
-                connectedThread.write(bytes2)
+                //connectedThread.write(bytes2)
             }
         }
 
@@ -300,7 +297,7 @@ class ControlActivity : BaseActivity() {
                         "socket: ${MyApplication.bluetoothSocket}")
             } else {
                 val connectedThread = btComm.ConnectedThread(MyApplication.bluetoothSocket!!)
-                val hexString = "666F6335"
+                val hexString = "666F6333"
                 val bytes = hexString.hexStringToByteArray()
                 connectedThread.write(bytes)
             }

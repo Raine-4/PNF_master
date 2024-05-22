@@ -73,15 +73,15 @@ class AddParameterActivity : BaseActivity() {
             val prompt: String = if (Locale.getDefault().language == "en") {
                 "1.This is my personal information：\n" +
                         "My age is ${user.age}. I am a ${user.gender}. My diagnosis info is：${user.diagnosisInfo}.  Currently, my treat plan is ${user.treatPlan} and my treat progress record is ${user.progressRecord}. My goals are ${user.goals}.\n" +
-                        "2.Now, suppose you are an experienced and professional rehabilitation trainer. Please give me a set of parameters based on the info I gave to you.\n" +
-                        "3.Your answer need to include four parameters:\"force lower limit,force upper limit,position,time\", where the units of \"force lower limit\" and \"force upper limit\" are Newton; the \"position\" should be an integer between 0 to 10000 with no unit; the unit of time is\"second\"\n" +
-                        "4. Your answer should not exceed 200 words."
+                        "2.Now, suppose you are an experienced and professional rehabilitation trainer. Please give me a set of parameters based on the info I gave to you." +
+                        "3.Your answer need to include four parameters:\"force lower limit,force upper limit,position,time\", where the units of \"force lower limit\" and \"force upper limit\" are Newton, range is between 20 to 60; the \"position\" should be an integer between 5000 to 10000 with no unit; the unit of time is\"second\"\n" +
+                        "4.Your answer must not exceed 150 words."
             } else {
                 "1.这是我的个人信息：\n" +
                         "我的年龄是 ${user.age}。我的性别是 ${user.gender}。我的诊断信息是：${user.diagnosisInfo}。目前，我的治疗计划是 ${user.treatPlan}，我的治疗进度是 ${user.progressRecord}。我的目标是 ${user.goals}.\n" +
-                        "2.现在，假设您是一位经验丰富的专业康复理疗师。请根据我上面提供的个人信息给我一组参数。\n" +
-                        "3.这组参数包括：\"力的最小值，力的最大值，电机停止位置，时间\"，其中\"力的最小值\"与\"力的最大值\"的单位是牛顿；\"电机停止位置\"应该是介于0到10000之间的整数，无单位；时间参数的单位是\"秒\"\n" +
-                        "4. 你的回答不要超过200字。"
+                        "2.现在，假设您是一位经验丰富的专业康复理疗师。请根据我上面提供的个人信息给我一组参数。" +
+                        "3.这组参数包括：\"力的最小值，力的最大值，电机停止位置，时间\"，其中\"力的最小值\"与\"力的最大值\"的单位是牛，取值范围最好在20-60之间；\"电机停止位置\"应该是介于5000到10000之间的整数，无单位；时间参数的单位是\"秒\"\n" +
+                        "4.你的回答必须少于200字。"
             }
 
             lifecycleScope.launch {

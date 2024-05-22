@@ -2,8 +2,6 @@ package com.pnfmaster.android;
 
 import android.util.Log;
 
-import com.pnfmaster.android.BuildConfig;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,9 +23,9 @@ public class AIAssistant{
     public AIAssistant() { Dialogue_Content = new JSONArray(); }
 
     static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder()
-            .connectTimeout(30, TimeUnit.SECONDS) // 连接超时设置为30秒
-			.writeTimeout(30, TimeUnit.SECONDS) // 写入超时设置为30秒
-			.readTimeout(30, TimeUnit.SECONDS) // 读取超时设置为30秒
+            .connectTimeout(30, TimeUnit.SECONDS) // Connect timeout 30s
+			.writeTimeout(30, TimeUnit.SECONDS) // Write timeout 30s
+			.readTimeout(30, TimeUnit.SECONDS) // Read timeout 30s
             .build();
 
     public String GetAnswer(String user_msg, String background) throws IOException, JSONException {

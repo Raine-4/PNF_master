@@ -106,7 +106,7 @@
             <Button
                 android:id="@+id/connectBtn"
                 style="@style/common_button1"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/control_button_width"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
                 android:text="@string/build_connection" />
@@ -114,7 +114,7 @@
             <Button
                 android:id="@+id/ChangeParamsBtn"
                 style="@style/common_button1"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/control_button_width"
                 android:layout_height="wrap_content"
                 android:text="@string/change_params" />
         </LinearLayout>
@@ -130,13 +130,13 @@
             <android.widget.Button
                 android:id="@+id/powerOnBtn"
                 style="@style/red_button"
-                android:layout_width="110dp"
+                android:layout_width="@dimen/control_button_width"
                 android:layout_marginEnd="45dp"
                 android:text="@string/powerOn"/>
             <android.widget.Button
                 android:id="@+id/stopBtn"
                 style="@style/red_button"
-                android:layout_width="110dp"
+                android:layout_width="@dimen/control_button_width"
                 android:text="@string/forceStop"/>
         </LinearLayout>
 
@@ -151,14 +151,14 @@
             <Button
                 android:id="@+id/startStretchingBtn"
                 style="@style/common_button1"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/control_button_width"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
                 android:text="@string/startStretching"/>
             <Button
                 android:id="@+id/holdBtn"
                 style="@style/common_button1"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/control_button_width"
                 android:layout_height="wrap_content"
                 android:text="@string/hold"/>
         </LinearLayout>
@@ -174,14 +174,14 @@
             <Button
                 android:id="@+id/relaxBtn"
                 style="@style/common_button1"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/control_button_width"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
                 android:text="@string/relax"/>
             <Button
                 android:id="@+id/reStretchBtn"
                 style="@style/common_button1"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/control_button_width"
                 android:layout_height="wrap_content"
                 android:text="@string/reStretching"/>
         </LinearLayout>

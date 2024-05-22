@@ -187,11 +187,11 @@
     <string name="please_input_valid_params">Inputs should be integers.</string>
     <string name="load_failed_retry_or_input_manually">Load failed. Retry or input manually.</string>
     <string name="change_show_mode">Change show mode</string>
-    <string name="startStretching">Stretching</string>
-    <string name="hold">Holding</string>
+    <string name="startStretching">Stretch</string>
+    <string name="hold">Hold</string>
     <string name="powerOn">Power On</string>
     <string name="forceStop">Force Stop</string>
-    <string name="relax">Relaxing</string>
+    <string name="relax">Relax</string>
     <string name="reStretching">Re-stretch</string>
     <string name="no_params_selected">No params selected yet</string>
 
