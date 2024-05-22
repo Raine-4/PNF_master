@@ -70,12 +70,9 @@ class NewuserActivity : BaseActivity() {
                 return false
             }
         }
-
         var flag = false
-
         val pd = MyProgressDialog(this)
         pd.show()
-
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 flag = async { connect.isUsernameUsed(username) }.await()
@@ -85,11 +82,9 @@ class NewuserActivity : BaseActivity() {
                 pd.dismiss()
             }
         }
-
         if (flag) {
             getString(R.string.already_exist).Toast()
         }
-
         return !flag
     }
 }

@@ -23,9 +23,9 @@ public class AIAssistant{
     public AIAssistant() { Dialogue_Content = new JSONArray(); }
 
     static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder()
-            .connectTimeout(30, TimeUnit.SECONDS) // Connect timeout 30s
-			.writeTimeout(30, TimeUnit.SECONDS) // Write timeout 30s
-			.readTimeout(30, TimeUnit.SECONDS) // Read timeout 30s
+            .connectTimeout(60, TimeUnit.SECONDS) // 连接超时设置为60秒
+			.writeTimeout(60, TimeUnit.SECONDS) // 写入超时设置为60秒
+			.readTimeout(60, TimeUnit.SECONDS) // 读取超时设置为60秒
             .build();
 
     public String GetAnswer(String user_msg, String background) throws IOException, JSONException {

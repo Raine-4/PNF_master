@@ -15,6 +15,7 @@ import com.pnfmaster.android.R
 import com.pnfmaster.android.databinding.ActivityChatBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -50,6 +51,9 @@ class ChatActivity : BaseActivity() {
 
         // Send button
         binding.sendBtn.setOnClickListener {
+            // Scroll to the end
+            rcChatlist.scrollToPosition(mData.size - 1)
+
             val input = binding.etChat.text.toString()
 
             // Check if input is empty
@@ -72,6 +76,15 @@ class ChatActivity : BaseActivity() {
             mData.add(loading)
             chatAdapter.update(mData)
 
+            // Create a job for the delay
+            val delayJob = CoroutineScope(Dispatchers.Main).launch {
+                delay(10000) // Wait for 10 seconds
+                if (mData.last().speakContent == getString(R.string.thinking)) {
+                    mData[mData.size - 1] = Chatlist("PNF Master", getString(R.string.more_thinking))
+                    chatAdapter.update(mData)
+                }
+            }
+
             // Get answer from AI
             CoroutineScope(Dispatchers.Main).launch {
                 val reply = withContext(Dispatchers.IO) {
@@ -83,7 +96,10 @@ class ChatActivity : BaseActivity() {
                         Chatlist("PNF Master", "请重试/Please Retry.\n错误信息/Error Message: $e")
                     }
                 }
-                // Remove the loading message
+                // Cancel the delay job
+                delayJob.cancel()
+
+                // Remove the loading/delay message
                 mData.removeAt(mData.size-1)
 
                 mData.add(reply)

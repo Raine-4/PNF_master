@@ -198,4 +198,6 @@
     <string name="reStretching">再次拉伸</string>
     <string name="login_to_see_params">请登陆后查看参数</string>
     <string name="no_params_selected">尚未选择参数</string>
+    <string name="connect_success">连接成功</string>
+    <string name="more_thinking">这个问题有点难，PNF Master还在努力思考中...</string>
 </resources>
